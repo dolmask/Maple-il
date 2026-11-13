@@ -20,6 +20,15 @@ export function slugify(text) {
     .replace(/-+/g, '-');
 }
 
+// טקסט עברי שמסתיים באנגלית/סוגריים/מספר: מוסיפים סימן RLM כדי שהסימנים לא יתהפכו,
+// ומונעים שבירת שורה בתוך "Lv 30–70".
+export function bidiText(s) {
+  s = String(s).replace(/Lv (\d+)(?:\s*[–-]\s*(\d+))?(\+?)/g, (m, a, b, plus) =>
+    b ? `Lv\u00A0${a}\u2060–\u2060${b}${plus}` : `Lv\u00A0${a}${plus}`);
+  if (/[\u0590-\u05FF]/.test(s) && /[A-Za-z0-9)\]?!.+]\s*$/.test(s)) s += '\u200F';
+  return s;
+}
+
 // ---------- Front matter ----------
 export function parseFrontMatter(src) {
   const text = src.replace(/^﻿/, '').replace(/\r\n?/g, '\n');
@@ -60,6 +69,7 @@ function inline(text, opts) {
     codes.push(`<code>${escapeHtml(c)}</code>`);
     return `\u0000${codes.length - 1}\u0000`;
   });
+  s = s.replace(/Lv (\d+)(?:\s*[–-]\s*(\d+))?/g, (m, a, b) => b ? `Lv\u00A0${a}\u2060–\u2060${b}` : `Lv\u00A0${a}`);
   s = escapeHtml(s);
   // images ![alt](src)
   s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (_, alt, src) =>
@@ -159,7 +169,7 @@ function renderBlocks(lines, opts, headings, usedIds, onH2) {
         if (n === 3 && opts.autoAds) out.push('<!--AD-->');
       }
       if (level === 2 || level === 3) headings.push({ level, text: text.replace(/[*`]/g, ''), id });
-      out.push(`<h${level} id="${id}">${inline(text, opts)}<a class="anchor" href="#${id}" aria-label="קישור לסעיף">#</a></h${level}>`);
+      out.push(`<h${level} id="${id}">${inline(bidiText(text), opts)}<a class="anchor" href="#${id}" aria-label="קישור לסעיף">#</a></h${level}>`);
       i++;
       continue;
     }

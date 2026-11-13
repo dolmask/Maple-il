@@ -1,8 +1,9 @@
 // תבניות העמודים — משותף לבנייה ולתצוגה המקדימה במערכת הניהול, כך שהעיצוב תמיד זהה.
-import { renderMarkdown, escapeHtml, readingTime } from './markdown.js';
+import { renderMarkdown, escapeHtml, readingTime, bidiText } from './markdown.js';
 import { ICONS, CLASS_INFO } from './icons.js';
 
 const e = escapeHtml;
+const t = s => escapeHtml(bidiText(s ?? ''));
 
 export function url(ctx, path = '') {
   return (ctx.base || '/') + path.replace(/^\//, '');
@@ -134,8 +135,8 @@ export function guideCard(ctx, g) {
   return `<a class="g-card${g.cls ? ' cls-' + e(g.cls) : ''}" href="${guideUrl(ctx, g.slug)}">
   <span class="g-icon">${icon}</span>
   <span class="g-body">
-    <span class="g-title">${e(g.title)}</span>
-    <span class="g-sum">${e(g.summary || '')}</span>
+    <span class="g-title">${t(g.title)}</span>
+    <span class="g-sum">${t(g.summary || '')}</span>
     <span class="g-meta">${levelChip(g.level)}<span>${e(cat.name)}</span></span>
   </span>
 </a>`;
@@ -155,7 +156,7 @@ export function guidePage(ctx, g) {
   const icon = ICONS[g.icon] || ICONS[cls?.icon] || ICONS[cat.icon] || ICONS.book;
 
   const toc = headings.filter(h => h.level === 2);
-  const tocHtml = toc.length > 2 ? `<nav class="toc" aria-label="תוכן העניינים"><div class="toc-title">בעמוד הזה</div><ol>${toc.map(h => `<li><a href="#${h.id}">${e(h.text)}</a></li>`).join('')}</ol></nav>` : '';
+  const tocHtml = toc.length > 2 ? `<nav class="toc" aria-label="תוכן העניינים"><div class="toc-title">בעמוד הזה</div><ol>${toc.map(h => `<li><a href="#${h.id}">${t(h.text)}</a></li>`).join('')}</ol></nav>` : '';
 
   const body = `
 <div class="wrap crumbs"><a href="${url(ctx)}">ראשי</a><span aria-hidden="true">‹</span><a href="${categoryUrl(ctx, cat.id)}">${e(cat.name)}</a></div>
@@ -164,8 +165,8 @@ export function guidePage(ctx, g) {
     <header class="guide-head">
       <span class="g-icon big">${icon}</span>
       <div>
-        <h1>${e(g.title)}</h1>
-        ${g.summary ? `<p class="lede">${e(g.summary)}</p>` : ''}
+        <h1>${t(g.title)}</h1>
+        ${g.summary ? `<p class="lede">${t(g.summary)}</p>` : ''}
         <div class="meta">${levelChip(g.level)}<span>${readingTime(g.body)} דק׳ קריאה</span>${g.updated ? `<span>עודכן ${e(formatDate(g.updated))}</span>` : ''}</div>
       </div>
     </header>
@@ -175,8 +176,8 @@ ${withAds}
     </div>
     ${g.sources && g.sources.length ? `<p class="sources">הנתונים נאספו ונבדקו מול מקורות הקהילה, בין היתר: ${g.sources.map(s => `<a href="${e(s)}" target="_blank" rel="noopener nofollow">${e(s.replace(/^https?:\/\/(www\.)?/, '').split('/')[0])}</a>`).join(', ')}. הערכים נכונים לעדכון האחרון ועשויים להשתנות בעדכוני משחק.</p>` : ''}
     <nav class="pager" aria-label="מדריכים סמוכים">
-      ${prev ? `<a class="pg prev" href="${guideUrl(ctx, prev.slug)}"><small>הקודם</small><span>${e(prev.title)}</span></a>` : '<span></span>'}
-      ${next ? `<a class="pg next" href="${guideUrl(ctx, next.slug)}"><small>הבא</small><span>${e(next.title)}</span></a>` : '<span></span>'}
+      ${prev ? `<a class="pg prev" href="${guideUrl(ctx, prev.slug)}"><small>הקודם</small><span>${t(prev.title)}</span></a>` : '<span></span>'}
+      ${next ? `<a class="pg next" href="${guideUrl(ctx, next.slug)}"><small>הבא</small><span>${t(next.title)}</span></a>` : '<span></span>'}
     </nav>
   </article>
   <aside class="side">
@@ -249,7 +250,7 @@ ${journey ? `<section class="wrap journey-wrap"><h2 class="sec-title">המסלו
   <aside class="side">
     <div class="window news">
       <div class="window-bar"><span>עודכנו לאחרונה</span></div>
-      <ul>${latest.map(g => `<li><a href="${guideUrl(ctx, g.slug)}">${e(g.title)}</a><small>${e(formatDate(g.updated))}</small></li>`).join('')}</ul>
+      <ul>${latest.map(g => `<li><a href="${guideUrl(ctx, g.slug)}">${t(g.title)}</a><small>${e(formatDate(g.updated))}</small></li>`).join('')}</ul>
     </div>
     ${adSlot(ctx, 'sidebar')}
   </aside>

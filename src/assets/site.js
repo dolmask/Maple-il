@@ -68,7 +68,7 @@
     }
     sel = -1;
     results.innerHTML = list.length ? list.map(function (r) {
-      return '<li><a href="' + base + r.d.u + '"><strong>' + hl(r.d.t, terms) + '</strong><small>' + esc(r.d.c) + (r.d.l ? ' · Lv ' + esc(r.d.l) : '') + '</small></a></li>';
+      return '<li><a href="' + base + r.d.u + '"><strong>' + hl(r.d.t, terms) + '\u200F</strong><small>' + esc(r.d.c) + (r.d.l ? ' · Lv ' + esc(r.d.l) : '') + '</small></a></li>';
     }).join('') : '<li class="none">לא נמצאו מדריכים. נסו מילה אחרת, למשל שם של מפה או מקצוע (גם באנגלית).</li>';
   }
   if (layer) {
