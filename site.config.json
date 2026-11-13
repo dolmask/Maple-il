@@ -1,0 +1,37 @@
+{
+  "siteName": "מייפלורז",
+  "tagline": "המדריך העברי ל-MapleStory Classic",
+  "description": "המדריך הגדול בעברית למייפל סטורי קלאסיק (MapleStory Classic World): מקצועות, בילדים, מקומות אימון, משימות, KPQ, מגילות, יצירה וכל מה שצריך כדי להגיע ל-Lv 70 ומעבר.",
+  "heroTitle": "כל מה שצריך לדעת על מייפל סטורי קלאסיק, בעברית",
+  "heroText": "מדריכים מפורטים לכל מקצוע, מקומות האימון הכי טובים לכל רמה, פתרונות למשימות ולקבוצות, וטיפים שחוסכים לכם מזוס (mesos) ושעות של גריינד.",
+  "footerText": "מדריכים בעברית למייפל סטורי קלאסיק, נכתבים ומתעדכנים על ידי שחקנים, בשביל שחקנים.",
+  "siteUrl": "https://dolmask.github.io/maple-il",
+  "basePath": "/",
+  "customDomain": "",
+  "analyticsId": "",
+  "ads": {
+    "enabled": false,
+    "client": "",
+    "slots": { "top": "", "inArticle": "", "sidebar": "" }
+  },
+  "github": { "owner": "dolmask", "repo": "maple-il", "branch": "main" },
+  "categories": [
+    { "id": "start", "name": "צעדים ראשונים", "short": "מתחילים", "icon": "leaf", "nav": true, "desc": "מה זה מייפל סטורי קלאסיק, איך מתחילים נכון, ואיזה מקצוע לבחור." },
+    { "id": "jobs", "name": "מקצועות: ג'וב ראשון (Lv 10–30)", "short": "ג'וב ראשון", "icon": "sword", "nav": true, "desc": "בילד סטטים, סדר סקילים, נשקים ומקומות אימון לכל אחד מארבעת המקצועות, מ-Lv 1 ועד Lv 30." },
+    { "id": "jobs2", "name": "מקצועות: ג'וב שני (Lv 30–70)", "short": "ג'וב שני", "icon": "claw", "nav": true, "desc": "עשרת הענפים של הג'וב השני: סקילים, סדר נקודות, ציוד ומפות עד Lv 70." },
+    { "id": "training", "name": "אימון ועליית רמות", "short": "אימון", "icon": "map", "nav": true, "desc": "איפה להתאמן בכל רמה, איך עובד הספאון, וכמה EXP צריך." },
+    { "id": "quests", "name": "משימות וקפיצות", "short": "משימות", "icon": "scroll", "nav": true, "desc": "משימות שוות, אזורים חדשים ומשימות קפיצה (Jump Quests) צעד אחר צעד." },
+    { "id": "party", "name": "קבוצות ובוסים", "short": "קבוצות ובוסים", "icon": "party", "nav": true, "desc": "פארטי קווסטים, בוסים, ואיך לא להיות השחקן שכולם מעיפים מהפארטי." },
+    { "id": "economy", "name": "ציוד, יצירה וכלכלה", "short": "ציוד וכלכלה", "icon": "coin", "nav": true, "desc": "מגילות ושדרוג ציוד, מקצועות יצירה, אזרחות, שיקויים ודרכים לעשות מזו." },
+    { "id": "reference", "name": "מילון ונתונים", "short": "מילון", "icon": "book", "nav": true, "desc": "מילון מונחים, ראשי תיבות וסלנג של הקהילה, מתורגמים לעברית." }
+  ],
+  "journey": [
+    { "lv": "Lv 1", "label": "האי מייפל והצעדים הראשונים", "slug": "beginners-guide" },
+    { "lv": "Lv 10", "label": "בוחרים מקצוע", "slug": "choosing-a-class" },
+    { "lv": "Lv 12", "label": "נרשמים לאזרחות", "slug": "citizenship" },
+    { "lv": "Lv 21", "label": "קבוצה ראשונה: KPQ", "slug": "kerning-party-quest" },
+    { "lv": "Lv 30", "label": "הג'וב השני", "slug": "second-job-advancement" },
+    { "lv": "Lv 39", "label": "Forgotten Hollow", "slug": "forgotten-hollow" },
+    { "lv": "Lv 1–70", "label": "מפות אימון לכל רמה", "slug": "training-spots" }
+  ]
+}
