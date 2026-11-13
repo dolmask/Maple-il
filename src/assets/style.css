@@ -377,3 +377,11 @@ mark { background: color-mix(in srgb, var(--tip-gold) 55%, transparent); color: 
   .sky, .foot, .side, .ad, .pager, .toc-mobile, .search-layer { display: none !important; }
   .window { border: 0; box-shadow: none; }
 }
+
+/* images added by the site owner */
+.g-icon.has-img, .job-icon.has-img { background: var(--paper-2); padding: 3px; overflow: hidden; }
+.g-icon img, .job-icon img { width: 100%; height: 100%; object-fit: contain; image-rendering: auto; }
+.cover { border-bottom: 2px solid var(--line); background: var(--paper-2); }
+.cover img { display: block; width: 100%; max-height: 320px; object-fit: cover; }
+.prose td img, .prose th img { height: 32px; width: auto; border: 0; border-radius: 0; vertical-align: middle; margin-inline-end: 6px; }
+.disclaimer a { color: var(--tip-gold); }

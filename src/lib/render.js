@@ -12,6 +12,11 @@ export function url(ctx, path = '') {
 export function guideUrl(ctx, slug) { return url(ctx, `guides/${slug}/`); }
 export function categoryUrl(ctx, id) { return url(ctx, `category/${id}/`); }
 
+function img(ctx, src) {
+  if (!src) return '';
+  return /^https?:\/\//.test(src) ? src : url(ctx, src.replace(/^\//, ''));
+}
+
 function catOf(ctx, id) {
   return ctx.config.categories.find(c => c.id === id) || { id, name: id, icon: 'book', desc: '' };
 }
@@ -115,7 +120,7 @@ ${body}
       <a href="${url(ctx, 'guides/')}">כל המדריכים</a>
     </nav>
   </div>
-  <p class="wrap disclaimer">אתר מעריצים לא רשמי. MapleStory הוא סימן מסחרי של Nexon. האתר אינו קשור ל-Nexon ואינו מאושר על ידה.</p>
+  <p class="wrap disclaimer">MapleStory ו-MapleStory Classic World, וכן כל השמות, הדמויות, התמונות, הסימנים המסחריים ושאר החומרים מהמשחק, הם קניינה של NEXON Korea Corporation ושל NEXON America Inc. כל הזכויות שמורות להן. מייפלורז הוא אתר מעריצים לא רשמי: הוא אינו קשור ל-Nexon, אינו ממומן על ידה ואינו מאושר על ידה. <a href="${url(ctx, 'about/')}#זכויות-יוצרים">זכויות יוצרים</a></p>
 </footer>
 <script>window.SITE_BASE=${JSON.stringify(ctx.base || '/')};</script>
 <script src="${url(ctx, 'assets/site.js')}${ctx.version ? '?v=' + ctx.version : ''}" defer></script>
@@ -131,9 +136,9 @@ function levelChip(level) {
 export function guideCard(ctx, g) {
   const cat = catOf(ctx, g.category);
   const cls = g.cls && CLASS_INFO[g.cls];
-  const icon = ICONS[g.icon] || ICONS[cls?.icon] || ICONS[cat.icon] || ICONS.book;
+  const icon = g.thumb ? `<img src="${e(img(ctx, g.thumb))}" alt="" loading="lazy">` : (ICONS[g.icon] || ICONS[cls?.icon] || ICONS[cat.icon] || ICONS.book);
   return `<a class="g-card${g.cls ? ' cls-' + e(g.cls) : ''}" href="${guideUrl(ctx, g.slug)}">
-  <span class="g-icon">${icon}</span>
+  <span class="g-icon${g.thumb ? ' has-img' : ''}">${icon}</span>
   <span class="g-body">
     <span class="g-title">${t(g.title)}</span>
     <span class="g-sum">${t(g.summary || '')}</span>
@@ -162,6 +167,7 @@ export function guidePage(ctx, g) {
 <div class="wrap crumbs"><a href="${url(ctx)}">ראשי</a><span aria-hidden="true">‹</span><a href="${categoryUrl(ctx, cat.id)}">${e(cat.name)}</a></div>
 <div class="wrap guide-layout">
   <article class="window guide${g.cls ? ' cls-' + e(g.cls) : ''}">
+    ${g.cover ? `<div class="cover"><img src="${e(img(ctx, g.cover))}" alt="${e(g.coverAlt || '')}"></div>` : ''}
     <header class="guide-head">
       <span class="g-icon big">${icon}</span>
       <div>
@@ -207,7 +213,7 @@ export function homePage(ctx) {
     const branches = ctx.guides.filter(x => x.cls === key && x.category === 'jobs2');
     return `<div class="job cls-${key}">
   <a class="job-main" href="${g ? guideUrl(ctx, g.slug) : '#'}">
-    <span class="job-icon">${ICONS[info.icon]}</span>
+    <span class="job-icon${(c.classImages || {})[key] ? ' has-img' : ''}">${(c.classImages || {})[key] ? `<img src="${e(img(ctx, c.classImages[key]))}" alt="">` : ICONS[info.icon]}</span>
     <span class="job-name">${info.name}<small>${info.en}</small></span>
     <span class="job-facts"><span>${info.stat}</span><span>${info.town}</span></span>
   </a>

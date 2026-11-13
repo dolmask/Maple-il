@@ -283,6 +283,11 @@ ${draft ? `<div class="box box-info" id="draftBox" style="padding:10px 14px"><di
           <label class="f">מילות חיפוש<small>מופרדות בפסיקים, גם באנגלית</small><input class="in" name="keywords" placeholder="warrior, לוחם, power strike"></label>
           <label class="f">מדריכים קשורים<small>כתובות מופרדות בפסיקים</small><input class="in" name="related" dir="ltr" list="slugList" placeholder="fighter, page"></label>
           <datalist id="slugList">${slugList}</datalist>
+          <div class="grid-2">
+            <label class="f">תמונת באנר<small>מוצגת בראש המדריך</small><span class="row"><input class="in" name="cover" dir="ltr" placeholder="/images/…" style="flex:1"><button type="button" class="btn btn-ghost btn-sm" data-upload="cover">העלאה</button></span></label>
+            <label class="f">תמונה לכרטיס<small>מחליפה את האייקון ברשימות</small><span class="row"><input class="in" name="thumb" dir="ltr" placeholder="/images/…" style="flex:1"><button type="button" class="btn btn-ghost btn-sm" data-upload="thumb">העלאה</button></span></label>
+          </div>
+          <label class="f">תיאור תמונת הבאנר<small>לנגישות ולגוגל</small><input class="in" name="coverAlt"></label>
           <label class="f">מקורות<small>קישורים מופרדים בפסיקים</small><input class="in" name="sources" dir="ltr" placeholder="https://…"></label>
           <label class="check-f"><input type="checkbox" name="draft"> טיוטה (לא יופיע באתר)</label>
         </div>
@@ -341,7 +346,7 @@ ${draft ? `<div class="box box-info" id="draftBox" style="padding:10px 14px"><di
 
   const form = $('#edForm');
   const ta = $('#body');
-  const fields = ['title', 'slug', 'category', 'summary', 'level', 'cls', 'icon', 'order', 'short', 'updated', 'keywords', 'related', 'sources'];
+  const fields = ['title', 'slug', 'category', 'summary', 'level', 'cls', 'icon', 'order', 'short', 'updated', 'keywords', 'related', 'sources', 'cover', 'coverAlt', 'thumb'];
   function fill(d, b) {
     for (const f of fields) {
       const el = form.elements[f]; if (!el) continue;
@@ -362,7 +367,7 @@ ${draft ? `<div class="box box-info" id="draftBox" style="padding:10px 14px"><di
     }
     if (form.elements.draft) d.draft = form.elements.draft.checked || undefined;
     // keep key order tidy
-    const order = ['title', 'short', 'slug', 'category', 'cls', 'order', 'level', 'icon', 'summary', 'keywords', 'related', 'updated', 'sources', 'draft'];
+    const order = ['title', 'short', 'slug', 'category', 'cls', 'order', 'level', 'icon', 'cover', 'coverAlt', 'thumb', 'summary', 'keywords', 'related', 'updated', 'sources', 'draft'];
     const out = {};
     for (const k of order) if (d[k] !== undefined && d[k] !== '' && !(Array.isArray(d[k]) && !d[k].length)) out[k] = d[k];
     for (const k of Object.keys(d)) if (!(k in out) && d[k] !== undefined && !['body', 'file'].includes(k)) out[k] = d[k];
@@ -453,13 +458,16 @@ ${draft ? `<div class="box box-info" id="draftBox" style="padding:10px 14px"><di
     stats: () => block(':::stats כותרת הכרטיס\nרמה: 30\nHP: 1,000\nחולשה: אש\n:::'),
     lv: () => insert('{{lv ', '}}', '30'),
     ad: () => block('[[ad]]'),
-    img: () => $('#imgInput').click(),
+    img: () => { uploadTarget = null; $('#imgInput').click(); },
     help: () => { const h = $('#helpBox'); h.hidden = !h.hidden; },
   };
   $('#toolbar').addEventListener('click', ev => { const b = ev.target.closest('[data-ins]'); if (b) SNIPS[b.dataset.ins](); });
 
+  let uploadTarget = null;
+  app.querySelectorAll('[data-upload]').forEach(b => b.addEventListener('click', () => { uploadTarget = b.dataset.upload; $('#imgInput').click(); }));
   $('#imgInput').addEventListener('change', async ev => {
     const file = ev.target.files[0]; ev.target.value = '';
+    const target = uploadTarget; uploadTarget = null;
     if (!file) return;
     if (file.size > 2 * 1024 * 1024) return toast('התמונה גדולה מ-2MB. הקטינו אותה ונסו שוב.', true);
     const dataUrl = await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(file); });
@@ -471,6 +479,7 @@ ${draft ? `<div class="box box-info" id="draftBox" style="padding:10px 14px"><di
       try { await putFile(`content/images/${name}`, dataUrl.split(',')[1], `הוספת תמונה: ${name}`, null, true); toast('התמונה הועלתה.'); }
       catch (x) { return toast(x.message, true); }
     }
+    if (target) { form.elements[target].value = `/${path}`; schedule(); return; }
     block(`![תיאור התמונה](/${path})`);
   });
 
@@ -554,6 +563,12 @@ async function renderSettings() {
     <label class="f">טקסט דף הבית<textarea class="in" name="heroText" rows="2">${v(cfg.heroText)}</textarea></label>
     <label class="f">טקסט בתחתית<textarea class="in" name="footerText" rows="2">${v(cfg.footerText)}</textarea></label>
   </div></section>
+  <section class="window"><div class="window-bar"><span>תמונות המקצועות בדף הבית</span></div><div class="panel ed-form">
+    <p class="muted small">כתובת של תמונה שהעליתם (למשל /images/warrior.png). השאירו ריק כדי להציג את האייקון הרגיל.</p>
+    <div class="grid-2">
+      ${Object.entries(CLASS_INFO).map(([k, info]) => `<label class="f">${info.name} (${info.en})<input class="in" name="ci_${k}" dir="ltr" value="${v((cfg.classImages || {})[k])}" placeholder="/images/…"></label>`).join('')}
+    </div>
+  </div></section>
   <section class="window"><div class="window-bar"><span>דומיין</span></div><div class="panel ed-form">
     <label class="f">כתובת האתר המלאה<small>משמשת למפת האתר ולגוגל</small><input class="in" name="siteUrl" dir="ltr" value="${v(cfg.siteUrl)}" placeholder="https://www.example.co.il"></label>
     <label class="f">דומיין פרטי (אופציונלי)<small>למשל www.mapleorz.co.il. אחרי השמירה, הגדירו CNAME אצל רשם הדומיין ל-${v(gh().owner)}.github.io</small><input class="in" name="customDomain" dir="ltr" value="${v(cfg.customDomain)}"></label>
@@ -579,6 +594,7 @@ async function renderSettings() {
       siteName: f.siteName.value.trim(), tagline: f.tagline.value.trim(), description: f.description.value.trim(),
       heroTitle: f.heroTitle.value.trim(), heroText: f.heroText.value.trim(), footerText: f.footerText.value.trim(),
       siteUrl: f.siteUrl.value.trim().replace(/\/$/, ''), customDomain: f.customDomain.value.trim(), analyticsId: f.analyticsId.value.trim(),
+      classImages: Object.fromEntries(Object.keys(CLASS_INFO).map(k => [k, f['ci_' + k].value.trim()]).filter(([, x]) => x)),
       ads: { enabled: f.adsEnabled.checked, client: f.adsClient.value.trim(), slots: { top: f.slotTop.value.trim(), inArticle: f.slotIn.value.trim(), sidebar: f.slotSide.value.trim() } },
     };
     if (next.ads.client && !/^ca-pub-\d+$/.test(next.ads.client)) return toast('מזהה המפרסם צריך להיראות כך: ca-pub-1234567890123456', true);
