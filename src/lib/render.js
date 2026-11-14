@@ -25,6 +25,13 @@ function fillTokens(ctx, body) {
   });
 }
 
+const MOB_BASE = 'https://maplestory.io/api/gms/208.2.0/mob/';
+export function mobImg(id, cls = 'mob') {
+  if (!id) return '';
+  return `<img class="${cls}" src="${MOB_BASE}${encodeURIComponent(id)}/render/stand" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
+}
+function thumbMob(g) { return ((g.thumb || '').match(/\/mob\/(\d+)\//) || [])[1] || ''; }
+
 function catOf(ctx, id) {
   return ctx.config.categories.find(c => c.id === id) || { id, name: id, icon: 'book', desc: '' };
 }
@@ -212,6 +219,7 @@ export function guidePage(ctx, g) {
       ${g.summary ? `<p class="lede">${t(g.summary)}</p>` : ''}
       <div class="meta"><span>${readingTime(g.body)} דקות קריאה</span>${g.updated ? `<span>עודכן ${e(formatDate(g.updated))}</span>` : ''}</div>
     </header>
+    ${!g.cover ? `<figure class="cover cover-mobs" aria-hidden="true">${[...new Set([thumbMob(g), cat.mob, ...(ctx.config.heroMobs || []).slice(0, 2)].filter(Boolean))].slice(0, 4).map(id => mobImg(id)).join('')}<span class="cover-ground"></span></figure>` : ''}
     ${g.cover ? `<figure class="cover" data-slot="cover" data-guide="${e(g.slug)}"><img src="${e(img(ctx, g.cover))}" alt="${e(g.coverAlt || '')}"></figure>` : `<figure class="cover cover-missing shot-missing" data-slot="cover" data-guide="${e(g.slug)}" hidden><div class="shot-frame"><span>באנר למדריך</span></div></figure>`}
     ${tocHtml ? `<details class="toc-mobile"><summary>תוכן העניינים <span>${toc.length} סעיפים</span></summary>${tocHtml}</details>` : ''}
     <div class="prose">
@@ -270,7 +278,7 @@ export function homePage(ctx) {
     const list = byCat(cat.id);
     if (!list.length) return '';
     return `<section class="cat-panel" aria-labelledby="cat-${cat.id}">
-  <h3 id="cat-${cat.id}"><a href="${categoryUrl(ctx, cat.id)}"><span class="cat-ic" aria-hidden="true">${ICONS[cat.icon] || ''}</span>${e(cat.name)}</a><span class="count">${list.length}</span></h3>
+  <h3 id="cat-${cat.id}"><a href="${categoryUrl(ctx, cat.id)}"><span class="cat-ic${cat.mob ? ' has-img' : ''}" aria-hidden="true">${cat.mob ? mobImg(cat.mob, 'cat-mob') : ''}${ICONS[cat.icon] || ''}</span>${e(cat.name)}</a><span class="count">${list.length}</span></h3>
   <ul>${list.map(g => `<li><a href="${guideUrl(ctx, g.slug)}">${t(g.short && g.category !== 'jobs2' ? g.title : g.title)}</a>${g.level ? `<span class="lv">${e(g.level)}</span>` : ''}</li>`).join('')}</ul>
 </section>`;
   }).join('');
@@ -281,6 +289,7 @@ export function homePage(ctx) {
     <h1>${e(c.heroTitle)}</h1>
     <p>${e(c.heroText)}</p>
     <button class="hero-search" type="button" data-open-search>${ICONS.search}<span>חפשו מדריך, מפה או מקצוע…</span></button>
+    ${(c.heroMobs || []).length ? `<div class="hero-mobs" aria-hidden="true">${c.heroMobs.map(id => mobImg(id)).join('')}</div>` : ''}
     ${renderMarkdown('[[shot home-hero | ' + (c.heroShotCaption || 'MapleStory Classic World') + ']]', { base: ctx.base, images: ctx.images, showMissingShots: false }).html}
   </div>
 </section>
@@ -305,7 +314,7 @@ export function categoryPage(ctx, cat) {
   const body = `
 <div class="wrap narrow page-pad">
   <nav class="crumbs" aria-label="מיקום באתר"><a href="${url(ctx)}">ראשי</a></nav>
-  <header class="list-head"><h1>${e(cat.name)}</h1>${cat.desc ? `<p>${e(cat.desc)}</p>` : ''}</header>
+  <header class="list-head${cat.mob ? ' has-mob' : ''}">${mobImg(cat.mob, 'list-mob')}<h1>${e(cat.name)}</h1>${cat.desc ? `<p>${e(cat.desc)}</p>` : ''}</header>
   ${list.length ? rowList(ctx, list) : '<p class="empty">עוד אין כאן מדריכים. הראשון בדרך.</p>'}
 </div>`;
   return layout(ctx, { title: cat.name, description: cat.desc, path: `category/${cat.id}/`, body, active: cat.id, edit: 'settings/categories' });
@@ -338,19 +347,13 @@ export function staticPage(ctx, p) {
 }
 
 export function notFoundPage(ctx) {
-  const body = `<section class="wrap narrow page-pad lost"><h1>הפורטל הזה לא מוביל לשום מקום</h1><p>העמוד שחיפשתם לא קיים, או שהועבר למקום אחר.</p><p class="row-btns"><a class="btn" href="${url(ctx)}">לדף הבית</a><button class="btn btn-ghost" type="button" data-open-search>חיפוש מדריך</button></p></section>`;
+  const body = `<section class="wrap narrow page-pad lost">${mobImg('100100', 'lost-mob')}<h1>הפורטל הזה לא מוביל לשום מקום</h1><p>העמוד שחיפשתם לא קיים, או שהועבר למקום אחר.</p><p class="row-btns"><a class="btn" href="${url(ctx)}">לדף הבית</a><button class="btn btn-ghost" type="button" data-open-search>חיפוש מדריך</button></p></section>`;
   return layout(ctx, { title: 'העמוד לא נמצא', body, noindex: true });
 }
 
 // ---------- ranking ----------
 export function rankingOn(ctx) {
   return !!(ctx.config.ranking && ctx.config.ranking.enabled);
-}
-
-const MSIO = 'https://maplestory.io/api/gms/208.2.0/mob/';
-function mobImg(id, cls = 'rank-mob') {
-  if (!id) return '';
-  return `<img class="${cls}" src="${MSIO}${encodeURIComponent(id)}/render/stand" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
 }
 
 function rankCredit(ctx) {
@@ -386,7 +389,7 @@ export function rankingPage(ctx) {
       <h1>דירוג השחקנים</h1>
       <p>כל השחקנים של MapleStory Classic World לפי רמה, Fame ומקצוע. אפשר לסנן, לחפש לפי שם ולשתף קישור לכל תצוגה.</p>
     </div>
-    <div class="rank-mobs" aria-hidden="true">${mobImg(mobs.overall)}</div>
+    <div class="rank-mobs" aria-hidden="true">${mobImg(mobs.overall, 'rank-mob')}</div>
   </header>
   <dl class="rank-stats" id="rankStats">
     <div><dt>שחקנים מדורגים</dt><dd data-stat="total">…</dd></div>
