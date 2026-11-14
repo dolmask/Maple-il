@@ -740,156 +740,164 @@ table { table-layout: auto; word-break: normal; overflow-wrap: anywhere; }
 .item-ic.mob-ic { width: auto; height: 2.3em; max-width: 4em; vertical-align: -.55em; }
 
 /* ==========================================================================
-   v2 · "יום שמשי באי ויקטוריה": קליל, ציורי, עם מעט מלל
+   v3 · "אטלס עולם": ממשק לבן ונקי, האיורים המקוריים של המשחק עושים את העבודה
    ========================================================================== */
-:root { --scene-1: #66BCFF; --scene-2: #BFE6FF; --scene-3: #F2FAFF; --grass-1: #6BCB4B; --grass-2: #3F9B33; --dirt: #A8743C; --sun: #FFD84D; --pop: #FF7A3D; }
-:root[data-theme="dark"] { --scene-1: #0E1F4D; --scene-2: #1B3777; --scene-3: #2C4F93; --grass-1: #3E7D34; --grass-2: #2A5A24; --dirt: #4A3320; --sun: #CFE3FF; }
-:root[data-theme="light"] { --page: #F3FAFF; --paper: #FFFFFF; --paper-2: #F2F8FF; --paper-3: #E4F1FF; --line: #CFE3F5; --line-2: #AFCDE8; }
-body { background: var(--page); }
-
-/* --- הסצנה העליונה --- */
-.scene { position: relative; overflow: hidden; isolation: isolate; padding: 34px 0 150px; background: linear-gradient(180deg, var(--scene-1) 0%, var(--scene-2) 62%, var(--scene-3) 100%); }
-.scene-in { position: relative; z-index: 2; text-align: center; display: flex; flex-direction: column; align-items: center; }
-.scene h1 { margin: 0 0 10px; max-width: 16ch; font-size: clamp(2.3rem, 7.4vw, 4.2rem); line-height: 1.08; color: #fff; text-shadow: 0 3px 0 #1F5FA8, 0 6px 14px rgba(20,60,120,.35); -webkit-text-stroke: 1px #1F5FA8; paint-order: stroke fill; }
-.scene p { margin: 0 0 22px; font-size: clamp(1.05rem, 3.4vw, 1.3rem); font-weight: 700; color: #0F3D75; max-width: 30ch; }
-:root[data-theme="dark"] .scene p { color: #D5E4FF; }
-.scene .hero-search { max-width: 520px; min-height: 62px; border-radius: 999px; border: 3px solid #1F5FA8; background: #fff; color: #4A6A8E; font-weight: 700; box-shadow: 0 5px 0 #1F5FA8, 0 12px 24px rgba(20,60,120,.25); transition: transform .15s, box-shadow .15s; }
-.scene .hero-search:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #1F5FA8, 0 16px 28px rgba(20,60,120,.28); }
-.scene .hero-search:active { transform: translateY(3px); box-shadow: 0 2px 0 #1F5FA8; }
-.scene .hero-search svg { color: var(--pop); font-size: 1.5rem; }
-.scene .shot { margin-top: 24px; }
-.cloud { position: absolute; z-index: 1; left: 0; width: 96px; height: 30px; border-radius: 40px; background: #fff; opacity: .92; }
-.cloud::before, .cloud::after { content: ""; position: absolute; background: #fff; border-radius: 50%; }
-.cloud::before { width: 44px; height: 44px; left: 14px; top: -22px; } .cloud::after { width: 32px; height: 32px; left: 48px; top: -14px; }
-.c1 { top: 38px; transform: scale(1.1); } .c2 { top: 118px; transform: scale(.75); opacity: .75; } .c3 { top: 70px; transform: scale(1.5); opacity: .6; }
-:root[data-theme="dark"] .cloud { opacity: .14; }
-.ground { position: absolute; z-index: 1; inset-inline: 0; bottom: 0; height: 96px; background: linear-gradient(180deg, var(--grass-1) 0 18px, var(--grass-2) 18px 26px, var(--dirt) 26px); border-top: 4px solid #2C7A24; }
-.ground::after { content: ""; position: absolute; inset-inline: 0; top: 26px; bottom: 0; background: repeating-linear-gradient(90deg, rgba(0,0,0,.07) 0 18px, transparent 18px 44px); }
-.walker { position: absolute; left: 0; bottom: 70px; z-index: calc(1 + var(--z)); will-change: transform; transform: translateX(105vw); }
-.walker .mob { display: block; max-height: 96px; width: auto; filter: drop-shadow(0 4px 3px rgba(0,0,0,.25)); animation: none; }
-@keyframes walk { from { transform: translateX(105vw); } to { transform: translateX(-30vw); } }
-@keyframes drift { from { transform: translateX(-160px) var(--sc, scale(1)); } to { transform: translateX(110vw) var(--sc, scale(1)); } }
-@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
-@keyframes pop-in { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: no-preference) {
-  .walker { animation: walk var(--d) linear var(--delay) infinite; }
-  .c1 { --sc: scale(1.1); animation: drift 70s linear infinite; } .c2 { --sc: scale(.75); animation: drift 95s linear -30s infinite; } .c3 { --sc: scale(1.5); animation: drift 130s linear -70s infinite; }
+:root, :root[data-theme="light"] {
+  --page: #F6F8FB; --paper: #FFFFFF; --paper-2: #F1F4F8; --paper-3: #E9EEF4;
+  --ink: #18212F; --ink-2: #394556; --muted: #657184; --line: #E2E7EE; --line-2: #CCD5E0; --frame: #CCD5E0;
+  --accent: #C85A0A; --accent-2: #E8731A; --link: #0F5FB4; --gold: #C85A0A; --gold-2: #A94A06; --gold-ink: #A94A06;
+  --tint: #E8F1FA; --radius: 10px; --shadow: 0 1px 2px rgba(20,30,48,.05);
+  --font-display: "Assistant", system-ui, sans-serif; color-scheme: light;
 }
-.a11y-motion .walker, .a11y-motion .cloud { animation: none !important; }
-.a11y-motion .walker { transform: translateX(calc(8vw * (var(--z) + 1))); }
-
-/* --- כותרות מקטע --- */
-.block { padding-block: 44px 0; }
-.sec-title { margin: 0 0 20px; text-align: center; font-size: clamp(1.7rem, 5vw, 2.3rem); color: var(--ink); }
-.sec-title::after { content: ""; display: block; width: 64px; height: 6px; margin: 10px auto 0; border-radius: 6px; background: var(--pop); }
-
-/* --- בחירת מקצוע --- */
-.pick { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-.pick-card { --c: var(--pop); display: flex; flex-direction: column; border-radius: 26px; background: color-mix(in srgb, var(--c) 13%, #fff); border: 3px solid color-mix(in srgb, var(--c) 70%, #fff); box-shadow: 0 6px 0 color-mix(in srgb, var(--c) 70%, #fff), 0 14px 22px rgba(20,50,90,.1); transition: transform .18s, box-shadow .18s; }
-.pick-card:hover { transform: translateY(-4px); box-shadow: 0 10px 0 color-mix(in srgb, var(--c) 70%, #fff), 0 20px 28px rgba(20,50,90,.14); }
-:root[data-theme="dark"] .pick-card { background: color-mix(in srgb, var(--c) 18%, var(--paper)); }
-.pick-main { display: flex; flex-direction: column; align-items: center; padding: 16px 10px 6px; text-decoration: none; color: var(--ink); }
-.pick-art { display: grid; place-items: end center; width: 100%; height: 132px; }
-.pick-art img { max-height: 128px; width: auto; max-width: 100%; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 5px 4px rgba(0,0,0,.2)); transition: transform .2s; }
-.pick-card:hover .pick-art img { transform: scale(1.08) translateY(-4px); }
-.pick-art .pick-ic { display: none; font-size: 64px; color: var(--c); }
-.pick-art:not(.has-img) .pick-ic { display: block; }
-.pick-name { font-family: var(--font-display); font-size: 1.7rem; line-height: 1.1; margin-top: 8px; }
-.pick-en { font-weight: 800; font-size: .85rem; color: var(--c); }
-.pick-branches { list-style: none; margin: 8px 0 0; padding: 10px 8px 12px; display: flex; justify-content: center; gap: 6px; border-top: 3px dashed color-mix(in srgb, var(--c) 40%, #fff); }
-.pick-branches li { flex: 1 1 0; max-width: 92px; }
-.pick-branches a { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 2px; border-radius: 14px; text-decoration: none; color: var(--ink); font-weight: 800; font-size: .82rem; line-height: 1.15; text-align: center; transition: background .15s, transform .15s; }
-.pick-branches a:hover { background: color-mix(in srgb, var(--c) 22%, #fff); transform: translateY(-2px); }
-.pb-art { display: grid; place-items: end center; width: 100%; height: 58px; }
-.pb-art img { max-height: 58px; width: auto; max-width: 100%; object-fit: contain; image-rendering: pixelated; }
-
-/* --- מסלול ההתקדמות --- */
-.path { list-style: none; margin: 0; padding: 8px 6px 18px; display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x proximity; position: relative; }
-.path li { flex: 0 0 150px; scroll-snap-align: center; }
-.path a { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 10px 14px; height: 100%; border-radius: 24px; text-decoration: none; text-align: center; background: #fff; color: var(--ink); border: 3px solid var(--line-2); box-shadow: 0 5px 0 var(--line-2); transition: transform .18s; }
-:root[data-theme="dark"] .path a { background: var(--paper); }
-.path a:hover { transform: translateY(-4px) rotate(-1deg); }
-.step-art { display: grid; place-items: end center; height: 84px; width: 100%; }
-.step-art .mob { max-height: 80px; width: auto; max-width: 100%; animation: none; filter: drop-shadow(0 4px 3px rgba(0,0,0,.2)); }
-.step-lv { font-family: var(--font-display); background: var(--pop); color: #fff; padding: 1px 14px; border-radius: 999px; font-size: 1.05rem; box-shadow: 0 2px 0 rgba(0,0,0,.18); }
-.step-label { font-weight: 800; font-size: .92rem; line-height: 1.3; }
-
-/* --- אריחי קטגוריה --- */
-.tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-.tile { --c: #4DA3FF; }
-.tile a { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; min-height: 190px; padding: 14px 10px 16px; border-radius: 26px; text-decoration: none; color: #fff; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 82%, #fff), var(--c)); border: 3px solid color-mix(in srgb, var(--c) 70%, #000); box-shadow: 0 6px 0 color-mix(in srgb, var(--c) 62%, #000), 0 14px 22px rgba(20,50,90,.14); transition: transform .18s, box-shadow .18s; }
-.tile a:hover { transform: translateY(-5px) rotate(-.6deg); box-shadow: 0 11px 0 color-mix(in srgb, var(--c) 62%, #000), 0 20px 28px rgba(20,50,90,.18); }
-.tile a:active { transform: translateY(3px); box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 62%, #000); }
-.tile-art { position: relative; display: grid; place-items: end center; height: 104px; width: 100%; }
-.tile-art .mob { max-height: 100px; width: auto; max-width: 100%; animation: none; filter: drop-shadow(0 5px 3px rgba(0,0,0,.28)); }
-.tile-ic { position: absolute; inset-inline-start: 2px; top: 0; font-size: 26px; opacity: .85; }
-.tile-name { font-family: var(--font-display); font-size: 1.45rem; line-height: 1.1; text-align: center; text-shadow: 0 2px 0 rgba(0,0,0,.22); }
-.tile-count { position: absolute; top: 10px; inset-inline-end: 10px; min-width: 30px; height: 30px; display: grid; place-items: center; padding: 0 8px; border-radius: 999px; background: #fff; color: color-mix(in srgb, var(--c) 70%, #000); font-weight: 900; font-size: .95rem; box-shadow: 0 2px 0 rgba(0,0,0,.2); }
-.t0 { --c: #4DA3FF; } .t1 { --c: #FF8A3D; } .t2 { --c: #3FBF6B; } .t3 { --c: #B07CF0; } .t4 { --c: #F2A81C; } .t5 { --c: #F0617A; } .t6 { --c: #2FBBC4; } .t7 { --c: #7B8CF0; }
-.all-link { text-align: center; margin: 26px 0 0; }
-.btn-pill { display: inline-block; padding: 12px 30px; border-radius: 999px; font-weight: 900; font-size: 1.1rem; text-decoration: none; color: #fff; background: var(--pop); border: 3px solid #D95A1F; box-shadow: 0 5px 0 #D95A1F; transition: transform .15s, box-shadow .15s; }
-.btn-pill:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #D95A1F; text-decoration: none; }
-@media (prefers-reduced-motion: no-preference) {
-  .pick-card, .tile, .path li { animation: pop-in .5s both; }
-  .pick-card:nth-child(2), .tile:nth-child(2) { animation-delay: .06s; } .pick-card:nth-child(3), .tile:nth-child(3) { animation-delay: .12s; } .pick-card:nth-child(4), .tile:nth-child(4) { animation-delay: .18s; }
-  .pick-art img { animation: bob 2.6s ease-in-out infinite; } .pick-card:nth-child(2n) .pick-art img { animation-delay: -1.2s; }
+:root[data-theme="dark"] {
+  --page: #0F141C; --paper: #171E29; --paper-2: #1D2633; --paper-3: #232E3F; --ink: #E8EDF4; --ink-2: #C4CDDA; --muted: #92A0B4;
+  --line: #263142; --line-2: #34445C; --accent: #F08A3C; --accent-2: #F08A3C; --link: #8DC3FF; --tint: #18222F; --shadow: none;
 }
-@media (max-width: 900px) { .pick, .tiles { grid-template-columns: repeat(2, 1fr); gap: 12px; } .tile a { min-height: 164px; } }
-@media (max-width: 420px) { .pick-name { font-size: 1.45rem; } .pick-art { height: 112px; } .pick-art img { max-height: 108px; } .tile-name { font-size: 1.2rem; } .scene { padding-bottom: 130px; } }
+body { background: var(--page); font-size: 1.0625rem; line-height: 1.7; }
+h1, h2, h3, h4 { font-family: var(--font-body); font-weight: 800; letter-spacing: 0; }
+.wrap { max-width: 1080px; }
 
-/* --- רשימות מדריכים: תמונה גדולה, מעט מלל --- */
-.g-icon { width: 64px; height: 64px; border-radius: 18px; }
+/* --- כותרת עליונה: פס לבן פשוט --- */
+.top { background: var(--paper); border-bottom: 1px solid var(--line); padding: 0; overflow: visible; }
+.top .moon, .top .hills { display: none; }
+.top-bar { display: flex; align-items: center; gap: 12px; padding-block: 10px; }
+.brand { text-decoration: none; color: var(--ink); display: flex; align-items: center; gap: 10px; }
+.brand-leaf { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9px; background: var(--accent-2); color: #fff; font-size: 20px; box-shadow: none; }
+.brand-text strong { font-family: "Suez One", var(--font-body); font-weight: 400; font-size: 1.3rem; color: var(--ink); text-shadow: none; }
+.brand-text small { display: none; }
+.searchbar { margin-inline-start: auto; display: flex; align-items: center; gap: 8px; min-width: 240px; height: 38px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--paper-2); color: var(--muted); font: inherit; font-size: .92rem; cursor: text; }
+.searchbar svg { color: var(--muted); } .searchbar kbd { margin-inline-start: auto; }
+.bar-tools { display: flex; gap: 6px; }
+.icon-btn { width: 38px; height: 38px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--paper); color: var(--ink-2); box-shadow: none; display: grid; place-items: center; font-size: 18px; cursor: pointer; }
+.icon-btn:hover { background: var(--paper-2); }
+.catnav { background: var(--paper); border: 0; border-top: 1px solid var(--line); }
+.catnav-in { display: flex; gap: 2px; overflow-x: auto; padding-block: 2px; }
+.catnav a { padding: 9px 12px; font-size: .95rem; font-weight: 700; color: var(--ink-2); text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent; border-radius: 0; background: none; box-shadow: none; text-shadow: none; }
+.catnav a:hover { color: var(--accent); }
+.catnav a[aria-current="page"] { color: var(--accent); border-bottom-color: var(--accent-2); background: none; }
+@media (max-width: 720px) { .searchbar span, .searchbar kbd { display: none; } .searchbar { min-width: 38px; width: 38px; padding: 0; justify-content: center; } .menu-btn { display: none; } .brand-text strong { font-size: 1.15rem; } }
+
+/* --- כפתורים קטנים ושטוחים --- */
+.btn, .link-sm, .hero-search { font-family: inherit; }
+.link-sm { font-size: .92rem; font-weight: 700; color: var(--link); text-decoration: none; padding: 6px 12px; border: 1px solid var(--line-2); border-radius: 8px; background: var(--paper); }
+.link-sm:hover { background: var(--paper-2); }
+
+/* --- פתיחה: מפה אמיתית מהמשחק --- */
+.atlas-hero { position: relative; overflow: hidden; isolation: isolate; background: linear-gradient(180deg, #BFDDF5 0%, #E8F3FB 100%); border-bottom: 1px solid var(--line); }
+:root[data-theme="dark"] .atlas-hero { background: linear-gradient(180deg, #14233A, #1A2C48); }
+.hero-town { position: absolute; z-index: 0; inset-inline: 0; bottom: 0; width: 100%; height: 62%; object-fit: cover; object-position: 60% 100%; image-rendering: auto; }
+.atlas-in { position: relative; z-index: 1; padding-block: 38px 120px; text-align: start; }
+.atlas-hero h1 { margin: 0 0 6px; font-size: clamp(1.9rem, 5.6vw, 2.9rem); line-height: 1.15; color: #10243D; text-shadow: 0 1px 0 rgba(255,255,255,.7); }
+:root[data-theme="dark"] .atlas-hero h1 { color: #fff; text-shadow: none; }
+.atlas-hero p { margin: 0 0 18px; max-width: 34ch; font-size: 1.08rem; font-weight: 600; color: #274564; }
+:root[data-theme="dark"] .atlas-hero p { color: #C4D6F0; }
+.hero-search { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--line-2); background: #fff; color: #4A5A70; font-size: .95rem; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.08); cursor: text; width: min(100%, 360px); }
+.hero-search svg { color: var(--accent-2); font-size: 1.1rem; }
+.hero-search:hover { border-color: var(--accent-2); }
+.atlas-hero .shot { margin-top: 18px; }
+
+/* --- מקטעים --- */
+.block { padding-block: 34px 0; }
+.sec { margin: 0 0 14px; font-size: 1.35rem; color: var(--ink); }
+.sec-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; } .sec-row .sec { margin: 0; }
+
+/* --- כרטיסי מקצוע: גלויה מהעיר --- */
+.cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.card { --c: var(--accent-2); background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; transition: border-color .15s, box-shadow .15s; }
+.card:hover { border-color: var(--line-2); box-shadow: 0 6px 18px rgba(20,30,48,.1); }
+.cls-warrior { --c: #D2502E; } .cls-magician { --c: #2F6FD6; } .cls-bowman { --c: #2E8B3E; } .cls-thief { --c: #7A4FC8; }
+.card-main { display: block; text-decoration: none; color: var(--ink); }
+.card-photo { position: relative; display: block; height: 128px; overflow: hidden; background: var(--tint); border-bottom: 3px solid var(--c); }
+.card-photo .town { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+.card:hover .town { transform: scale(1.04); }
+.card-char { position: absolute; bottom: 6px; inset-inline-start: 10px; height: 96px; width: auto; image-rendering: pixelated; filter: drop-shadow(0 2px 2px rgba(0,0,0,.35)); }
+.card-text { display: flex; align-items: baseline; gap: 8px; padding: 10px 14px 6px; }
+.card-text strong { font-size: 1.2rem; font-weight: 800; }
+.card-text span { font-size: .85rem; font-weight: 700; color: var(--c); }
+.chips { list-style: none; margin: 0; padding: 0 12px 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+.chips a { display: block; padding: 4px 10px; border-radius: 6px; font-size: .85rem; font-weight: 700; color: var(--ink-2); text-decoration: none; background: var(--paper-2); border: 1px solid var(--line); }
+.chips a:hover { border-color: var(--c); color: var(--c); }
+
+/* --- מסלול למתחילים --- */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; counter-reset: s; }
+.steps a { display: flex; align-items: center; gap: 12px; padding: 12px 14px; height: 100%; text-decoration: none; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); }
+.steps a:hover { border-color: var(--accent-2); }
+.step-lv { flex: none; min-width: 58px; text-align: center; padding: 3px 8px; border-radius: 6px; font-size: .82rem; font-weight: 800; background: var(--tint); color: var(--link); }
+.step-label { font-weight: 700; font-size: .95rem; line-height: 1.35; }
+.step-art { display: none; }
+
+/* --- נושאים --- */
+.topics { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.topics a { display: flex; align-items: center; gap: 12px; padding: 8px 14px 8px 12px; text-decoration: none; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); }
+.topics a:hover { border-color: var(--accent-2); }
+.topic-art { display: grid; place-items: center; flex: none; width: 52px; height: 52px; border-radius: 8px; background: var(--tint); overflow: hidden; }
+.topic-art .mob { max-width: 44px; max-height: 44px; width: auto; height: auto; animation: none; }
+.topic-name { font-weight: 800; flex: 1; }
+.topic-count { font-size: .82rem; font-weight: 800; color: var(--muted); background: var(--paper-2); border-radius: 6px; padding: 1px 8px; }
+@media (max-width: 900px) { .cards { grid-template-columns: repeat(2, 1fr); } .steps, .topics { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .cards { gap: 10px; } .card-photo { height: 100px; } .card-char { height: 78px; } .card-text strong { font-size: 1.05rem; } .steps, .topics { grid-template-columns: 1fr; } .atlas-in { padding-block: 28px 100px; } }
+
+/* --- באנר עיר בעמודי מדריך וקטגוריה --- */
+.banner { position: relative; height: 150px; margin: 18px 0 6px; overflow: hidden; border-radius: var(--radius); border: 1px solid var(--line); background: linear-gradient(180deg, #BFDDF5, #E8F3FB); }
+.banner .town { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.banner-char { position: absolute; bottom: 8px; inset-inline-start: 18px; height: 118px; width: auto; image-rendering: pixelated; filter: drop-shadow(0 2px 2px rgba(0,0,0,.35)); }
+.banner > .mob { position: absolute; bottom: 10px; inset-inline-start: 18px; max-height: 96px; width: auto; animation: none; filter: drop-shadow(0 2px 2px rgba(0,0,0,.3)); }
+.banner-sm { height: 120px; margin-top: 8px; }
+.list-head p { margin: 0 0 14px; color: var(--ink-2); }
+
+/* --- רשימות מדריכים --- */
+.g-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; background: none; border: 0; box-shadow: none; overflow: visible; }
+.g-list li + li { border: 0; }
+.g-row { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: center; padding: 8px 14px 8px 12px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: none; transform: none; text-decoration: none; color: var(--ink); }
+.g-row:hover { background: var(--paper); border-color: var(--accent-2); transform: none; box-shadow: none; }
+.g-row:hover .g-title { color: var(--accent); text-decoration: none; }
+.g-icon { width: 52px; height: 52px; border-radius: 8px; background: var(--tint); border: 0; color: var(--accent-2); }
 .g-icon img { object-fit: contain; object-position: center bottom; padding: 3px; }
+.g-icon svg { font-size: 26px; }
+.g-title { font-family: var(--font-body); font-size: 1.05rem; font-weight: 800; line-height: 1.3; }
 .g-sum { display: none; }
-.list-head p { margin-top: 4px; }
-.pick-card.cls-warrior { --c: #FF6B4A; } .pick-card.cls-magician { --c: #4F8EFF; } .pick-card.cls-bowman { --c: #3FB950; } .pick-card.cls-thief { --c: #9B6BEA; }
-.scene h1 { text-wrap: balance; max-width: 18ch; } .scene p { text-wrap: balance; }
-.tiles { grid-template-columns: repeat(3, 1fr); }
-.tile-art .mob, .step-art .mob { scale: 1.35; transform-origin: 50% 100%; }
-.tile-art, .step-art { overflow: visible; }
-.tile a { min-height: 200px; }
-@media (max-width: 900px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 640px) { .scene { padding-bottom: 190px; } .walker { bottom: 62px; } .walker .mob { max-height: 78px; } }
+.g-meta .lv, .g-row .g-meta .lv { background: var(--tint); color: var(--link); border-radius: 6px; padding: 2px 9px; font-size: .82rem; font-weight: 800; }
+@media (max-width: 520px) { .g-row { grid-template-columns: 48px 1fr; } .g-icon { width: 48px; height: 48px; } .g-meta { grid-column: 2; } }
 
-/* --- עמודי מדריך: אותה שפה עליזה --- */
-.window { border: 3px solid var(--line-2); border-radius: 24px; box-shadow: 0 5px 0 var(--line-2); overflow: hidden; }
+/* --- עמוד מדריך: נקי --- */
+.window { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: none; overflow: hidden; }
 .window::before, .window-bar::before, .window-bar::after { display: none; }
-.window-bar { border-radius: 0; border-bottom: 0; background: linear-gradient(180deg, #5BB0FF, #3E92E6); text-shadow: 0 2px 0 rgba(0,0,0,.18); }
-.quest-bar .crumbs, .quest-bar .crumbs a { color: #fff; }
-.guide-head { border-bottom: 0; padding-bottom: 8px; }
-.guide-head h1 { font-size: clamp(2rem, 6.4vw, 2.9rem); line-height: 1.15; text-wrap: balance; }
-.prose h2 { display: inline-flex; width: auto; margin: 2.2em 0 .7em; padding: 4px 20px 6px; border-radius: 999px; background: var(--pop); color: #fff; font-size: 1.45rem; box-shadow: 0 4px 0 #D95A1F; text-shadow: 0 2px 0 rgba(0,0,0,.15); }
-.prose h2::before { display: none; }
-.prose h2 .anchor { color: #fff; }
-.prose h3 { font-size: 1.25rem; color: var(--pop); }
-.box { border-radius: 22px; border: 3px solid color-mix(in srgb, var(--bc) 55%, #fff); border-inline-start-width: 3px; background: color-mix(in srgb, var(--bc) 10%, #fff); box-shadow: 0 4px 0 color-mix(in srgb, var(--bc) 55%, #fff); padding: 16px 20px 6px; }
-:root[data-theme="dark"] .box { background: color-mix(in srgb, var(--bc) 14%, var(--paper)); }
-.box-title { font-family: var(--font-display); font-weight: 400; font-size: 1.15rem; }
-.box-stats { background: linear-gradient(180deg, #FFF8E1, #FFEFC2); color: #3A2A08; border-color: #F2C14E; box-shadow: 0 4px 0 #F2C14E; padding: 16px 20px; }
-.box-stats .box-title { color: #B8620B; border-bottom: 3px dashed #F2C14E; }
-.stat-row { border-bottom: 2px dotted rgba(184,98,11,.28); font-size: 1.02rem; }
-.stat-k { color: #7A5A1E; } .stat-v { color: #3A2A08; } .stat-wide { color: #7A5A1E; }
-.box-stats a { color: #B8620B; }
-:root[data-theme="dark"] .box-stats { background: linear-gradient(180deg, #2A2210, #1E190B); color: #FFE9B0; }
-:root[data-theme="dark"] .stat-k, :root[data-theme="dark"] .stat-wide { color: #D9C48A; } :root[data-theme="dark"] .stat-v { color: #FFE9B0; }
-.table-wrap { border: 3px solid var(--line-2); border-radius: 22px; box-shadow: 0 4px 0 var(--line-2); background: #fff; }
-:root[data-theme="dark"] .table-wrap { background: var(--paper); }
-.item-ic { width: 1.7em; height: 1.7em; vertical-align: -.5em; }
-.cover-mobs { border: 3px solid var(--line-2); border-radius: 24px; box-shadow: 0 4px 0 var(--line-2); min-height: 150px; background: linear-gradient(180deg, var(--scene-1), var(--scene-2) 70%, var(--scene-3)); }
-.cover-mobs .mob { max-height: 112px; } .cover-mobs .mob-char { max-height: 136px; }
-.cover-ground { height: 16px; background: linear-gradient(180deg, var(--grass-1) 0 6px, var(--dirt) 6px); border-top: 3px solid #2C7A24; }
+.window-bar { background: var(--paper-2); color: var(--ink); border-bottom: 1px solid var(--line); border-radius: 0; text-shadow: none; padding: 8px 14px; font-family: var(--font-body); font-weight: 800; }
+.window-bar h2 { color: var(--ink); font-size: 1rem; } .window-bar small { color: var(--muted); }
+.quest-bar .crumbs, .quest-bar .crumbs a { color: var(--muted); }
+.guide-head { border-bottom: 0; padding-block: 8px 0; }
+.guide-head h1 { font-size: clamp(1.7rem, 5vw, 2.3rem); line-height: 1.2; text-wrap: balance; }
+.prose h2 { display: block; width: auto; margin: 2em 0 .6em; padding: 0 0 8px; font-size: 1.4rem; color: var(--ink); background: none; border-bottom: 2px solid var(--line); border-radius: 0; box-shadow: none; text-shadow: none; }
+.prose h2::before { display: none; } .prose h2 .anchor { color: var(--muted); }
+.prose h3 { font-size: 1.15rem; color: var(--ink); }
+.box { margin: 1.4em 0; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--bc) 35%, var(--line)); border-inline-start: 4px solid var(--bc); background: color-mix(in srgb, var(--bc) 6%, var(--paper)); box-shadow: none; padding: 12px 16px 4px; }
+.box-title { font-family: var(--font-body); font-size: 1rem; font-weight: 800; color: color-mix(in srgb, var(--bc) 75%, var(--ink)); }
+.box-stats { --bc: var(--accent-2); background: var(--paper-2); color: var(--ink); border: 1px solid var(--line); border-inline-start: 4px solid var(--accent-2); box-shadow: none; padding: 12px 16px; }
+.box-stats .box-title { color: var(--ink); border-bottom: 1px solid var(--line); text-align: start; font-family: var(--font-body); font-size: 1.05rem; }
+.stat-row { border-bottom: 1px solid var(--line); } .stat-k, .stat-wide { color: var(--muted); } .stat-v { color: var(--ink); } .box-stats a { color: var(--link); }
+.table-wrap { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: none; }
+.item-ic { width: 1.5em; height: 1.5em; vertical-align: -.4em; }
+.item-ic.mob-ic { width: auto; height: 2em; vertical-align: -.5em; }
 
-/* --- רשימות (קטגוריה / כל המדריכים): כרטיסים גדולים --- */
-.g-list { background: transparent; border: 0; box-shadow: none; overflow: visible; display: grid; gap: 14px; }
-.g-list li + li { border-top: 0; }
-.g-row { grid-template-columns: 78px 1fr auto; gap: 14px; padding: 12px 16px; border-radius: 24px; background: #fff; border: 3px solid var(--line-2); box-shadow: 0 5px 0 var(--line-2); transition: transform .15s, box-shadow .15s; }
-:root[data-theme="dark"] .g-row { background: var(--paper); }
-.g-row:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 8px 0 var(--line-2); }
-.g-row:hover .g-title { color: var(--pop); text-decoration: none; }
-.g-icon { width: 78px; height: 78px; border-radius: 20px; background: linear-gradient(180deg, var(--scene-2), var(--scene-3)); border: 0; }
-.g-icon svg { font-size: 34px; }
-.g-title { font-family: var(--font-display); font-size: 1.25rem; line-height: 1.25; }
-.g-meta .lv { background: var(--pop); color: #fff; border-radius: 999px; padding: 2px 12px; font-weight: 900; }
-@media (max-width: 520px) { .g-row { grid-template-columns: 64px 1fr; } .g-icon { width: 64px; height: 64px; } .g-meta { grid-column: 2; } }
-.g-row .g-meta .lv, .path .lv { background: var(--pop); color: #fff; }
-.list-mob { inset-inline-end: 4px; top: 8px; max-height: 96px; scale: 1.2; transform-origin: 100% 0; }
+/* --- תחתית --- */
+.foot { background: var(--paper); color: var(--ink-2); border-top: 1px solid var(--line); margin-top: 48px; }
+.foot .ground-top { display: none; }
+.foot h2 { color: var(--ink); font-size: .95rem; } .foot a { color: var(--ink-2); } .foot a:hover { color: var(--accent); }
+.foot .brand, .foot .brand-text strong { color: var(--ink); } .foot p, .legal p { color: var(--muted); }
+.legal { border-top-color: var(--line); }
+.progress span { background: var(--accent-2); }
+@media (prefers-reduced-motion: reduce) { .card .town { transition: none; } }
+
+/* תיקונים */
+.top, .top-bar { background: var(--paper) !important; }
+.top::before, .top::after { display: none !important; }
+.hero-town { height: 124px; object-position: 62% 0%; }
+.atlas-in { padding-block: 34px 150px; }
+.foot nav h2 { color: var(--ink) !important; font-size: .95rem; }
+.foot nav a, .foot .foot-brand p { color: var(--ink-2) !important; }
+.foot nav a:hover { color: var(--accent) !important; }
+.catnav-in { justify-content: flex-start; }
+@media (max-width: 520px) { .atlas-in { padding-block: 26px 120px; } .hero-town { height: 96px; } }
+.hero-town { height: 150px; object-position: 62% 26%; }
+.atlas-in { padding-block: 34px 170px; }
+@media (max-width: 520px) { .atlas-in { padding-block: 26px 120px; } .hero-town { height: 96px; } }

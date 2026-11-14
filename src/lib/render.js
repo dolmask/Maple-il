@@ -30,8 +30,19 @@ export function mobImg(id, cls = 'mob') {
   if (!id) return '';
   return `<img class="${cls}" src="${MOB_BASE}${encodeURIComponent(id)}/render/stand" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
 }
-function charBanner(g) { return /\/character\//.test(g.thumb || '') ? `<img class="mob mob-char" src="${e(g.thumb)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ''; }
+function charBanner(g) { return /\/character\//.test(g.thumb || '') ? `<img class="banner-char" src="${e(g.thumb)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ''; }
 function thumbMob(g) { return ((g.thumb || '').match(/\/mob\/(\d+)\//) || [])[1] || ''; }
+
+const MAP_BASE = 'https://maplestory.io/api/gms/208.2.0/map/';
+export function townImg(town, cls = 'town') {
+  if (!town) return '';
+  const t = typeof town === 'object' ? town : { id: town };
+  return `<img class="${cls}" src="${MAP_BASE}${encodeURIComponent(t.id)}/render?resize=0.25" alt="" loading="lazy" decoding="async"${t.pos ? ` style="object-position:${e(t.pos)}"` : ''} onerror="this.remove()">`;
+}
+function townOf(ctx, g) {
+  const tw = (ctx.config.towns || {})[g.cls];
+  return tw || { id: catOf(ctx, g.category).town };
+}
 
 function catOf(ctx, id) {
   return ctx.config.categories.find(c => c.id === id) || { id, name: id, icon: 'book', desc: '' };
@@ -79,7 +90,7 @@ ${noindex ? '<meta name="robots" content="noindex">' : ''}
 <meta property="og:title" content="${e(title || c.siteName)}">
 <meta property="og:description" content="${e(description || c.description)}">
 ${canonical ? `<meta property="og:url" content="${e(canonical)}">` : ''}
-<meta name="theme-color" content="#0A1430">
+<meta name="theme-color" content="#FFFFFF">
 <link rel="icon" href="${url(ctx, 'assets/favicon.svg')}" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -220,7 +231,7 @@ export function guidePage(ctx, g) {
       ${g.summary ? `<p class="lede" data-fm="summary">${t(g.summary)}</p>` : ''}
       <div class="meta"><span>${readingTime(g.body)} דקות קריאה</span>${g.updated ? `<span>עודכן ${e(formatDate(g.updated))}</span>` : ''}</div>
     </header>
-    ${!g.cover ? `<figure class="cover cover-mobs" aria-hidden="true">${charBanner(g)}${[...new Set([thumbMob(g), cat.mob, ...(ctx.config.heroMobs || []).slice(0, 2)].filter(Boolean))].slice(0, 4).map(id => mobImg(id)).join('')}<span class="cover-ground"></span></figure>` : ''}
+    ${!g.cover ? `<figure class="banner" aria-hidden="true">${townImg(townOf(ctx, g))}${charBanner(g)}${!/\/character\//.test(g.thumb || '') ? mobImg(thumbMob(g) || cat.mob, 'mob') : ''}</figure>` : ''}
     ${g.cover ? `<figure class="cover" data-slot="cover" data-guide="${e(g.slug)}"><img src="${e(img(ctx, g.cover))}" alt="${e(g.coverAlt || '')}"></figure>` : `<figure class="cover cover-missing shot-missing" data-slot="cover" data-guide="${e(g.slug)}" hidden><div class="shot-frame"><span>באנר למדריך</span></div></figure>`}
     ${tocHtml ? `<details class="toc-mobile"><summary>תוכן העניינים <span>${toc.length} סעיפים</span></summary>${tocHtml}</details>` : ''}
     <div class="prose">
@@ -255,55 +266,49 @@ ${withAds}
 export function homePage(ctx) {
   const c = ctx.config;
   const byCat = id => ctx.guides.filter(g => g.category === id);
-  const jobCards = Object.entries(CLASS_INFO).map(([key, info]) => {
+  const cards = Object.entries(CLASS_INFO).map(([key, info]) => {
     const g = ctx.guides.find(x => x.cls === key && x.category === 'jobs');
     const branches = ctx.guides.filter(x => x.cls === key && x.category === 'jobs2');
     const pic = (c.classImages || {})[key];
-    return `<li class="pick-card cls-${key}">
-  <a class="pick-main" href="${g ? guideUrl(ctx, g.slug) : '#'}">
-    <span class="pick-art${pic ? ' has-img' : ''}" aria-hidden="true" data-class-img="${key}">${pic ? `<img src="${e(img(ctx, pic))}" alt="" loading="lazy" decoding="async" onerror="this.parentNode.classList.remove('has-img');this.remove()">` : ''}<span class="pick-ic">${ICONS[info.icon]}</span></span>
-    <span class="pick-name">${info.name}</span>
-    <span class="pick-en" lang="en">${info.en}</span>
+    return `<li class="card cls-${key}">
+  <a class="card-main" href="${g ? guideUrl(ctx, g.slug) : '#'}">
+    <span class="card-photo" aria-hidden="true">${townImg((c.towns || {})[key])}${pic ? `<img class="card-char" data-class-img="${key}" src="${e(img(ctx, pic))}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ''}</span>
+    <span class="card-text"><strong>${info.name}</strong><span>${info.en}</span></span>
   </a>
-  ${branches.length ? `<ul class="pick-branches">${branches.map(b => `<li><a href="${guideUrl(ctx, b.slug)}"><span class="pb-art" aria-hidden="true">${b.thumb ? `<img src="${e(img(ctx, b.thumb))}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ''}</span><span class="pb-name">${e(b.short || b.title)}</span></a></li>`).join('')}</ul>` : ''}
+  ${branches.length ? `<ul class="chips">${branches.map(b => `<li><a href="${guideUrl(ctx, b.slug)}">${e(b.short || b.title)}</a></li>`).join('')}</ul>` : ''}
 </li>`;
   }).join('');
 
-  const journey = (c.journey || []).map((step, i) => {
+  const steps = (c.journey || []).map(step => {
     const g = ctx.guides.find(x => x.slug === step.slug);
     if (!g) return '';
-    const mob = thumbMob(g) || (c.heroMobs || [])[i % Math.max(1, (c.heroMobs || []).length)];
-    return `<li style="--i:${i}"><a href="${guideUrl(ctx, g.slug)}"><span class="step-art" aria-hidden="true">${mobImg(mob, 'mob')}</span><span class="step-lv">${e(step.lv)}</span><span class="step-label">${e(step.label)}</span></a></li>`;
+    return `<li><a href="${guideUrl(ctx, g.slug)}"><span class="step-lv">${e(step.lv)}</span><span class="step-label">${e(step.label)}</span></a></li>`;
   }).join('');
 
-  const tiles = c.categories.filter(cat => cat.id !== 'jobs' && cat.id !== 'jobs2').map((cat, i) => {
+  const topics = c.categories.filter(cat => cat.id !== 'jobs' && cat.id !== 'jobs2').map(cat => {
     const list = byCat(cat.id);
     if (!list.length) return '';
-    return `<li class="tile t${i % 8}"><a href="${categoryUrl(ctx, cat.id)}"><span class="tile-art" aria-hidden="true">${mobImg(cat.mob, 'mob')}<span class="tile-ic">${ICONS[cat.icon] || ''}</span></span><span class="tile-name">${e(cat.short || cat.name)}</span><span class="tile-count">${list.length}</span></a></li>`;
+    return `<li><a href="${categoryUrl(ctx, cat.id)}"><span class="topic-art" aria-hidden="true">${mobImg(cat.mob, 'mob')}</span><span class="topic-name">${e(cat.short || cat.name)}</span><span class="topic-count">${list.length}</span></a></li>`;
   }).join('');
 
-  const walkers = (c.heroMobs || []).map((id, i) => `<span class="walker" style="--d:${26 + (i * 7) % 19}s;--delay:-${(i * 5.3).toFixed(1)}s;--z:${i % 3}">${mobImg(id, 'mob')}</span>`).join('');
-
   const body = `
-<section class="scene">
-  <span class="cloud c1" aria-hidden="true"></span><span class="cloud c2" aria-hidden="true"></span><span class="cloud c3" aria-hidden="true"></span>
-  <div class="wrap scene-in">
+<section class="atlas-hero">
+  ${townImg(c.heroTown, 'hero-town')}
+  <div class="wrap atlas-in">
     <h1 data-cfg="heroTitle">${e(c.heroTitle)}</h1>
     <p data-cfg="heroText">${e(c.heroText)}</p>
-    <button class="hero-search" type="button" data-open-search>${ICONS.search}<span>חפשו מקצוע, מפה או משימה</span></button>
+    <button class="hero-search" type="button" data-open-search>${ICONS.search}<span>חיפוש מקצוע, מפה או משימה</span></button>
     ${renderMarkdown('[[shot home-hero | ' + (c.heroShotCaption || 'MapleStory Classic World') + ']]', { base: ctx.base, images: ctx.images, showMissingShots: false }).html}
   </div>
-  <div class="ground" aria-hidden="true">${walkers}</div>
 </section>
 <section class="wrap block" aria-labelledby="jobsH">
-  <h2 class="sec-title" id="jobsH">מי אתם?</h2>
-  <ul class="pick">${jobCards}</ul>
+  <h2 class="sec" id="jobsH">בחרו מקצוע</h2>
+  <ul class="cards">${cards}</ul>
 </section>
-${journey ? `<section class="wrap block" aria-labelledby="startH"><h2 class="sec-title" id="startH">המסע שלכם</h2><ol class="path">${journey}</ol></section>` : ''}
+${steps ? `<section class="wrap block" aria-labelledby="startH"><h2 class="sec" id="startH">מסלול למתחילים</h2><ol class="steps">${steps}</ol></section>` : ''}
 <section class="wrap block" aria-labelledby="allH">
-  <h2 class="sec-title" id="allH">מה מחפשים?</h2>
-  <ul class="tiles">${tiles}</ul>
-  <p class="all-link"><a class="btn-pill" href="${url(ctx, 'guides/')}">כל המדריכים</a></p>
+  <div class="sec-row"><h2 class="sec" id="allH">נושאים</h2><a class="link-sm" href="${url(ctx, 'guides/')}">כל המדריכים</a></div>
+  <ul class="topics">${topics}</ul>
 </section>
 ${adSlot(ctx, 'inArticle')}`;
   return layout(ctx, { title: '', description: c.description, path: '', body, active: 'home' });
@@ -315,7 +320,7 @@ export function categoryPage(ctx, cat) {
   const body = `
 <div class="wrap narrow page-pad">
   <nav class="crumbs" aria-label="מיקום באתר"><a href="${url(ctx)}">ראשי</a></nav>
-  <header class="list-head${cat.mob ? ' has-mob' : ''}">${mobImg(cat.mob, 'list-mob')}<h1>${e(cat.name)}</h1>${cat.desc ? `<p>${e(cat.desc)}</p>` : ''}</header>
+  <header class="list-head"><div class="banner banner-sm" aria-hidden="true">${townImg(cat.town)}${mobImg(cat.mob, 'mob')}</div><h1>${e(cat.name)}</h1>${cat.desc ? `<p>${e(cat.desc)}</p>` : ''}</header>
   ${list.length ? rowList(ctx, list) : '<p class="empty">עוד אין כאן מדריכים. הראשון בדרך.</p>'}
 </div>`;
   return layout(ctx, { title: cat.name, description: cat.desc, path: `category/${cat.id}/`, body, active: cat.id, edit: 'settings/categories' });
