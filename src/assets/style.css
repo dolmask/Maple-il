@@ -543,6 +543,8 @@ mark { background: color-mix(in srgb, var(--gold) 40%, transparent); color: inhe
 .c-lv, .c-fame { white-space: nowrap; font-variant-numeric: tabular-nums; }
 .rank-window[data-tab="fame"] .c-fame { font-weight: 800; color: var(--gold-ink); }
 .col-seen { color: var(--muted); font-size: .9rem; white-space: nowrap; }
+.rank-table tr.live-row td { background: color-mix(in srgb, var(--link) 9%, transparent); }
+.rank-table tr.live-row .c-pos { font-size: .82rem; }
 .rank-msg { text-align: center !important; padding: 28px 14px !important; color: var(--muted); font-weight: 600 !important; }
 .linkish { font: inherit; color: var(--link); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
 

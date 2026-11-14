@@ -102,9 +102,14 @@
       }).filter(Boolean).sort(function (a, b) { return b.s - a.s; }).slice(0, 12);
     }
     sel = -1;
+    // חיפוש שחקן בדירוג: מילה אחת בלי רווחים (שמות דמויות) — קישור לעמוד השחקן
+    var qq = String(q || '').trim();
+    var hasRank = index.some(function (d) { return d.u === 'ranking/'; });
+    var player = hasRank && qq.length >= 2 && !/\s/.test(qq)
+      ? '<li><a href="' + base + 'ranking/player/?name=' + encodeURIComponent(qq) + '"><strong>חיפוש שחקן: <bdi>' + esc(qq) + '</bdi></strong><small>בדירוג השחקנים</small></a></li>' : '';
     results.innerHTML = list.length ? list.map(function (r) {
       return '<li><a href="' + base + r.d.u + '"><strong>' + hl(r.d.t, terms) + '\u200F</strong><small>' + esc(r.d.c) + (r.d.l ? ' · Lv ' + esc(r.d.l) : '') + '</small></a></li>';
-    }).join('') : '<li class="none">לא נמצאו מדריכים. נסו מילה אחרת, למשל שם של מפה או מקצוע (גם באנגלית).</li>';
+    }).join('') + player : (player || '<li class="none">לא נמצאו מדריכים. נסו מילה אחרת, למשל שם של מפה או מקצוע (גם באנגלית).</li>');
   }
   if (layer) {
     document.querySelectorAll('#searchOpen, [data-open-search]').forEach(function (b) { b.addEventListener('click', openSearch); });

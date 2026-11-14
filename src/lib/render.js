@@ -409,7 +409,7 @@ export function rankingPage(ctx) {
         <label class="chk"><input type="checkbox" name="verified" value="1"><span>רק מאומתים</span></label>
       </div>
       <button type="reset" class="btn btn-ghost rf-reset">איפוס</button>
-      <p class="rf-note" id="trueNote">"דירוג אמיתי" מסתיר דמויות שסומנו ב-ClassicRank כבוטים.</p>
+      <p class="rf-note" id="trueNote">חיפוש לפי שם מלא מוצא כל שחקן ב-ClassicRank, גם מחוץ לרשימה. "דירוג אמיתי" מסתיר דמויות שסומנו שם כבוטים.</p>
     </form>
     <p class="rank-live" id="rankLive" aria-live="polite"></p>
     <div id="rankSoon" class="rank-soon" hidden>

@@ -45,6 +45,20 @@ function jobCell(r) {
   return `<span class="job-cell fam-${j.family}"><span class="fam-ic" aria-hidden="true">${ICONS[(FAMILIES[j.family] || FAMILIES.other).icon] || ''}</span><span>${name}${tier ? `<small>${esc(tier)}</small>` : ''}</span></span>`;
 }
 
+// חיפוש חי ב-ClassicRank לפי שם מלא (לשחקנים שלא נכנסו לרשימה המקומית). התשובה: { data: {...} }
+const liveCache = new Map();
+function liveLookup(name) {
+  const key = String(name || '').trim().toLowerCase();
+  if (!key) return Promise.resolve(null);
+  if (!liveCache.has(key)) {
+    liveCache.set(key, fetch(`${LIVE_API}${encodeURIComponent(key)}?fields=all`, { headers: { Accept: 'application/json' } })
+      .then(res => (res.ok ? res.json() : null))
+      .then(b => (b && b.data && !Array.isArray(b.data) && b.data.name ? b.data : null))
+      .catch(() => { liveCache.delete(key); return null; }));
+  }
+  return liveCache.get(key);
+}
+
 async function loadData() {
   const res = await fetch(`${BASE}ranking/data.json`, { cache: 'no-cache' });
   if (!res.ok) throw new Error(res.status);
@@ -200,6 +214,29 @@ function initRanking() {
 
     pager.innerHTML = pagerHtml(state, page, pages);
     if (focus) document.querySelector('.rank-window').scrollIntoView({ block: 'start' });
+
+    // השם לא נמצא בדיוק ברשימה המקומית? בודקים אותו חי ב-ClassicRank
+    const q = state.q;
+    if (q.length >= 2 && !/\s/.test(q) && !findPlayer(rows, q)) {
+      const token = (render.token = (render.token || 0) + 1);
+      new Promise(ok => setTimeout(ok, 700)).then(() => (token === render.token ? liveLookup(q) : null)).then(r => {
+        if (token !== render.token || state.q !== q) return;
+        if (!r) {
+          if (!rows.length) live.textContent = `לא נמצא שחקן בשם "${q}", גם לא ב-ClassicRank. החיפוש המלא עובד לפי שם מדויק.`;
+          return;
+        }
+        if (!rows.length) tbody.innerHTML = '';
+        tbody.insertAdjacentHTML('afterbegin', `<tr class="live-row">
+  <td class="c-pos"><span title="הדירוג הכללי ב-ClassicRank">${r.overall_rank ? nf(r.overall_rank) : '–'}</span></td>
+  <td class="c-name"><a class="pl" href="${playerUrl(r.name)}">${avatar(r)}<span class="pl-txt"><span class="pl-name" dir="auto">${esc(r.display_name || r.name)}${verifiedMark(r)}</span><small class="pl-job">${esc(jobInfo(r.job).he)}</small></span></a></td>
+  <td class="c-job">${jobCell(r)}</td>
+  <td class="c-lv"><span class="lv">Lv ${esc(r.level)}</span></td>
+  <td class="c-fame">${nf(r.fame)}</td>
+  <td class="col-seen"><time datetime="${esc(r.last_checked || '')}" title="${esc(fullDate(r.last_checked))}">${esc(ago(r.last_checked))}</time></td>
+</tr>`);
+        live.textContent = `נמצא ב-ClassicRank: ${r.display_name || r.name}, במקום ${r.overall_rank ? nf(r.overall_rank) : '?'} בדירוג הכללי.`;
+      });
+    }
   }
 
   function update(patch, { push = false, focus = false } = {}) {
