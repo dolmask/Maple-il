@@ -385,3 +385,8 @@ mark { background: color-mix(in srgb, var(--tip-gold) 55%, transparent); color: 
 .cover img { display: block; width: 100%; max-height: 320px; object-fit: cover; }
 .prose td img, .prose th img { height: 32px; width: auto; border: 0; border-radius: 0; vertical-align: middle; margin-inline-end: 6px; }
 .disclaimer a { color: var(--tip-gold); }
+
+/* admin edit button */
+.edit-fab { position: fixed; bottom: 18px; inset-inline-end: 18px; z-index: 30; display: inline-flex; align-items: center; gap: 6px; padding: 11px 18px; border-radius: 12px; background: var(--tip-bg); color: var(--tip-gold); font-weight: 800; text-decoration: none; border: 2px solid var(--tip-gold); box-shadow: 0 3px 0 rgba(0,0,0,.3); }
+.edit-fab::before { content: "✎"; }
+@media print { .edit-fab { display: none; } }

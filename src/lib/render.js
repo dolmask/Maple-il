@@ -40,7 +40,7 @@ export function adSlot(ctx, kind) {
 }
 
 // ---------- layout ----------
-export function layout(ctx, { title, description = '', path = '', body, active = '', jsonld = null, noindex = false }) {
+export function layout(ctx, { title, description = '', path = '', body, active = '', jsonld = null, noindex = false, edit = 'settings' }) {
   const c = ctx.config;
   const fullTitle = title ? `${title} | ${c.siteName}` : `${c.siteName} — ${c.tagline}`;
   const canonical = c.siteUrl ? c.siteUrl.replace(/\/$/, '') + '/' + path.replace(/^\//, '') : '';
@@ -74,7 +74,7 @@ ${ads.enabled && ads.client && !ctx.preview ? `<script async src="https://pagead
 ${c.analyticsId && !ctx.preview ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${e(c.analyticsId)}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${e(c.analyticsId)}');</script>` : ''}
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}
 </head>
-<body>
+<body data-edit="${e(edit)}">
 <a class="skip" href="#main">דלג לתוכן</a>
 <header class="sky">
   <div class="clouds" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
@@ -201,7 +201,7 @@ ${related.length ? `<section class="wrap related"><h2 class="sec-title">כדאי
     dateModified: g.updated || undefined,
     author: { '@type': 'Organization', name: ctx.config.siteName },
   };
-  return layout(ctx, { title: g.title, description: g.summary, path: `guides/${g.slug}/`, body, active: g.category, jsonld });
+  return layout(ctx, { title: g.title, description: g.summary, path: `guides/${g.slug}/`, body, active: g.category, jsonld, edit: `guides/${g.slug}` });
 }
 
 // ---------- home ----------
@@ -271,7 +271,7 @@ export function categoryPage(ctx, cat) {
 <div class="wrap crumbs"><a href="${url(ctx)}">ראשי</a><span aria-hidden="true">‹</span><span>${e(cat.name)}</span></div>
 <section class="wrap list-head"><h1>${ICONS[cat.icon] || ''}${e(cat.name)}</h1><p>${e(cat.desc || '')}</p></section>
 <section class="wrap"><div class="card-grid">${list.map(g => guideCard(ctx, g)).join('') || '<p class="empty">עוד אין כאן מדריכים. הראשון בדרך.</p>'}</div></section>`;
-  return layout(ctx, { title: cat.name, description: cat.desc, path: `category/${cat.id}/`, body, active: cat.id });
+  return layout(ctx, { title: cat.name, description: cat.desc, path: `category/${cat.id}/`, body, active: cat.id, edit: 'settings/categories' });
 }
 
 export function allGuidesPage(ctx) {
@@ -292,7 +292,7 @@ export function staticPage(ctx, p) {
   const body = `
 <div class="wrap crumbs"><a href="${url(ctx)}">ראשי</a><span aria-hidden="true">‹</span><span>${e(p.title)}</span></div>
 <div class="wrap narrow"><article class="window guide"><header class="guide-head"><div><h1>${e(p.title)}</h1></div></header><div class="prose">${html}</div></article></div>`;
-  return layout(ctx, { title: p.title, description: p.summary || '', path: `${p.slug}/`, body });
+  return layout(ctx, { title: p.title, description: p.summary || '', path: `${p.slug}/`, body, edit: `pages/${p.slug}` });
 }
 
 export function notFoundPage(ctx) {

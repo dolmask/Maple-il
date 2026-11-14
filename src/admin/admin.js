@@ -114,7 +114,8 @@ function route() {
   const [view, type, slug] = h.split('/');
   if (view === 'edit') return renderEditor(type || 'guides', slug);
   if (view === 'new') return renderEditor(type || 'guides', null);
-  if (view === 'settings') return renderSettings();
+  if (view === 'settings') return renderSettings(type);
+  if (view === 'media') return renderMedia();
   return renderDashboard(type === 'pages' ? 'pages' : 'guides');
 }
 
@@ -180,6 +181,7 @@ async function renderDashboard(kind) {
 <div class="tabs" role="tablist">
   <a class="tab${kind === 'guides' ? ' is-on' : ''}" href="#/list/guides">מדריכים</a>
   <a class="tab${kind === 'pages' ? ' is-on' : ''}" href="#/list/pages">עמודים (אודות, פרטיות)</a>
+  <a class="tab" href="#/media">תמונות</a>
   <a class="tab" href="#/settings">הגדרות האתר ופרסומות</a>
   <a class="tab" href="${SITE_BASE}" target="_blank" rel="noopener">צפייה באתר</a>
 </div>
@@ -284,8 +286,8 @@ ${draft ? `<div class="box box-info" id="draftBox" style="padding:10px 14px"><di
           <label class="f">מדריכים קשורים<small>כתובות מופרדות בפסיקים</small><input class="in" name="related" dir="ltr" list="slugList" placeholder="fighter, page"></label>
           <datalist id="slugList">${slugList}</datalist>
           <div class="grid-2">
-            <label class="f">תמונת באנר<small>מוצגת בראש המדריך</small><span class="row"><input class="in" name="cover" dir="ltr" placeholder="/images/…" style="flex:1"><button type="button" class="btn btn-ghost btn-sm" data-upload="cover">העלאה</button></span></label>
-            <label class="f">תמונה לכרטיס<small>מחליפה את האייקון ברשימות</small><span class="row"><input class="in" name="thumb" dir="ltr" placeholder="/images/…" style="flex:1"><button type="button" class="btn btn-ghost btn-sm" data-upload="thumb">העלאה</button></span></label>
+            <label class="f">תמונת באנר<small>מוצגת בראש המדריך</small><span class="row"><input class="in" name="cover" dir="ltr" placeholder="/images/…" style="flex:1"><button type="button" class="btn btn-ghost btn-sm" data-upload="cover">בחירה</button></span></label>
+            <label class="f">תמונה לכרטיס<small>מחליפה את האייקון ברשימות</small><span class="row"><input class="in" name="thumb" dir="ltr" placeholder="/images/…" style="flex:1"><button type="button" class="btn btn-ghost btn-sm" data-upload="thumb">בחירה</button></span></label>
           </div>
           <label class="f">תיאור תמונת הבאנר<small>לנגישות ולגוגל</small><input class="in" name="coverAlt"></label>
           <label class="f">מקורות<small>קישורים מופרדים בפסיקים</small><input class="in" name="sources" dir="ltr" placeholder="https://…"></label>
@@ -458,13 +460,17 @@ ${draft ? `<div class="box box-info" id="draftBox" style="padding:10px 14px"><di
     stats: () => block(':::stats כותרת הכרטיס\nרמה: 30\nHP: 1,000\nחולשה: אש\n:::'),
     lv: () => insert('{{lv ', '}}', '30'),
     ad: () => block('[[ad]]'),
-    img: () => { uploadTarget = null; $('#imgInput').click(); },
+    img: () => openPicker(path => block(`![תיאור התמונה](${path})`)),
     help: () => { const h = $('#helpBox'); h.hidden = !h.hidden; },
   };
   $('#toolbar').addEventListener('click', ev => { const b = ev.target.closest('[data-ins]'); if (b) SNIPS[b.dataset.ins](); });
 
   let uploadTarget = null;
-  app.querySelectorAll('[data-upload]').forEach(b => b.addEventListener('click', () => { uploadTarget = b.dataset.upload; $('#imgInput').click(); }));
+  app.querySelectorAll('[data-upload]').forEach(b => b.addEventListener('click', () => {
+    const field = b.dataset.upload;
+    if (offline) { uploadTarget = field; $('#imgInput').click(); return; }
+    openPicker(path => { form.elements[field].value = path; schedule(); });
+  }));
   $('#imgInput').addEventListener('change', async ev => {
     const file = ev.target.files[0]; ev.target.value = '';
     const target = uploadTarget; uploadTarget = null;
@@ -541,7 +547,7 @@ ${draft ? `<div class="box box-info" id="draftBox" style="padding:10px 14px"><di
 }
 
 // ---------------- settings ----------------
-async function renderSettings() {
+async function renderSettings(section) {
   app.innerHTML = `<div class="loading">טוען הגדרות…</div>`;
   let cfg = config, sha = null;
   if (!offline) {
@@ -566,8 +572,16 @@ async function renderSettings() {
   <section class="window"><div class="window-bar"><span>תמונות המקצועות בדף הבית</span></div><div class="panel ed-form">
     <p class="muted small">כתובת של תמונה שהעליתם (למשל /images/warrior.png). השאירו ריק כדי להציג את האייקון הרגיל.</p>
     <div class="grid-2">
-      ${Object.entries(CLASS_INFO).map(([k, info]) => `<label class="f">${info.name} (${info.en})<input class="in" name="ci_${k}" dir="ltr" value="${v((cfg.classImages || {})[k])}" placeholder="/images/…"></label>`).join('')}
+      ${Object.entries(CLASS_INFO).map(([k, info]) => `<label class="f">${info.name} (${info.en})<span class="row"><input class="in" name="ci_${k}" dir="ltr" value="${v((cfg.classImages || {})[k])}" placeholder="/images/…" style="flex:1"><button type="button" class="btn btn-ghost btn-sm" data-pick="ci_${k}">בחירה</button></span></label>`).join('')}
     </div>
+  </div></section>
+  <section class="window" id="catSection"><div class="window-bar"><span>קטגוריות</span></div><div class="panel ed-form">
+    <p class="muted small">השמות והתיאורים של הקטגוריות, כפי שהם מופיעים בתפריט ובעמודי הקטגוריה.</p>
+    ${(cfg.categories || []).map((c, i) => `<div class="grid-3">
+      <label class="f">שם מלא<input class="in" name="cat_name_${i}" value="${v(c.name)}"></label>
+      <label class="f">שם קצר בתפריט<input class="in" name="cat_short_${i}" value="${v(c.short)}"></label>
+      <label class="f">תיאור<input class="in" name="cat_desc_${i}" value="${v(c.desc)}"></label>
+    </div>`).join('')}
   </div></section>
   <section class="window"><div class="window-bar"><span>דומיין</span></div><div class="panel ed-form">
     <label class="f">כתובת האתר המלאה<small>משמשת למפת האתר ולגוגל</small><input class="in" name="siteUrl" dir="ltr" value="${v(cfg.siteUrl)}" placeholder="https://www.example.co.il"></label>
@@ -586,6 +600,11 @@ async function renderSettings() {
   </div></section>
   <div class="ed-actions"><button class="btn" type="submit">שמירת ההגדרות</button><span class="muted small">האתר ייבנה מחדש עם ההגדרות החדשות.</span></div>
 </form>`;
+  app.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => {
+    const el = $('#setForm').elements[b.dataset.pick];
+    openPicker(path => { el.value = path; });
+  }));
+  if (section === 'categories') $('#catSection').scrollIntoView({ block: 'start' });
   $('#setForm').addEventListener('submit', async ev => {
     ev.preventDefault();
     const f = ev.target.elements;
@@ -594,6 +613,7 @@ async function renderSettings() {
       siteName: f.siteName.value.trim(), tagline: f.tagline.value.trim(), description: f.description.value.trim(),
       heroTitle: f.heroTitle.value.trim(), heroText: f.heroText.value.trim(), footerText: f.footerText.value.trim(),
       siteUrl: f.siteUrl.value.trim().replace(/\/$/, ''), customDomain: f.customDomain.value.trim(), analyticsId: f.analyticsId.value.trim(),
+      categories: (cfg.categories || []).map((c, i) => ({ ...c, name: f['cat_name_' + i].value.trim() || c.name, short: f['cat_short_' + i].value.trim(), desc: f['cat_desc_' + i].value.trim() })),
       classImages: Object.fromEntries(Object.keys(CLASS_INFO).map(k => [k, f['ci_' + k].value.trim()]).filter(([, x]) => x)),
       ads: { enabled: f.adsEnabled.checked, client: f.adsClient.value.trim(), slots: { top: f.slotTop.value.trim(), inArticle: f.slotIn.value.trim(), sidebar: f.slotSide.value.trim() } },
     };
@@ -611,6 +631,150 @@ async function renderSettings() {
       renderSettings();
     } catch (x) { toast(x.message, true); }
   });
+}
+
+// ---------------- images ----------------
+const IMG_RE = /\.(png|jpe?g|gif|webp|svg)$/i;
+async function listImages() {
+  if (offline) return [];
+  const j = await api(repoPath('content/images') + `?ref=${gh().branch || 'main'}&t=${Date.now()}`, { allow404: true });
+  return (j || []).filter(f => f.type === 'file' && IMG_RE.test(f.name)).sort((a, b) => a.name.localeCompare(b.name));
+}
+function cleanName(name) {
+  const m = name.toLowerCase().match(/^(.*?)(\.[a-z0-9]+)?$/);
+  const base = (m[1] || 'image').normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || ('image-' + Date.now());
+  return base + (m[2] || '.png');
+}
+const readDataUrl = file => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(file); });
+// מעלה תמונה ל-content/images. אם קיים קובץ באותו שם, מחליף אותו (sha נדרש להחלפה).
+async function uploadImage(file, existing = []) {
+  if (!IMG_RE.test(file.name)) throw new Error(`${file.name}: זה לא קובץ תמונה (PNG, JPG, GIF, WEBP, SVG).`);
+  if (file.size > 3 * 1024 * 1024) throw new Error(`${file.name}: גדול מ-3MB. הקטינו אותו ונסו שוב.`);
+  const name = cleanName(file.name);
+  const dataUrl = await readDataUrl(file);
+  const prev = existing.find(f => f.name === name);
+  await putFile(`content/images/${name}`, dataUrl.split(',')[1], `${prev ? 'החלפת' : 'הוספת'} תמונה: ${name}`, prev && prev.sha, true);
+  localImages[`images/${name}`] = dataUrl;
+  return `/images/${name}`;
+}
+async function uploadMany(files, existing) {
+  const done = [], failed = [];
+  for (const f of files) {
+    toast(`מעלה ${done.length + failed.length + 1} מתוך ${files.length}…`, false, 60000);
+    try { done.push(await uploadImage(f, existing)); } catch (x) { failed.push(x.message); }
+  }
+  if (failed.length) toast(failed.join(' '), true, 9000);
+  else toast(done.length === 1 ? 'התמונה הועלתה.' : `${done.length} תמונות הועלו.`);
+  if (done.length) checkDeploy(true);
+  return done;
+}
+const thumbHtml = f => `<img src="${e(f.download_url)}" alt="" loading="lazy">`;
+
+// חלון בחירת תמונה (משמש את העורך ואת ההגדרות)
+async function openPicker(onPick) {
+  const layer = document.createElement('div');
+  layer.className = 'picker-layer';
+  layer.innerHTML = `<div class="window picker" role="dialog" aria-modal="true" aria-label="בחירת תמונה">
+    <div class="window-bar"><span>בחירת תמונה</span><button type="button" class="tb" data-close>סגירה</button></div>
+    <div class="panel">
+      <div class="row" style="margin-bottom:10px"><label class="btn btn-sm">העלאת תמונה חדשה<input type="file" accept="image/*" multiple hidden data-up></label><input class="in filter" type="search" placeholder="סינון לפי שם…" data-filter><span class="muted small" data-count></span></div>
+      <div class="media-grid" data-grid><div class="loading">טוען תמונות…</div></div>
+    </div></div>`;
+  document.body.appendChild(layer);
+  const close = () => { layer.remove(); document.removeEventListener('keydown', onKey); };
+  const onKey = ev => { if (ev.key === 'Escape') close(); };
+  document.addEventListener('keydown', onKey);
+  layer.addEventListener('click', ev => { if (ev.target === layer || ev.target.closest('[data-close]')) close(); });
+  let files = [];
+  const draw = () => {
+    const q = layer.querySelector('[data-filter]').value.toLowerCase();
+    const list = files.filter(f => f.name.includes(q));
+    layer.querySelector('[data-count]').textContent = `${files.length} תמונות`;
+    layer.querySelector('[data-grid]').innerHTML = list.map(f => `<button type="button" class="media-item" data-path="/images/${e(f.name)}" data-url="${e(f.download_url)}">${thumbHtml(f)}<span>${e(f.name)}</span></button>`).join('') || '<p class="muted">אין עדיין תמונות. העלו את הראשונה.</p>';
+  };
+  try { files = await listImages(); } catch (x) { toast(x.message, true); }
+  draw();
+  layer.querySelector('[data-filter]').addEventListener('input', draw);
+  layer.querySelector('[data-grid]').addEventListener('click', ev => {
+    const b = ev.target.closest('[data-path]'); if (!b) return;
+    localImages[b.dataset.path.slice(1)] = localImages[b.dataset.path.slice(1)] || b.dataset.url;
+    onPick(b.dataset.path); close();
+  });
+  layer.querySelector('[data-up]').addEventListener('change', async ev => {
+    const picked = [...ev.target.files]; ev.target.value = '';
+    const done = await uploadMany(picked, files);
+    if (done.length === 1) { onPick(done[0]); close(); return; }
+    files = await listImages().catch(() => files); draw();
+  });
+}
+
+// ספריית התמונות + רשימת מה חסר
+async function renderMedia() {
+  if (offline) { app.innerHTML = '<p class="muted">ניהול תמונות זמין רק כשמחוברים.</p>'; return; }
+  app.innerHTML = '<div class="loading">טוען תמונות…</div>';
+  let files = [];
+  try { files = await listImages(); } catch (x) { toast(x.message, true); }
+  const used = new Set();
+  manifest.guides.forEach(g => { [g.cover, g.thumb].forEach(x => x && used.add(x)); });
+  Object.values(config.classImages || {}).forEach(x => used.add(x));
+  const missingRows = manifest.guides.map(g => {
+    const need = [];
+    if (!g.cover) need.push('באנר');
+    if (!g.thumb) need.push('תמונת כרטיס');
+    return need.length ? `<tr><td>${e(g.title)}</td><td>${need.join(', ')}</td><td><a class="btn btn-ghost btn-sm" href="#/edit/guides/${encodeURIComponent(g.slug)}">הוספה</a></td></tr>` : '';
+  }).join('');
+  const classMissing = Object.entries(CLASS_INFO).filter(([k]) => !(config.classImages || {})[k]).map(([, i]) => i.name);
+
+  app.innerHTML = `
+<div class="dash-head"><a class="btn btn-ghost btn-sm" href="#/list/guides">חזרה</a><h1>תמונות</h1><span class="muted">${files.length} תמונות</span></div>
+<label class="dropzone window" id="drop">
+  <input type="file" accept="image/*" multiple hidden id="mediaIn">
+  <strong>גררו לכאן תמונות, או לחצו לבחירה</strong>
+  <span class="muted small">אפשר כמה תמונות ביחד. עד 3MB לתמונה. קובץ עם שם שכבר קיים יחליף את הקודם.</span>
+</label>
+<div class="row" style="margin:14px 0 10px"><input class="in filter" id="mFilter" type="search" placeholder="סינון לפי שם…"></div>
+<div class="media-grid big" id="mGrid">
+${files.map(f => `<div class="media-card" data-name="${e(f.name)}">
+  <a href="${e(f.download_url)}" target="_blank" rel="noopener" class="media-thumb">${thumbHtml(f)}</a>
+  <div class="media-meta"><span class="media-name" dir="ltr">${e(f.name)}</span>${used.has('/images/' + f.name) ? '<span class="lv">בשימוש</span>' : ''}</div>
+  <div class="row"><button class="tb" data-copy="/images/${e(f.name)}">העתקת קוד</button><label class="tb">החלפה<input type="file" accept="image/*" hidden data-replace="${e(f.name)}"></label><button class="tb" data-del="${e(f.name)}" data-sha="${e(f.sha)}">מחיקה</button></div>
+</div>`).join('') || '<p class="muted">אין עדיין תמונות.</p>'}
+</div>
+<section class="window" style="margin-top:26px"><div class="window-bar"><span>מה עוד חסר</span></div><div class="panel">
+  <p class="muted small">לכל מדריך אפשר להוסיף באנר (בראש המדריך) ותמונת כרטיס (ברשימות ובדף הבית). "הוספה" פותחת את המדריך בעורך, ושם לוחצים "בחירה" ליד השדה.</p>
+  ${classMissing.length ? `<p><strong>תמונות מקצועות לדף הבית:</strong> חסרות ל${classMissing.join(', ')}. <a href="#/settings">להגדרות</a></p>` : '<p>תמונות המקצועות בדף הבית: הכול מוכן.</p>'}
+  ${missingRows ? `<div class="table-wrap"><table><thead><tr><th>מדריך</th><th>חסר</th><th></th></tr></thead><tbody>${missingRows}</tbody></table></div>` : '<p>לכל המדריכים יש תמונות.</p>'}
+</div></section>`;
+
+  const refresh = () => renderMedia();
+  const drop = $('#drop');
+  ['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, ev => { ev.preventDefault(); drop.classList.add('is-over'); }));
+  ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, ev => { ev.preventDefault(); drop.classList.remove('is-over'); }));
+  drop.addEventListener('drop', async ev => { const fl = [...ev.dataTransfer.files]; if (fl.length) { await uploadMany(fl, files); refresh(); } });
+  $('#mediaIn').addEventListener('change', async ev => { const fl = [...ev.target.files]; ev.target.value = ''; if (fl.length) { await uploadMany(fl, files); refresh(); } });
+  $('#mFilter').addEventListener('input', ev => { const q = ev.target.value.toLowerCase(); app.querySelectorAll('.media-card').forEach(c => { c.hidden = q && !c.dataset.name.includes(q); }); });
+  $('#mGrid').addEventListener('click', async ev => {
+    const c = ev.target.closest('[data-copy]');
+    if (c) {
+      const code = `![תיאור](${c.dataset.copy})`;
+      try { await navigator.clipboard.writeText(code); toast('הקוד הועתק. הדביקו אותו במדריך.'); } catch { prompt('העתיקו את הקוד:', code); }
+      return;
+    }
+    const d = ev.target.closest('[data-del]');
+    if (d) {
+      const n = d.dataset.del;
+      if (used.has('/images/' + n) && !confirm(`התמונה ${n} בשימוש באתר. למחוק בכל זאת?`)) return;
+      if (!used.has('/images/' + n) && !confirm(`למחוק את ${n}?`)) return;
+      try { await deleteFile(`content/images/${n}`, d.dataset.sha, `מחיקת תמונה: ${n}`); toast('נמחקה.'); checkDeploy(true); refresh(); }
+      catch (x) { toast(x.message, true); }
+    }
+  });
+  app.querySelectorAll('[data-replace]').forEach(inp => inp.addEventListener('change', async ev => {
+    const file = ev.target.files[0]; if (!file) return;
+    const target = ev.target.dataset.replace;
+    const renamed = new File([file], target, { type: file.type });
+    await uploadMany([renamed], files); refresh();
+  }));
 }
 
 boot();

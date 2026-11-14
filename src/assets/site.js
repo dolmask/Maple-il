@@ -90,6 +90,19 @@
     });
   }
 
+  // edit button: shown only to whoever is logged in to the admin in this browser
+  try {
+    var target = document.body.dataset.edit;
+    if (target && localStorage.getItem('gh_token')) {
+      var a = document.createElement('a');
+      var view = target.indexOf('settings') === 0 ? '#/' + target : '#/edit/' + target;
+      a.href = base + 'admin/' + view;
+      a.className = 'edit-fab';
+      a.textContent = 'עריכת העמוד';
+      document.body.appendChild(a);
+    }
+  } catch (e) {}
+
   // TOC highlight
   var tocLinks = document.querySelectorAll('.side .toc a');
   if (tocLinks.length && 'IntersectionObserver' in window) {
