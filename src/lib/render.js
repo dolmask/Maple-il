@@ -120,7 +120,7 @@ ${body}
       <a href="${url(ctx, 'guides/')}">כל המדריכים</a>
     </nav>
   </div>
-  <p class="wrap disclaimer">MapleStory ו-MapleStory Classic World, וכן כל השמות, הדמויות, התמונות, הסימנים המסחריים ושאר החומרים מהמשחק, הם קניינה של NEXON Korea Corporation ושל NEXON America Inc. כל הזכויות שמורות להן. מייפלורז הוא אתר מעריצים לא רשמי: הוא אינו קשור ל-Nexon, אינו ממומן על ידה ואינו מאושר על ידה. <a href="${url(ctx, 'about/')}#זכויות-יוצרים">זכויות יוצרים</a></p>
+  <p class="wrap disclaimer">MapleStory ו-MapleStory Classic World, וכן כל השמות, הדמויות, התמונות, הסימנים המסחריים ושאר החומרים מהמשחק, הם קניינה של NEXON Korea Corporation ושל NEXON America Inc. כל הזכויות שמורות להן. מייפלורז הוא אתר מעריצים לא רשמי: הוא אינו קשור ל-Nexon, אינו ממומן על ידה ואינו מאושר על ידה. <a href="${url(ctx, 'about/')}#זכויות-יוצרים">זכויות יוצרים</a>${c.attribution && c.attribution.text ? ` · ${c.attribution.url ? `<a href="${e(c.attribution.url)}" target="_blank" rel="noopener">${e(c.attribution.text)}</a>` : e(c.attribution.text)}` : ''}</p>
 </footer>
 <script>window.SITE_BASE=${JSON.stringify(ctx.base || '/')};</script>
 <script src="${url(ctx, 'assets/site.js')}${ctx.version ? '?v=' + ctx.version : ''}" defer></script>

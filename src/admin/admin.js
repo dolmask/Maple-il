@@ -596,6 +596,8 @@ async function renderSettings(section) {
       <label class="f">יחידה: צד<input class="in" name="slotSide" dir="ltr" value="${v((ads.slots || {}).sidebar)}"></label>
     </div>
     <p class="muted small">אפשר להשאיר את מזהי היחידות ריקים ולהפעיל ב-AdSense "Auto ads". קובץ ads.txt נוצר אוטומטית.</p>
+    <label class="f">ייחוס למקור (לפי מדריך ה-IP של Nexon)<small>טקסט שמופיע בתחתית כל עמוד</small><input class="in" name="attrText" value="${v((cfg.attribution || {}).text)}"></label>
+    <label class="f">קישור לייחוס<small>Nexon מבקשת קישור לערוץ היוטיוב של המשחק, אם יש</small><input class="in" name="attrUrl" dir="ltr" value="${v((cfg.attribution || {}).url)}" placeholder="https://www.youtube.com/…"></label>
     <label class="f">Google Analytics (Measurement ID)<input class="in" name="analyticsId" dir="ltr" value="${v(cfg.analyticsId)}" placeholder="G-XXXXXXXXXX"></label>
   </div></section>
   <div class="ed-actions"><button class="btn" type="submit">שמירת ההגדרות</button><span class="muted small">האתר ייבנה מחדש עם ההגדרות החדשות.</span></div>
@@ -613,6 +615,7 @@ async function renderSettings(section) {
       siteName: f.siteName.value.trim(), tagline: f.tagline.value.trim(), description: f.description.value.trim(),
       heroTitle: f.heroTitle.value.trim(), heroText: f.heroText.value.trim(), footerText: f.footerText.value.trim(),
       siteUrl: f.siteUrl.value.trim().replace(/\/$/, ''), customDomain: f.customDomain.value.trim(), analyticsId: f.analyticsId.value.trim(),
+      attribution: { text: f.attrText.value.trim(), url: f.attrUrl.value.trim() },
       categories: (cfg.categories || []).map((c, i) => ({ ...c, name: f['cat_name_' + i].value.trim() || c.name, short: f['cat_short_' + i].value.trim(), desc: f['cat_desc_' + i].value.trim() })),
       classImages: Object.fromEntries(Object.keys(CLASS_INFO).map(k => [k, f['ci_' + k].value.trim()]).filter(([, x]) => x)),
       ads: { enabled: f.adsEnabled.checked, client: f.adsClient.value.trim(), slots: { top: f.slotTop.value.trim(), inArticle: f.slotIn.value.trim(), sidebar: f.slotSide.value.trim() } },
