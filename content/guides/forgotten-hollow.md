@@ -5,6 +5,7 @@ category: "quests"
 order: 1
 level: "39–60"
 icon: "map"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/6130101/render/stand"
 summary: "המדריך המלא לאזור החדש שנבנה במיוחד לעולם הקלאסי: איך נכנסים, כל 15 המשימות לפי הסדר, המפלצות והחולשות שלהן, והבוס Rotten Mushmom."
 keywords: ["forgotten hollow", "zelya", "rotten mushmom", "ellinia", "quests", "משימות", "בוס"]
 related: ["training-spots", "bosses", "fp-wizard", "il-wizard", "cleric"]

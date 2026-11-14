@@ -5,6 +5,7 @@ category: "quests"
 order: 3
 level: "1–50"
 icon: "scroll"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/2220000/render/stand"
 summary: "רשימה מסודרת לפי רמה של המשימות שנותנות את התמורה הכי טובה: ציוד שאי אפשר לקנות, חלוק הסאונה, מגילות, והרבה EXP."
 keywords: ["quests", "משימות", "sauna robe", "חלוק סאונה", "shumi", "jane doe", "alex", "nella", "camila"]
 related: ["beginners-guide", "forgotten-hollow", "jump-quests", "citizenship"]

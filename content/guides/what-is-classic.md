@@ -4,6 +4,7 @@ slug: "what-is-classic"
 category: "start"
 order: 1
 icon: "leaf"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/1210102/render/stand"
 summary: "הסבר מלא על העולם הקלאסי של Nexon: מה יש בו, מה עדיין אין, במה הוא שונה ממייפל הרגיל ומשרתים פרטיים, וכמה זה עולה."
 keywords: ["classic world", "mscw", "nexon", "השקה", "release", "cash shop", "founder"]
 related: ["beginners-guide", "choosing-a-class", "glossary"]

@@ -6,6 +6,7 @@ category: "jobs2"
 cls: "warrior"
 order: 4
 level: "30–70"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/130100/render/stand"
 summary: "חנית או מוט? הספירמן עם Iron Will וטווח הפגיעה הכי ארוך: סקילים, סדר נקודות, נשקים, מפות וטיפים."
 keywords: ["spearman", "ספירמן", "spear", "polearm", "iron will", "dragon knight", "חנית"]
 related: ["warrior", "fighter", "page"]

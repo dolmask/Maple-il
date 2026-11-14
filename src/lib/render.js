@@ -156,7 +156,7 @@ ${hud ? `<div class="hud" aria-hidden="true"><span class="hud-lv"><small>LV.</sm
   </div>
   <div class="wrap legal">
     <p>MapleStory ו-MapleStory Classic World, וכל השמות, הדמויות, התמונות והסימנים המסחריים מהמשחק, הם קניינן של NEXON Korea Corporation ו-NEXON America Inc. כל הזכויות שמורות. מייפלורז הוא אתר מעריצים לא רשמי, שאינו קשור ל-Nexon, אינו ממומן על ידה ואינו מאושר על ידה.</p>
-    <p><a href="${url(ctx, 'copyright/')}">זכויות יוצרים</a> · <a href="https://m.nexon.com/terms/716" target="_blank" rel="noopener">מדריך ה-IP של Nexon ליוצרי תוכן</a>${c.attribution && c.attribution.text ? ` · ${c.attribution.url ? `<a href="${e(c.attribution.url)}" target="_blank" rel="noopener">${e(c.attribution.text)}</a>` : e(c.attribution.text)}` : ''}</p>
+    <p><a href="${url(ctx, 'copyright/')}">זכויות יוצרים</a> · <a href="https://m.nexon.com/terms/716" target="_blank" rel="noopener">מדריך ה-IP של Nexon ליוצרי תוכן</a> · איורי מפלצות: © NEXON דרך <a href="https://maplestory.io" target="_blank" rel="noopener">maplestory.io</a>${c.attribution && c.attribution.text ? ` · ${c.attribution.url ? `<a href="${e(c.attribution.url)}" target="_blank" rel="noopener">${e(c.attribution.text)}</a>` : e(c.attribution.text)}` : ''}</p>
   </div>
 </footer>
 <script>window.SITE_BASE=${JSON.stringify(ctx.base || '/')};</script>
@@ -174,7 +174,8 @@ function levelChip(level) {
 export function guideCard(ctx, g, { showCat = false } = {}) {
   const cat = catOf(ctx, g.category);
   const cls = g.cls && CLASS_INFO[g.cls];
-  const icon = g.thumb ? `<img src="${e(img(ctx, g.thumb))}" alt="" loading="lazy">` : (ICONS[g.icon] || ICONS[cls?.icon] || ICONS[cat.icon] || ICONS.book);
+  const fallback = ICONS[g.icon] || ICONS[cls?.icon] || ICONS[cat.icon] || ICONS.book;
+  const icon = g.thumb ? `<img src="${e(img(ctx, g.thumb))}" alt="" loading="lazy" decoding="async" onerror="this.parentNode.classList.remove('has-img');this.remove()">${fallback}` : fallback;
   return `<li><a class="g-row${g.cls ? ' cls-' + e(g.cls) : ''}" href="${guideUrl(ctx, g.slug)}">
   <span class="g-icon${g.thumb ? ' has-img' : ''}" aria-hidden="true" data-thumb="${e(g.slug)}">${icon}</span>
   <span class="g-body">
@@ -251,7 +252,7 @@ export function homePage(ctx) {
     const pic = (c.classImages || {})[key];
     return `<li class="job cls-${key}">
   <a class="job-main" href="${g ? guideUrl(ctx, g.slug) : '#'}">
-    <span class="job-icon${pic ? ' has-img' : ''}" aria-hidden="true" data-class-img="${key}">${pic ? `<img src="${e(img(ctx, pic))}" alt="">` : ICONS[info.icon]}</span>
+    <span class="job-icon${pic ? ' has-img' : ''}" aria-hidden="true" data-class-img="${key}">${pic ? `<img src="${e(img(ctx, pic))}" alt="" loading="lazy" decoding="async" onerror="this.parentNode.classList.remove('has-img');this.remove()">${ICONS[info.icon]}` : ICONS[info.icon]}</span>
     <span class="job-name">${info.name} <span lang="en">${info.en}</span></span>
     <span class="job-facts">${info.stat} · ${info.town}</span>
   </a>

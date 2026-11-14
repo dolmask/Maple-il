@@ -5,6 +5,7 @@ category: "quests"
 order: 2
 level: "25–65"
 icon: "boot"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/130101/render/stand"
 summary: "כל משימות הקפיצה במייפל קלאסיק: איפה מתחילים, כמה שלבים, מה אסור להשתמש, ומה מקבלים, כולל העגילים של ג'ון והכיכר של שומי."
 keywords: ["jump quest", "jq", "קפיצה", "shumi", "שומי", "john", "sabitrama", "forest of patience", "pet walking road"]
 related: ["leveling-tips", "important-quests"]

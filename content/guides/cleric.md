@@ -6,6 +6,7 @@ category: "jobs2"
 cls: "magician"
 order: 7
 level: "30–70"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/210100/render/stand"
 summary: "הקלריק כתומך הפארטי: בילד לפארטי ובילד לסולו, Heal נגד אל-מתים, Bless ו-Invincible, ומפות שבהן הריפוי הופך לנשק."
 keywords: ["cleric", "קלריק", "heal", "bless", "holy arrow", "priest", "undead", "אל-מתים"]
 related: ["magician", "fp-wizard", "il-wizard", "kerning-party-quest"]

@@ -6,6 +6,7 @@ category: "jobs2"
 cls: "magician"
 order: 6
 level: "30–70"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/210100/render/stand"
 summary: "Cold Beam ו-Thunder Bolt: סדר סקילים בלי איפוס, מפות לפי חולשות לקרח ולברק, וטיפים לקוסם הקרח."
 keywords: ["i/l", "ice lightning", "קרח", "ברק", "cold beam", "thunder bolt", "wizard"]
 related: ["magician", "fp-wizard", "cleric", "training-spots"]

@@ -5,6 +5,7 @@ category: "jobs"
 cls: "bowman"
 order: 3
 level: "1–30"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/1210102/render/stand"
 summary: "קשת רגילה או קשת צולבת? חלוקת DEX ו-STR לכל מסלול, סדר סקילים, חצים, נשקים ומפות אימון עד הג'וב השני."
 keywords: ["bowman", "archer", "קשת", "arrow blow", "double shot", "henesys", "הניסיס", "dex"]
 related: ["hunter", "crossbowman", "second-job-advancement"]

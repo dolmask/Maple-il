@@ -5,6 +5,7 @@ category: "party"
 order: 2
 level: "21–80"
 icon: "party"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/8130100/render/stand"
 summary: "King Slime, Rotten Mushmom, Jr. Balrog והמפלצות המתוזמנות: רמות, חולשות, טיימרים, הרכב פארטי מומלץ, ונימוסי בוסים."
 keywords: ["boss", "בוס", "king slime", "rotten mushmom", "mushmom", "jr balrog", "zakum", "ks"]
 related: ["kerning-party-quest", "forgotten-hollow", "bandit", "cleric"]

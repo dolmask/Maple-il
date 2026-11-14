@@ -5,6 +5,7 @@ category: "jobs"
 cls: "magician"
 order: 2
 level: "1–30"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/210100/render/stand"
 summary: "Magic Claw או Energy Bolt? חלוקת INT ו-LUK, שלוש תוכניות סקילים, שרביטים לכל רמה, מגן, מפות ושיקויים לקוסם."
 keywords: ["magician", "mage", "קוסם", "magic claw", "energy bolt", "ellinia", "אלינייה", "int"]
 related: ["fp-wizard", "il-wizard", "cleric", "second-job-advancement"]

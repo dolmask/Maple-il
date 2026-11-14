@@ -6,6 +6,7 @@ category: "jobs2"
 cls: "thief"
 order: 10
 level: "30–70"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/1210101/render/stand"
 summary: "המתנקש עם טפרים וכוכבים: Critical Throw, Haste, סדר סקילים, טבלת כוכבים מלאה, טפרים לכל רמה ומפות אימון."
 keywords: ["assassin", "מתנקש", "lucky seven", "claw", "stars", "כוכבים", "haste", "hermit"]
 related: ["thief", "bandit", "potions-and-mesos"]

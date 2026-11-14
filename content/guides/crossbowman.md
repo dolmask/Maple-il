@@ -6,6 +6,7 @@ category: "jobs2"
 cls: "bowman"
 order: 9
 level: "30–70"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/1210102/render/stand"
 summary: "Iron Arrow שחודר שש מפלצות, קשתות צולבות לכל רמה, סדר סקילים, ואיך לסדר מפלצות בשורה כדי למקסם נזק."
 keywords: ["crossbowman", "xbow", "קשת צולבת", "iron arrow", "crossbow", "sniper"]
 related: ["bowman", "hunter", "training-spots"]

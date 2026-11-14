@@ -6,6 +6,7 @@ category: "jobs2"
 cls: "bowman"
 order: 8
 level: "30–70"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/1210102/render/stand"
 summary: "הצייד עם Arrow Bomb שמהמם קבוצות ו-Soul Arrow שחוסך חצים: סדר סקילים, קשתות לכל רמה, מפות וטיפים."
 keywords: ["hunter", "צייד", "arrow bomb", "bow", "soul arrow", "ranger"]
 related: ["bowman", "crossbowman", "training-spots"]

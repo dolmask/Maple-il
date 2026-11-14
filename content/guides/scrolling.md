@@ -4,6 +4,7 @@ slug: "scrolling"
 category: "economy"
 order: 1
 icon: "scroll"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/130100/render/stand"
 summary: "איך עובדות ארבע דרגות המגילות בעולם הקלאסי, מה לשים על כפפות, על שריון מלא ועל נשק, איפה קונים מגילות, ואיך לא להשמיד פריט יקר."
 keywords: ["scroll", "מגילה", "מגילות", "chaos", "greater", "intermediate", "lesser", "slots", "שדרוג"]
 related: ["crafting", "citizenship", "potions-and-mesos"]

@@ -5,6 +5,7 @@ category: "jobs2"
 order: 1
 level: "30"
 icon: "scroll"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/2230100/render/stand"
 summary: "איך עושים את מבחן הג'וב השני לכל מקצוע: למי פונים, איפה המורה, כמה Dark Marbles צריך, ומה חשוב לסדר לפני שבוחרים ענף."
 keywords: ["2nd job", "ג'וב שני", "dark marble", "proof of a hero", "job instructor", "advancement"]
 related: ["choosing-a-class", "fighter", "fp-wizard", "hunter", "assassin"]

@@ -5,6 +5,7 @@ category: "jobs"
 cls: "thief"
 order: 4
 level: "1–30"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/1210101/render/stand"
 summary: "Lucky Seven עם טופר או Double Stab עם פגיון? שתי תוכניות מלאות לגנב: חלוקת LUK, סקילים, טפרים, כוכבים ומפות."
 keywords: ["thief", "גנב", "lucky seven", "double stab", "kerning", "קרנינג", "luk", "claw", "stars"]
 related: ["assassin", "bandit", "second-job-advancement"]

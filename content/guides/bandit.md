@@ -6,6 +6,7 @@ category: "jobs2"
 cls: "thief"
 order: 11
 level: "30–70"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/1210101/render/stand"
 summary: "השודד, מלך הנזק למטרה אחת: Savage Blow, Steal, מתי לעשות איפוס SP, תוכנית DEX מול STR, פגיונות ומפות."
 keywords: ["bandit", "שודד", "savage blow", "steal", "dagger", "פגיון", "sindit", "chief bandit"]
 related: ["thief", "assassin", "bosses"]

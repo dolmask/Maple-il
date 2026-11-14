@@ -126,6 +126,12 @@
       "slug": "training-spots"
     }
   ],
+  "classImages": {
+    "warrior": "https://maplestory.io/api/gms/208.2.0/mob/130100/render/stand",
+    "magician": "https://maplestory.io/api/gms/208.2.0/mob/210100/render/stand",
+    "bowman": "https://maplestory.io/api/gms/208.2.0/mob/1210102/render/stand",
+    "thief": "https://maplestory.io/api/gms/208.2.0/mob/1210101/render/stand"
+  },
   "attribution": {
     "text": "מקור: Nexon, המשחק MapleStory Classic World",
     "url": "https://maplestoryworlds.nexon.com/"

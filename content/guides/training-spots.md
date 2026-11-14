@@ -5,6 +5,7 @@ category: "training"
 order: 1
 level: "1–70"
 icon: "map"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/130100/render/stand"
 summary: "המפות עם הכי הרבה EXP לשעה בכל טווח רמות, איזו מפלצת יש בכל מפה, איזה מקצוע מתאים לה, ומפות סודיות דרך פורטלים נסתרים."
 keywords: ["training", "אימון", "grind", "מפות", "exp", "subway", "סאבווי", "ant tunnel", "wraith"]
 related: ["leveling-tips", "kerning-party-quest", "forgotten-hollow"]

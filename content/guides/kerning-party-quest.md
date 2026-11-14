@@ -5,6 +5,7 @@ category: "party"
 order: 1
 level: "21+"
 icon: "party"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/210100/render/stand"
 summary: "המדריך המלא ל-Kerning City Party Quest: דרישות, תשובות לשאלות של קלוטו, כל הצירופים לחבלים, לחתולים ולחביות, הבוס King Slime והפרסים."
 keywords: ["kpq", "kerning party quest", "פארטי קווסט", "king slime", "lakelis", "cloto", "coupon", "קופון"]
 related: ["leveling-tips", "bosses", "training-spots"]

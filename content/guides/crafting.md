@@ -5,6 +5,7 @@ category: "economy"
 order: 2
 level: "10+"
 icon: "coin"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/1210101/render/stand"
 summary: "Smithing, Weaponcrafting, Tailoring, Woodcrafting, Leatherworking ו-Arcforge: איפה לומדים, מה מייצרים, איך עולים רמות ומה עושים עם עפרות."
 keywords: ["crafting", "יצירה", "smithing", "weaponcrafting", "tailoring", "woodcrafting", "leatherworking", "arcforge", "ore", "עפרות", "catalyst"]
 related: ["scrolling", "potions-and-mesos", "bowman"]

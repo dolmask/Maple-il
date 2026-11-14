@@ -4,6 +4,7 @@ slug: "leveling-tips"
 category: "training"
 order: 2
 icon: "boot"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/100101/render/stand"
 summary: "המכניקה שמאחורי הגריינד: איך עובד הספאון, למה מחטיאים, כמה שווה פארטי, מתי מחליפים מפה, וכל הטריקים שחוסכים שעות."
 keywords: ["leveling", "exp", "ספאון", "spawn", "accuracy", "דיוק", "party", "פארטי", "channel"]
 related: ["training-spots", "potions-and-mesos", "glossary"]

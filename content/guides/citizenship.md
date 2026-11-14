@@ -5,6 +5,7 @@ category: "economy"
 order: 3
 level: "12+"
 icon: "coin"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/1210101/render/stand"
 summary: "כל מה שצריך לדעת על מערכת האזרחות: איך נרשמים, עשר הדרגות וההנחות, משימות יומיות ושבועיות, ואיזו עיר מתאימה לאיזה מקצוע."
 keywords: ["citizenship", "אזרחות", "arthur", "roxy", "henesys", "kerning", "discount", "הנחה", "contribution"]
 related: ["beginners-guide", "scrolling", "potions-and-mesos"]

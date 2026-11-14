@@ -5,6 +5,7 @@ category: "start"
 order: 2
 level: "1–10"
 icon: "leaf"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/100100/render/stand"
 summary: "הצעדים הראשונים בעולם של מייפל סטורי קלאסיק: איזה נשק לבחור, אילו משימות לעשות באי מייפל, איך לחלק נקודות, ולאן לנסוע ב-Lv 10."
 keywords: ["מתחילים", "beginner", "maple island", "האי מייפל", "שנקס", "shanks", "ap", "sp"]
 related: ["choosing-a-class", "citizenship", "training-spots", "potions-and-mesos"]

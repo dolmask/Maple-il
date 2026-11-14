@@ -4,6 +4,7 @@ slug: "glossary"
 category: "reference"
 order: 1
 icon: "book"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/100100/render/stand"
 summary: "מה זה KS, c/o, pre-BB, slot או dexless? המילון המלא של הקהילה, מתורגם ומוסבר בעברית, מסודר לפי נושאים."
 keywords: ["glossary", "מילון", "מונחים", "סלנג", "ks", "afk", "pre-bb", "wts", "c/o", "a/w"]
 related: ["what-is-classic", "potions-and-mesos", "leveling-tips"]

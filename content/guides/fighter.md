@@ -6,6 +6,7 @@ category: "jobs2"
 cls: "warrior"
 order: 2
 level: "30–70"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/130100/render/stand"
 summary: "חרב או גרזן, סדר סקילים מלא עם Rage ו-Final Attack, חלוקת STR/DEX, נשקים לכל רמה ומפות האימון הכי טובות לפייטר."
 keywords: ["fighter", "פייטר", "rage", "axe", "sword", "final attack", "crusader"]
 related: ["warrior", "page", "spearman", "training-spots"]

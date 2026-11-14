@@ -4,6 +4,7 @@ slug: "potions-and-mesos"
 category: "economy"
 order: 4
 icon: "coin"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/1210100/render/stand"
 summary: "אילו שיקויים הכי משתלמים לכל מזו, אילו לא לקנות אף פעם, שיקויי באף, ודרכים לעשות מזוס: שוק חופשי, יצירה, משימות ומכירה לשחקנים."
 keywords: ["potions", "שיקויים", "mesos", "מזוס", "money", "כסף", "free market", "fm", "elixir", "lemon", "meat"]
 related: ["crafting", "citizenship", "scrolling", "glossary"]

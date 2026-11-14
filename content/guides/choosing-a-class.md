@@ -5,6 +5,7 @@ category: "start"
 order: 3
 level: "10–70"
 icon: "party"
+thumb: "https://maplestory.io/api/gms/208.2.0/mob/1210100/render/stand"
 summary: "לוחם, קוסם, קשת או גנב? השוואה מסודרת של כל עשרת ענפי הג'וב השני: נזק למטרה אחת, נזק לקבוצה, עלות MP ומה כל אחד תורם לפארטי."
 keywords: ["class", "מקצוע", "tier list", "dps", "best class", "השוואה", "דירוג"]
 related: ["beginners-guide", "second-job-advancement", "warrior", "magician", "bowman", "thief"]
