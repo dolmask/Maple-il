@@ -1,0 +1,23 @@
+name: debug api probe
+on:
+  push:
+    branches: [debug-api]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: probe
+        run: |
+          A=https://classicrank.com/api/v1/characters
+          p() { echo; echo "===== $1"; curl -sS -D - -o /tmp/b -H 'Origin: https://dolmask.github.io' -H 'Accept: application/json' "$1" | grep -iE '^(HTTP|access-control|content-type|location|retry)'; head -c 700 /tmp/b; echo; }
+          p "$A/InsomniaLK"
+          p "$A/insomnialk"
+          p "$A/InsomniaLK?fields=all"
+          p "$A?names=InsomniaLK&fields=all"
+          p "$A?names=insomnialk&fields=all"
+          p "$A?sort=level&limit=3&page=20&fields=all"
+          N=$(curl -s "$A?sort=level&limit=50&page=20&fields=name" | python3 -c "import sys,json;print(json.load(sys.stdin)['data'][-1]['name'])")
+          echo "last of top1000: $N"
+          p "$A/$N?fields=all"
+          p "https://classicrank.com/api/v1/stats"
+          p "https://classicrank.com/search?q=InsomniaLK"
