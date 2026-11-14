@@ -56,7 +56,7 @@ export function adSlot(ctx, kind) {
 }
 
 // ---------- layout ----------
-export function layout(ctx, { title, description = '', path = '', body, active = '', jsonld = null, noindex = false, edit = 'settings', hud = null, scripts = '' }) {
+export function layout(ctx, { title, description = '', path = '', body, active = '', jsonld = null, noindex = false, edit = 'settings', hud = null, scripts = '', src = '' }) {
   const c = ctx.config;
   const fullTitle = title ? `${title} | ${c.siteName}` : `${c.siteName} — ${c.tagline}`;
   const canonical = c.siteUrl ? c.siteUrl.replace(/\/$/, '') + '/' + path.replace(/^\//, '') : '';
@@ -90,7 +90,7 @@ ${ads.enabled && ads.client && !ctx.preview ? `<script async src="https://pagead
 ${c.analyticsId && !ctx.preview ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${e(c.analyticsId)}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${e(c.analyticsId)}');</script>` : ''}
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}
 </head>
-<body data-edit="${e(edit)}"${hud ? ' class="has-hud"' : ''}>
+<body data-edit="${e(edit)}"${src ? ` data-src="${e(src)}"` : ''}${hud ? ' class="has-hud"' : ''}>
 <a class="skip" href="#main">דלג לתוכן</a>
 <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
 <header class="top">
@@ -197,7 +197,7 @@ const rowList = (ctx, list, opts) => `<ul class="g-list">${list.map(g => guideCa
 
 // ---------- guide page ----------
 export function guidePage(ctx, g) {
-  const { html, headings } = renderMarkdown(g.body, { base: ctx.base, autoAds: true, images: ctx.images, showMissingShots: ctx.preview });
+  const { html, headings } = renderMarkdown(g.body, { base: ctx.base, autoAds: true, images: ctx.images, showMissingShots: ctx.preview, srcMap: !ctx.preview });
   const withAds = html.replace(/<!--AD-->/g, () => adSlot(ctx, 'inArticle'));
   const cat = catOf(ctx, g.category);
   const siblings = ctx.guides.filter(x => x.category === g.category);
@@ -216,8 +216,8 @@ export function guidePage(ctx, g) {
     <div class="window-bar quest-bar"><nav class="crumbs" aria-label="מיקום באתר"><a href="${url(ctx)}">ראשי</a><span aria-hidden="true">/</span><a href="${categoryUrl(ctx, cat.id)}">${e(cat.short || cat.name)}</a></nav>${g.level ? `<span class="lv">Lv ${e(g.level)}</span>` : ''}</div>
     <div class="guide-in">
     <header class="guide-head">
-      <h1>${t(g.title)}</h1>
-      ${g.summary ? `<p class="lede">${t(g.summary)}</p>` : ''}
+      <h1 data-fm="title">${t(g.title)}</h1>
+      ${g.summary ? `<p class="lede" data-fm="summary">${t(g.summary)}</p>` : ''}
       <div class="meta"><span>${readingTime(g.body)} דקות קריאה</span>${g.updated ? `<span>עודכן ${e(formatDate(g.updated))}</span>` : ''}</div>
     </header>
     ${!g.cover ? `<figure class="cover cover-mobs" aria-hidden="true">${charBanner(g)}${[...new Set([thumbMob(g), cat.mob, ...(ctx.config.heroMobs || []).slice(0, 2)].filter(Boolean))].slice(0, 4).map(id => mobImg(id)).join('')}<span class="cover-ground"></span></figure>` : ''}
@@ -248,7 +248,7 @@ ${withAds}
     dateModified: g.updated || undefined,
     author: { '@type': 'Organization', name: ctx.config.siteName },
   };
-  return layout(ctx, { title: g.title, description: g.summary, path: `guides/${g.slug}/`, body, active: g.category, jsonld, edit: `guides/${g.slug}`, hud: { level: (g.level || '').split(/[–-]/)[0].replace(/\D/g, '') || '?', name: g.short || cat.short || cat.name, next: next ? { url: guideUrl(ctx, next.slug), title: next.title } : null } });
+  return layout(ctx, { title: g.title, description: g.summary, path: `guides/${g.slug}/`, body, active: g.category, jsonld, edit: `guides/${g.slug}`, src: g.file, hud: { level: (g.level || '').split(/[–-]/)[0].replace(/\D/g, '') || '?', name: g.short || cat.short || cat.name, next: next ? { url: guideUrl(ctx, next.slug), title: next.title } : null } });
 }
 
 // ---------- home ----------
@@ -287,8 +287,8 @@ export function homePage(ctx) {
   const body = `
 <section class="hero">
   <div class="wrap hero-in">
-    <h1>${e(c.heroTitle)}</h1>
-    <p>${e(c.heroText)}</p>
+    <h1 data-cfg="heroTitle">${e(c.heroTitle)}</h1>
+    <p data-cfg="heroText">${e(c.heroText)}</p>
     <button class="hero-search" type="button" data-open-search>${ICONS.search}<span>חפשו מדריך, מפה או מקצוע…</span></button>
     ${(c.heroMobs || []).length ? `<div class="hero-mobs" aria-hidden="true">${c.heroMobs.map(id => mobImg(id)).join('')}</div>` : ''}
     ${renderMarkdown('[[shot home-hero | ' + (c.heroShotCaption || 'MapleStory Classic World') + ']]', { base: ctx.base, images: ctx.images, showMissingShots: false }).html}
@@ -337,14 +337,14 @@ export function allGuidesPage(ctx) {
 }
 
 export function staticPage(ctx, p) {
-  const { html } = renderMarkdown(fillTokens(ctx, p.body), { base: ctx.base, images: ctx.images, showMissingShots: ctx.preview });
+  const { html } = renderMarkdown(fillTokens(ctx, p.body), { base: ctx.base, images: ctx.images, showMissingShots: ctx.preview, srcMap: !ctx.preview });
   const body = `
 <div class="wrap narrow page-pad"><article class="guide">
   <nav class="crumbs" aria-label="מיקום באתר"><a href="${url(ctx)}">ראשי</a></nav>
-  <header class="guide-head"><h1>${e(p.title)}</h1></header>
+  <header class="guide-head"><h1 data-fm="title">${e(p.title)}</h1></header>
   <div class="prose">${html}</div>
 </article></div>`;
-  return layout(ctx, { title: p.title, description: p.summary || '', path: `${p.slug}/`, body, edit: `pages/${p.slug}` });
+  return layout(ctx, { title: p.title, description: p.summary || '', path: `${p.slug}/`, body, edit: `pages/${p.slug}`, src: p.file });
 }
 
 export function notFoundPage(ctx) {

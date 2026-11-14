@@ -129,17 +129,17 @@ function renderBlocks(lines, opts, headings, usedIds, onH2) {
   let i = 0;
   const isBlank = l => /^\s*$/.test(l);
 
-  while (i < lines.length) {
+  const step = () => {
     const line = lines[i];
 
-    if (isBlank(line)) { i++; continue; }
+    if (isBlank(line)) { i++; return; }
 
     // ad marker
-    if (/^\s*\[\[ad\]\]\s*$/.test(line)) { out.push('<!--AD-->'); i++; continue; }
+    if (/^\s*\[\[ad\]\]\s*$/.test(line)) { out.push('<!--AD-->'); i++; return; }
 
     // screenshot slot: [[shot name | caption]]
     let sm = line.match(/^\s*\[\[shot\s+([a-z0-9-]+)\s*(?:\|\s*(.*?))?\s*\]\]\s*$/);
-    if (sm) { out.push(renderShot(sm[1], sm[2] || '', opts)); i++; continue; }
+    if (sm) { out.push(renderShot(sm[1], sm[2] || '', opts)); i++; return; }
 
     // custom container
     let m = line.match(/^:::\s*(tip|warning|info|npc|stats)\s*(.*)$/);
@@ -151,7 +151,7 @@ function renderBlocks(lines, opts, headings, usedIds, onH2) {
       while (i < lines.length && !/^:::\s*$/.test(lines[i])) inner.push(lines[i++]);
       i++; // closing
       out.push(renderContainer(type, title, inner, opts, headings, usedIds, onH2));
-      continue;
+      return;
     }
 
     // fenced code
@@ -161,7 +161,7 @@ function renderBlocks(lines, opts, headings, usedIds, onH2) {
       while (i < lines.length && !/^```/.test(lines[i])) buf.push(lines[i++]);
       i++;
       out.push(`<pre dir="ltr"><code>${escapeHtml(buf.join('\n'))}</code></pre>`);
-      continue;
+      return;
     }
 
     // heading
@@ -177,26 +177,26 @@ function renderBlocks(lines, opts, headings, usedIds, onH2) {
       if (level === 2 || level === 3) headings.push({ level, text: text.replace(/[*`]/g, ''), id });
       out.push(`<h${level} id="${id}">${inline(bidiText(text), opts)}<a class="anchor" href="#${id}" aria-label="קישור לסעיף">#</a></h${level}>`);
       i++;
-      continue;
+      return;
     }
 
     // hr
-    if (/^\s*(-{3,}|\*{3,})\s*$/.test(line)) { out.push('<hr>'); i++; continue; }
+    if (/^\s*(-{3,}|\*{3,})\s*$/.test(line)) { out.push('<hr>'); i++; return; }
 
     // table
     if (/^\s*\|/.test(line) && i + 1 < lines.length && /^\s*\|?\s*:?-{2,}/.test(lines[i + 1])) {
       const rows = [];
       while (i < lines.length && /^\s*\|/.test(lines[i])) rows.push(lines[i++]);
       out.push(renderTable(rows, opts));
-      continue;
+      return;
     }
 
     // blockquote
     if (/^\s*>/.test(line)) {
       const buf = [];
       while (i < lines.length && /^\s*>/.test(lines[i])) buf.push(lines[i++].replace(/^\s*>\s?/, ''));
-      out.push(`<blockquote>${renderBlocks(buf, opts, [], usedIds, () => 0)}</blockquote>`);
-      continue;
+      out.push(`<blockquote>${renderBlocks(buf, { ...opts, srcMap: false }, [], usedIds, () => 0)}</blockquote>`);
+      return;
     }
 
     // list
@@ -206,7 +206,7 @@ function renderBlocks(lines, opts, headings, usedIds, onH2) {
         buf.push(lines[i++]);
       }
       out.push(renderList(buf, opts));
-      continue;
+      return;
     }
 
     // paragraph
@@ -217,6 +217,16 @@ function renderBlocks(lines, opts, headings, usedIds, onH2) {
     }
     if (buf.length) out.push(`<p>${buf.map(l => inline(l.trim(), opts)).join('<br>')}</p>`);
     else i++;
+    };
+  while (i < lines.length) {
+    const start = i, before = out.length;
+    step();
+    // סימון שורות המקור של כל בלוק עליון, לעריכה במקום באתר החי
+    if (opts.srcMap && i > start) for (let k = before; k < out.length; k++) {
+      if (out[k].startsWith('<!--')) continue;
+      out[k] = out[k].replace(/^(\s*<[a-zA-Z][a-zA-Z0-9]*)/, `$1 data-md="${start}-${i}"`);
+      break;
+    }
   }
   return out.join('\n');
 }
@@ -248,7 +258,7 @@ function renderContainer(type, title, inner, opts, headings, usedIds, onH2) {
     }).join('');
     return `<aside class="box box-stats"><div class="box-title">${inline(title || CONTAINER_TITLES.stats, opts)}</div><div class="stat-grid">${rows}</div></aside>`;
   }
-  const body = renderBlocks(inner, opts, [], usedIds, () => 0);
+  const body = renderBlocks(inner, { ...opts, srcMap: false }, [], usedIds, () => 0);
   const label = title || CONTAINER_TITLES[type];
   if (type === 'npc') {
     return `<aside class="box box-npc"><div class="npc-name">${inline(label, opts)}</div><div class="npc-text">${body}</div></aside>`;

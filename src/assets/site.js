@@ -136,21 +136,10 @@
     });
   }
 
-  // edit button: shown only to whoever is logged in to the admin in this browser
+  // עריכה חיה: רק מי שמחובר למערכת הניהול בדפדפן הזה מוריד את קוד העריכה
   try {
-    var target = document.body.dataset.edit;
-    if (target && localStorage.getItem('gh_token')) {
-      var a = document.createElement('a');
-      var view = target.indexOf('settings') === 0 ? '#/' + target : '#/edit/' + target;
-      a.href = base + 'admin/' + view;
-      a.className = 'edit-fab';
-      a.textContent = 'עריכת העמוד';
-      document.body.appendChild(a);
-      var v = document.createElement('a');
-      v.href = base + 'admin/#/visual/' + encodeURIComponent(location.pathname.slice(base.length));
-      v.className = 'edit-fab vis';
-      v.textContent = 'עריכת תמונות';
-      document.body.appendChild(v);
+    if (localStorage.getItem('gh_token') && !/\/admin\//.test(location.pathname) && window.self === window.top) {
+      import(base + 'admin/live.js').catch(function () {});
     }
   } catch (e) {}
 
