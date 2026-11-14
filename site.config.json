@@ -135,10 +135,10 @@
     }
   ],
   "classImages": {
-    "warrior": "https://maplestory.io/api/gms/208.2.0/mob/130100/render/stand",
-    "magician": "https://maplestory.io/api/gms/208.2.0/mob/210100/render/stand",
-    "bowman": "https://maplestory.io/api/gms/208.2.0/mob/1210102/render/stand",
-    "thief": "https://maplestory.io/api/gms/208.2.0/mob/1210101/render/stand"
+    "warrior": "https://maplestory.io/api/character/%5B%7B%22itemId%22%3A2000%7D%2C%7B%22itemId%22%3A12000%7D%2C%7B%22itemId%22%3A20000%7D%2C%7B%22itemId%22%3A30000%7D%2C%7B%22itemId%22%3A1040002%7D%2C%7B%22itemId%22%3A1060002%7D%2C%7B%22itemId%22%3A1072001%7D%2C%7B%22itemId%22%3A1302000%7D%5D/stand1/0?showears=false&resize=2",
+    "magician": "https://maplestory.io/api/character/%5B%7B%22itemId%22%3A2000%7D%2C%7B%22itemId%22%3A12000%7D%2C%7B%22itemId%22%3A20000%7D%2C%7B%22itemId%22%3A30000%7D%2C%7B%22itemId%22%3A1040002%7D%2C%7B%22itemId%22%3A1060002%7D%2C%7B%22itemId%22%3A1072001%7D%2C%7B%22itemId%22%3A1372000%7D%5D/stand1/0?showears=false&resize=2",
+    "bowman": "https://maplestory.io/api/character/%5B%7B%22itemId%22%3A2000%7D%2C%7B%22itemId%22%3A12000%7D%2C%7B%22itemId%22%3A20000%7D%2C%7B%22itemId%22%3A30000%7D%2C%7B%22itemId%22%3A1040002%7D%2C%7B%22itemId%22%3A1060002%7D%2C%7B%22itemId%22%3A1072001%7D%2C%7B%22itemId%22%3A1452000%7D%5D/stand1/0?showears=false&resize=2",
+    "thief": "https://maplestory.io/api/character/%5B%7B%22itemId%22%3A2000%7D%2C%7B%22itemId%22%3A12000%7D%2C%7B%22itemId%22%3A20000%7D%2C%7B%22itemId%22%3A30000%7D%2C%7B%22itemId%22%3A1040002%7D%2C%7B%22itemId%22%3A1060002%7D%2C%7B%22itemId%22%3A1072001%7D%2C%7B%22itemId%22%3A1332000%7D%5D/stand1/0?showears=false&resize=2"
   },
   "attribution": {
     "text": "מקור: Nexon, המשחק MapleStory Classic World",

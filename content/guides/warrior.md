@@ -5,7 +5,7 @@ category: "jobs"
 cls: "warrior"
 order: 1
 level: "1–30"
-thumb: "https://maplestory.io/api/gms/208.2.0/mob/130100/render/stand"
+thumb: "https://maplestory.io/api/character/%5B%7B%22itemId%22%3A2000%7D%2C%7B%22itemId%22%3A12000%7D%2C%7B%22itemId%22%3A20000%7D%2C%7B%22itemId%22%3A30000%7D%2C%7B%22itemId%22%3A1040002%7D%2C%7B%22itemId%22%3A1060002%7D%2C%7B%22itemId%22%3A1072001%7D%2C%7B%22itemId%22%3A1302000%7D%5D/stand1/0?showears=false&resize=2"
 summary: "חלוקת STR ו-DEX לפי רמה, סדר סקילים מדויק, נשקים לכל רמה, ציוד, מפות אימון והטעויות שכדאי להימנע מהן כלוחם."
 keywords: ["warrior", "לוחם", "power strike", "slash blast", "perion", "פריון", "str"]
 related: ["fighter", "page", "spearman", "second-job-advancement"]

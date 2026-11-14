@@ -6,7 +6,7 @@ category: "jobs2"
 cls: "magician"
 order: 5
 level: "30–70"
-thumb: "https://maplestory.io/api/gms/208.2.0/mob/210100/render/stand"
+thumb: "https://maplestory.io/api/character/%5B%7B%22itemId%22%3A2000%7D%2C%7B%22itemId%22%3A12000%7D%2C%7B%22itemId%22%3A20000%7D%2C%7B%22itemId%22%3A30000%7D%2C%7B%22itemId%22%3A1040002%7D%2C%7B%22itemId%22%3A1060002%7D%2C%7B%22itemId%22%3A1072001%7D%2C%7B%22itemId%22%3A1382000%7D%5D/stand1/0?showears=false&resize=2"
 summary: "Fire Arrow ו-Poison Breath: סדר סקילים, שרביטים לכל רמה, חולשות של מפלצות, ומפות שבהן קוסם האש מנקה הכי מהר."
 keywords: ["f/p", "fire poison", "אש", "רעל", "fire arrow", "poison breath", "wizard"]
 related: ["magician", "il-wizard", "cleric", "forgotten-hollow"]

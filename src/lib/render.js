@@ -30,6 +30,7 @@ export function mobImg(id, cls = 'mob') {
   if (!id) return '';
   return `<img class="${cls}" src="${MOB_BASE}${encodeURIComponent(id)}/render/stand" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
 }
+function charBanner(g) { return /\/character\//.test(g.thumb || '') ? `<img class="mob mob-char" src="${e(g.thumb)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ''; }
 function thumbMob(g) { return ((g.thumb || '').match(/\/mob\/(\d+)\//) || [])[1] || ''; }
 
 function catOf(ctx, id) {
@@ -219,7 +220,7 @@ export function guidePage(ctx, g) {
       ${g.summary ? `<p class="lede">${t(g.summary)}</p>` : ''}
       <div class="meta"><span>${readingTime(g.body)} דקות קריאה</span>${g.updated ? `<span>עודכן ${e(formatDate(g.updated))}</span>` : ''}</div>
     </header>
-    ${!g.cover ? `<figure class="cover cover-mobs" aria-hidden="true">${[...new Set([thumbMob(g), cat.mob, ...(ctx.config.heroMobs || []).slice(0, 2)].filter(Boolean))].slice(0, 4).map(id => mobImg(id)).join('')}<span class="cover-ground"></span></figure>` : ''}
+    ${!g.cover ? `<figure class="cover cover-mobs" aria-hidden="true">${charBanner(g)}${[...new Set([thumbMob(g), cat.mob, ...(ctx.config.heroMobs || []).slice(0, 2)].filter(Boolean))].slice(0, 4).map(id => mobImg(id)).join('')}<span class="cover-ground"></span></figure>` : ''}
     ${g.cover ? `<figure class="cover" data-slot="cover" data-guide="${e(g.slug)}"><img src="${e(img(ctx, g.cover))}" alt="${e(g.coverAlt || '')}"></figure>` : `<figure class="cover cover-missing shot-missing" data-slot="cover" data-guide="${e(g.slug)}" hidden><div class="shot-frame"><span>באנר למדריך</span></div></figure>`}
     ${tocHtml ? `<details class="toc-mobile"><summary>תוכן העניינים <span>${toc.length} סעיפים</span></summary>${tocHtml}</details>` : ''}
     <div class="prose">

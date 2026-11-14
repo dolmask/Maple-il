@@ -729,3 +729,6 @@ table { table-layout: auto; word-break: normal; overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: no-preference) { .hero-mobs .mob, .cover-mobs .mob { animation: mob-bob 2.8s ease-in-out infinite; } .hero-mobs .mob:nth-child(2n), .cover-mobs .mob:nth-child(2n) { animation-delay: -1.3s; } }
 .a11y-motion .hero-mobs .mob, .a11y-motion .cover-mobs .mob { animation: none; }
 @media (max-width: 640px) { .hero-mobs .mob:nth-child(n+5) { display: none; } .list-mob { max-height: 56px; } }
+
+.cover-mobs .mob-char { max-height: 120px; }
+.g-icon img[src*="/character/"], .job-icon img[src*="/character/"] { object-fit: contain; object-position: center bottom; }

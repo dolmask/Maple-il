@@ -5,7 +5,7 @@ category: "jobs"
 cls: "bowman"
 order: 3
 level: "1–30"
-thumb: "https://maplestory.io/api/gms/208.2.0/mob/1210102/render/stand"
+thumb: "https://maplestory.io/api/character/%5B%7B%22itemId%22%3A2000%7D%2C%7B%22itemId%22%3A12000%7D%2C%7B%22itemId%22%3A20000%7D%2C%7B%22itemId%22%3A30000%7D%2C%7B%22itemId%22%3A1040002%7D%2C%7B%22itemId%22%3A1060002%7D%2C%7B%22itemId%22%3A1072001%7D%2C%7B%22itemId%22%3A1452000%7D%5D/stand1/0?showears=false&resize=2"
 summary: "קשת רגילה או קשת צולבת? חלוקת DEX ו-STR לכל מסלול, סדר סקילים, חצים, נשקים ומפות אימון עד הג'וב השני."
 keywords: ["bowman", "archer", "קשת", "arrow blow", "double shot", "henesys", "הניסיס", "dex"]
 related: ["hunter", "crossbowman", "second-job-advancement"]

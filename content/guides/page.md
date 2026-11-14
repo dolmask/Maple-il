@@ -6,7 +6,7 @@ category: "jobs2"
 cls: "warrior"
 order: 3
 level: "30–70"
-thumb: "https://maplestory.io/api/gms/208.2.0/mob/130100/render/stand"
+thumb: "https://maplestory.io/api/character/%5B%7B%22itemId%22%3A2000%7D%2C%7B%22itemId%22%3A12000%7D%2C%7B%22itemId%22%3A20000%7D%2C%7B%22itemId%22%3A30000%7D%2C%7B%22itemId%22%3A1040002%7D%2C%7B%22itemId%22%3A1060002%7D%2C%7B%22itemId%22%3A1072001%7D%2C%7B%22itemId%22%3A1322000%7D%5D/stand1/0?showears=false&resize=2"
 summary: "הפייג' עם אלה או חרב: סקילים, סדר נקודות, נשקים לכל רמה, מפות אימון, ולמה Threaten מוריד הגנה ולא התקפה."
 keywords: ["page", "פייג'", "blunt", "אלה", "threaten", "white knight"]
 related: ["warrior", "fighter", "spearman"]
