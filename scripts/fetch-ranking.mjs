@@ -27,7 +27,7 @@ export async function fetchRanking({
     if (!first) await sleep(wait);
     first = false;
     for (let attempt = 0; attempt < 2; attempt++) {
-      const res = await fetchImpl(url, { headers });
+      const res = await fetchImpl(url, { headers, signal: AbortSignal.timeout(20000) });
       if (res.status === 429 && attempt === 0) {
         const ra = parseInt(res.headers.get('retry-after') || '60', 10);
         log(`ClassicRank: 429, ממתין ${ra} שניות`);
@@ -78,7 +78,7 @@ export async function fetchRanking({
 
   if (fallbackUrl) {
     try {
-      const res = await fetchImpl(fallbackUrl, { headers: { Accept: 'application/json' } });
+      const res = await fetchImpl(fallbackUrl, { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(20000) });
       if (res.ok) {
         const prev = await res.json();
         if (prev && Array.isArray(prev.rows) && prev.rows.length) {

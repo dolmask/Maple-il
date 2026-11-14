@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # רענון דירוג השחקנים מ-ClassicRank, כל 30 דקות
+    - cron: '7,37 * * * *'
 
 permissions:
   contents: read
@@ -28,6 +31,7 @@ jobs:
         run: node build.mjs
         env:
           BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+          CLASSICRANK_KEY: ${{ secrets.CLASSICRANK_KEY }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

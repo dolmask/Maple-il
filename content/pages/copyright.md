@@ -29,6 +29,14 @@ MapleStory ו-MapleStory Classic World, וכן כל השמות, הדמויות, 
 
 צילומי המסך באתר צולמו מתוך המשחק כדי להמחיש את המדריכים, ומסומנים בכיתוב "צילום מסך מתוך MapleStory Classic World © NEXON Korea Corp.". הזכויות בתוכן שמופיע בהם שייכות ל-Nexon.
 
+## דירוג השחקנים
+
+נתוני [דירוג השחקנים](/ranking/) (שמות דמויות, רמה, מקצוע, Fame ותמונות הדמויות) מגיעים מ-[ClassicRank](https://classicrank.com), דרך ה-API הציבורי שלהם ולפי התנאים שלו, וכל עמוד בדירוג כולל קישור גלוי אליהם. ClassicRank הוא אתר קהילתי שאינו קשור למייפלורז או ל-Nexon. מייפלורז לא אוסף נתונים מתוך המשחק בעצמו ולא מפעיל תוכנות אוטומטיות במשחק.
+
+## איורים מ-maplestory.io
+
+איורי המפלצות שמופיעים בדירוג מוצגים ישירות מ-[maplestory.io](https://maplestory.io), פרויקט קהילתי לא רשמי. האיורים הם קניינה של Nexon, והם לא נשמרים במאגר של האתר. נסיר כל איור לפי בקשה של Nexon.
+
 ## בקשות להסרה
 
 Nexon רשאית, לפי שיקול דעתה, להפסיק את השימוש בקניין שלה ולבקש להסיר תוכן. נכבד כל בקשה כזו ונסיר את התוכן במהירות. גם בעלי זכויות אחרים שסבורים שתוכן כלשהו באתר פוגע בזכויותיהם מוזמנים לפנות אלינו.
@@ -36,6 +44,7 @@ Nexon רשאית, לפי שיקול דעתה, להפסיק את השימוש ב�
 ## קישורים
 
 - [מדריך ה-IP של Nexon ליוצרי תוכן](https://m.nexon.com/terms/716)
+- [ClassicRank](https://classicrank.com) · [maplestory.io](https://maplestory.io)
 - [MapleStory Worlds, האתר הרשמי](https://maplestoryworlds.nexon.com/)
 - [מסמכים משפטיים של MapleStory Worlds](https://maplestoryworlds.nexon.com/en/legal)
 - [דיווח על הפרת קניין רוחני ל-Nexon](https://playersupport.nexon.com/hc/en-us/articles/206476953-Intellectual-Property-Infringement-Notifications)

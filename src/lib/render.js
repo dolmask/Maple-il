@@ -397,8 +397,9 @@ export function rankingPage(ctx) {
   <section class="window rank-window" aria-labelledby="rankTitle">
     <div class="window-bar"><h2 id="rankTitle">דירוג כללי</h2><small id="rankSub">לפי רמה</small></div>
     <div class="rank-tabs" role="group" aria-label="סוג הדירוג">${tabs}</div>
-    <form class="rank-filters" id="rankFilters" role="search" aria-label="סינון הדירוג">
+    <form class="rank-filters is-collapsed" id="rankFilters" role="search" aria-label="סינון הדירוג">
       <label class="rf rf-q"><span>חיפוש לפי שם</span><input type="search" name="q" autocomplete="off" placeholder="שם הדמות" dir="auto"></label>
+      <button type="button" class="btn btn-ghost rf-toggle" id="rfToggle" aria-expanded="false" aria-controls="rankFilters">סינונים <span id="rfCount"></span></button>
       <label class="rf"><span>מקצוע</span><select name="family">${familyOpts}</select></label>
       <label class="rf"><span>ענף</span><select name="job"><option value="">כל הענפים</option></select></label>
       <label class="rf"><span>דרגה</span><select name="tier"><option value="">הכול</option><option value="0">מתחיל</option><option value="1">ג'וב ראשון</option><option value="2">ג'וב שני</option></select></label>

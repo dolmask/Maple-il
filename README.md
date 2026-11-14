@@ -38,9 +38,21 @@
 
 בהגדרות ממלאים את הדומיין (למשל `www.example.co.il`) ואת כתובת האתר המלאה. אצל רשם הדומיין מוסיפים רשומת CNAME שמפנה ל-`dolmask.github.io`. ב-GitHub: Settings ← Pages ← Custom domain.
 
+## דירוג השחקנים
+
+העמוד `/ranking/` מציג את דירוג השחקנים מ-[ClassicRank](https://classicrank.com). הנתונים נמשכים בכל בנייה (`scripts/fetch-ranking.mjs`), ו-GitHub Actions בונה מחדש כל 30 דקות.
+
+- **בלי מפתח** (ברירת המחדל): 1,000 השחקנים המובילים לפי רמה ו-1,000 לפי Fame. הסינונים פועלים בתוך הרשימה הזו.
+- **עם מפתח Partner**: מבקשים ב-[classicrank.com/developer](https://classicrank.com/developer) (התחברות עם Discord). את המפתח שמים **רק** ב-GitHub ← Settings ← Secrets and variables ← Actions ← New repository secret, בשם `CLASSICRANK_KEY`. אז נמשכים עד `ranking.maxRows` שחקנים (ברירת מחדל 10,000), וגם לשוניות "אי ההתחלה" ו"מתחילים לנצח".
+- **אם ClassicRank לא זמין**, הבנייה משתמשת בנתונים הקודמים מהאתר החי, והאתר לא נשבר.
+- **כיבוי**: `"ranking": { "enabled": false }` ב-`site.config.json`.
+- **חובה לפי התנאים שלהם**: קישור גלוי ל-classicrank.com בכל עמוד שמציג את הנתונים. זה כבר בנוי בעמודים.
+
 ## פיתוח מקומי
 
 ```bash
 node build.mjs
 cd dist && python3 -m http.server 8000
 ```
+
+בדיקה מקומית של הדירוג עם נתוני דוגמה (לא נפרסים): `RANKING_FIXTURE=test/fixtures/ranking-sample.json node build.mjs`. בנייה בלי רשת: `RANKING_OFFLINE=1 node build.mjs`. בדיקות: `node --test test/*.test.mjs`.
