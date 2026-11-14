@@ -116,6 +116,7 @@ function route() {
   if (view === 'new') return renderEditor(type || 'guides', null);
   if (view === 'settings') return renderSettings(type);
   if (view === 'media') return renderMedia();
+  if (view === 'visual') return renderVisual(type || '');
   return renderDashboard(type === 'pages' ? 'pages' : 'guides');
 }
 
@@ -181,6 +182,7 @@ async function renderDashboard(kind) {
 <div class="tabs" role="tablist">
   <a class="tab${kind === 'guides' ? ' is-on' : ''}" href="#/list/guides">מדריכים</a>
   <a class="tab${kind === 'pages' ? ' is-on' : ''}" href="#/list/pages">עמודים (אודות, פרטיות)</a>
+  <a class="tab" href="#/visual/">עריכת תמונות על גבי האתר</a>
   <a class="tab" href="#/media">תמונות</a>
   <a class="tab" href="#/settings">הגדרות האתר ופרסומות</a>
   <a class="tab" href="${SITE_BASE}" target="_blank" rel="noopener">צפייה באתר</a>
@@ -824,6 +826,129 @@ ${files.map(f => `<div class="media-card" data-name="${e(f.name)}">
     const renamed = new File([file], target, { type: file.type });
     await uploadMany([renamed], files); refresh();
   }));
+}
+
+// ---------------- visual image editing ----------------
+// מציג את האתר האמיתי בתוך מסגרת, ומוסיף כפתור העלאה ליד כל מקום שאפשר להציג בו תמונה:
+// צילומי מסך במדריכים, באנר של מדריך, תמונת כרטיס ברשימות, ותמונות המקצועות בדף הבית.
+const VIS_CSS = `
+.edit-fab, .hud, .levelup, .totop { display: none !important; }
+body.has-hud { padding-bottom: 0 !important; }
+[data-vis] { position: relative; outline: 2px dashed #F2C14E; outline-offset: 3px; border-radius: 12px; }
+.vis-btn { position: absolute; z-index: 30; top: 8px; inset-inline-start: 8px; display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 12px; min-height: 36px; border: 0; border-radius: 10px; cursor: pointer; font: 800 14px/1 Assistant, system-ui, sans-serif;
+  color: #1B1205; background: linear-gradient(180deg, #F7B24A, #E07F18); box-shadow: 0 4px 14px rgba(0,0,0,.45); white-space: nowrap; }
+.vis-btn:hover { filter: brightness(1.08); }
+.vis-btn.small { top: auto; bottom: -10px; inset-inline-start: -10px; padding: 4px 7px; min-height: 26px; font-size: 12px; border-radius: 8px; }
+.vis-busy .vis-btn { opacity: .6; pointer-events: none; }
+.g-icon[data-vis], .job-icon[data-vis] { overflow: visible !important; }
+`;
+async function renderVisual(rawPath) {
+  if (offline) { app.innerHTML = '<p class="muted">עריכה על גבי האתר זמינה רק כשמחוברים.</p>'; return; }
+  const path = decodeURIComponent(rawPath || '').replace(/^\/+/, '');
+  const pages = [
+    { p: '', t: 'דף הבית (תמונות המקצועות וצילום ראשי)' },
+    { p: 'guides/', t: 'כל המדריכים (תמונות כרטיס)' },
+    ...manifest.guides.map(g => ({ p: `guides/${g.slug}/`, t: `מדריך: ${g.title}` })),
+    ...(config.categories || []).map(c => ({ p: `category/${c.id}/`, t: `קטגוריה: ${c.name}` })),
+  ];
+  app.innerHTML = `
+<div class="dash-head">
+  <a class="btn btn-ghost btn-sm" href="#/list/guides">חזרה</a>
+  <h1>עריכת תמונות על גבי האתר</h1>
+  <span class="spacer"></span>
+  <label class="f" style="min-width:min(420px,100%)"><span class="sr-only">עמוד</span><select class="in" id="vPage">${pages.map(x => `<option value="${e(x.p)}"${x.p === path ? ' selected' : ''}>${e(x.t)}</option>`).join('')}</select></label>
+</div>
+<p class="muted small">זה האתר כפי שהגולשים רואים אותו. ליד כל מקום שאפשר לשים בו תמונה יש כפתור העלאה. התמונה נשמרת במאגר ומופיעה כאן מיד, ובאתר עצמו תוך כדקה-שתיים. מקומות מסומנים בקו מקווקו זהוב; מסגרות ריקות מוצגות כאן בלבד, ולגולשים הן מוסתרות עד שמעלים תמונה. אפשר גם לנווט בתוך האתר בלחיצה על קישורים.</p>
+<iframe id="vFrame" class="vis-frame" title="האתר במצב עריכת תמונות" src="${SITE_BASE}${path}"></iframe>
+<input type="file" id="vFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden>`;
+  const frame = $('#vFrame'), sel = $('#vPage'), fileIn = $('#vFile');
+  sel.addEventListener('change', () => { frame.src = SITE_BASE + sel.value; history.replaceState(null, '', '#/visual/' + encodeURIComponent(sel.value)); });
+  let files = [];
+  try { files = await listImages(); } catch (x) { toast(x.message, true); }
+
+  const pickFile = () => new Promise(res => { fileIn.value = ''; fileIn.onchange = () => res(fileIn.files[0] || null); fileIn.click(); });
+  async function setGuideField(slug, field, value) {
+    const f = await getFile(`content/guides/${slug}.md`);
+    if (!f) throw new Error('לא מצאתי את קובץ המדריך במאגר.');
+    const p = parseFrontMatter(f.text);
+    p.data[field] = value;
+    await putFile(`content/guides/${slug}.md`, stringifyFrontMatter(p.data, p.body), `תמונה ל${field === 'cover' ? 'באנר' : 'כרטיס'}: ${p.data.title || slug}`, f.sha);
+    const m = manifest.guides.find(g => g.slug === slug); if (m) m[field] = value;
+  }
+  async function setClassImage(key, value) {
+    const f = await getFile('site.config.json');
+    const cfg = JSON.parse(f.text);
+    cfg.classImages = { ...(cfg.classImages || {}), [key]: value };
+    await putFile('site.config.json', JSON.stringify(cfg, null, 2) + '\n', `תמונת מקצוע: ${key}`, f.sha);
+    config.classImages = cfg.classImages;
+  }
+  async function doUpload(el, baseName, after) {
+    const file = await pickFile(); if (!file) return;
+    el.classList.add('vis-busy');
+    try {
+      toast('מעלה תמונה…', false, 60000);
+      const path = await uploadImage(file, files, baseName);
+      files = await listImages().catch(() => files);
+      if (after) await after(path);
+      const url = localImages[path.slice(1)];
+      showImage(el, url);
+      toast('נשמר. האתר יתעדכן תוך כדקה-שתיים.');
+      checkDeploy(true);
+    } catch (x) { toast(x.message, true, 8000); }
+    el.classList.remove('vis-busy');
+  }
+  function showImage(el, url) {
+    const doc = el.ownerDocument;
+    if (el.matches('[data-shot], [data-slot="cover"]')) {
+      el.classList.remove('shot-missing', 'cover-missing');
+      const frameBox = el.querySelector('.shot-frame');
+      if (frameBox) frameBox.innerHTML = `<img src="${url}" alt="">`;
+      else el.innerHTML = `<img src="${url}" alt="">` + el.querySelector('.vis-btn').outerHTML;
+    } else {
+      el.classList.add('has-img');
+      [...el.childNodes].forEach(n => { if (!(n.classList && n.classList.contains('vis-btn'))) n.remove(); });
+      const im = doc.createElement('img'); im.src = url; im.alt = ''; el.prepend(im);
+    }
+    const b = el.querySelector('.vis-btn'); if (b) b.textContent = b.dataset.replaceLabel;
+  }
+  function addBtn(el, label, replaceLabel, has, small, handler) {
+    if (el.querySelector(':scope > .vis-btn')) return;
+    el.setAttribute('data-vis', '');
+    const b = el.ownerDocument.createElement('button');
+    b.type = 'button'; b.className = 'vis-btn' + (small ? ' small' : '');
+    b.dataset.replaceLabel = replaceLabel; b.textContent = has ? replaceLabel : label;
+    b.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); handler(); }, true);
+    el.appendChild(b);
+  }
+  function decorate() {
+    let doc;
+    try { doc = frame.contentDocument; } catch { return; }
+    if (!doc || !doc.body) return;
+    const cur = frame.contentWindow.location.pathname.slice(SITE_BASE.length);
+    if ([...sel.options].some(o => o.value === cur)) { sel.value = cur; history.replaceState(null, '', '#/visual/' + encodeURIComponent(cur)); }
+    const st = doc.createElement('style'); st.textContent = VIS_CSS; doc.head.appendChild(st);
+    doc.querySelectorAll('[data-shot][hidden], [data-slot][hidden]').forEach(n => n.removeAttribute('hidden'));
+    doc.querySelectorAll('[data-shot]').forEach(el => {
+      const name = el.dataset.shot;
+      addBtn(el, 'העלאת צילום מסך', 'החלפת צילום', !el.classList.contains('shot-missing'), false, () => doUpload(el, name));
+    });
+    doc.querySelectorAll('[data-slot="cover"]').forEach(el => {
+      const slug = el.dataset.guide;
+      addBtn(el, 'העלאת באנר', 'החלפת באנר', !el.classList.contains('cover-missing'), false, () => doUpload(el, `cover-${slug}`, p => setGuideField(slug, 'cover', p)));
+    });
+    doc.querySelectorAll('[data-thumb]').forEach(el => {
+      const slug = el.dataset.thumb;
+      addBtn(el, 'תמונה', 'החלפה', el.classList.contains('has-img'), true, () => doUpload(el, `thumb-${slug}`, p => setGuideField(slug, 'thumb', p)));
+    });
+    doc.querySelectorAll('[data-class-img]').forEach(el => {
+      const key = el.dataset.classImg;
+      addBtn(el, 'תמונה', 'החלפה', el.classList.contains('has-img'), true, () => doUpload(el, `class-${key}`, p => setClassImage(key, p)));
+    });
+  }
+  frame.addEventListener('load', decorate);
+  // ייתכן שהעמוד נטען כבר בזמן שחיכינו לרשימת התמונות
+  try { if (frame.contentDocument && frame.contentDocument.readyState === 'complete' && frame.contentDocument.body && frame.contentDocument.body.childElementCount) decorate(); } catch {}
 }
 
 boot();

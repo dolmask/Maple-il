@@ -109,3 +109,5 @@ label.f small { font-weight: 600; color: var(--muted); }
 .shots-table.only-missing tr.ok { display: none; }
 .shots-table code { font-size: .82rem; }
 .shots-table td:last-child { white-space: nowrap; }
+
+.vis-frame { display: block; width: 100%; height: calc(100vh - 210px); min-height: 520px; border: 1px solid var(--line-2); border-radius: 14px; background: var(--page); box-shadow: var(--shadow); }

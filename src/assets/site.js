@@ -6,7 +6,7 @@
   var tt = $('#themeToggle');
   if (tt) tt.addEventListener('click', function () {
     var root = document.documentElement;
-    var dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    var dark = root.dataset.theme !== 'light';
     root.dataset.theme = dark ? 'light' : 'dark';
     try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {}
   });
@@ -141,6 +141,11 @@
       a.className = 'edit-fab';
       a.textContent = 'עריכת העמוד';
       document.body.appendChild(a);
+      var v = document.createElement('a');
+      v.href = base + 'admin/#/visual/' + encodeURIComponent(location.pathname.slice(base.length));
+      v.className = 'edit-fab vis';
+      v.textContent = 'עריכת תמונות';
+      document.body.appendChild(v);
     }
   } catch (e) {}
 

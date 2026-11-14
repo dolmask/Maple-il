@@ -71,11 +71,11 @@ ${noindex ? '<meta name="robots" content="noindex">' : ''}
 <meta property="og:title" content="${e(title || c.siteName)}">
 <meta property="og:description" content="${e(description || c.description)}">
 ${canonical ? `<meta property="og:url" content="${e(canonical)}">` : ''}
-<meta name="theme-color" content="#1D6FB3">
+<meta name="theme-color" content="#0A1430">
 <link rel="icon" href="${url(ctx, 'assets/favicon.svg')}" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Assistant:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=Assistant:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${url(ctx, 'assets/style.css')}${ctx.version ? '?v=' + ctx.version : ''}">
 <script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t;var a=JSON.parse(localStorage.getItem('a11y')||'{}');for(var k in a){if(k==='size')document.documentElement.dataset.size=a[k];else if(a[k])document.documentElement.classList.add('a11y-'+k)}}catch(e){}</script>
 ${ads.enabled && ads.client && !ctx.preview ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${e(ads.client)}" crossorigin="anonymous"></script>` : ''}
@@ -86,7 +86,7 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script
 <a class="skip" href="#main">דלג לתוכן</a>
 <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
 <header class="top">
-  <div class="clouds" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="moon" aria-hidden="true"></div>
   <div class="hills" aria-hidden="true"></div>
   <div class="top-bar wrap">
     <a class="brand" href="${url(ctx)}" aria-label="${e(c.siteName)}, לדף הבית">
@@ -173,7 +173,7 @@ export function guideCard(ctx, g, { showCat = false } = {}) {
   const cls = g.cls && CLASS_INFO[g.cls];
   const icon = g.thumb ? `<img src="${e(img(ctx, g.thumb))}" alt="" loading="lazy">` : (ICONS[g.icon] || ICONS[cls?.icon] || ICONS[cat.icon] || ICONS.book);
   return `<li><a class="g-row${g.cls ? ' cls-' + e(g.cls) : ''}" href="${guideUrl(ctx, g.slug)}">
-  <span class="g-icon${g.thumb ? ' has-img' : ''}" aria-hidden="true">${icon}</span>
+  <span class="g-icon${g.thumb ? ' has-img' : ''}" aria-hidden="true" data-thumb="${e(g.slug)}">${icon}</span>
   <span class="g-body">
     <span class="g-title">${t(g.title)}</span>
     ${g.summary ? `<span class="g-sum">${t(g.summary)}</span>` : ''}
@@ -208,7 +208,7 @@ export function guidePage(ctx, g) {
       ${g.summary ? `<p class="lede">${t(g.summary)}</p>` : ''}
       <div class="meta"><span>${readingTime(g.body)} דקות קריאה</span>${g.updated ? `<span>עודכן ${e(formatDate(g.updated))}</span>` : ''}</div>
     </header>
-    ${g.cover ? `<figure class="cover"><img src="${e(img(ctx, g.cover))}" alt="${e(g.coverAlt || '')}"></figure>` : ''}
+    ${g.cover ? `<figure class="cover" data-slot="cover" data-guide="${e(g.slug)}"><img src="${e(img(ctx, g.cover))}" alt="${e(g.coverAlt || '')}"></figure>` : `<figure class="cover cover-missing shot-missing" data-slot="cover" data-guide="${e(g.slug)}" hidden><div class="shot-frame"><span>באנר למדריך</span></div></figure>`}
     ${tocHtml ? `<details class="toc-mobile"><summary>תוכן העניינים <span>${toc.length} סעיפים</span></summary>${tocHtml}</details>` : ''}
     <div class="prose">
 ${withAds}
@@ -248,7 +248,7 @@ export function homePage(ctx) {
     const pic = (c.classImages || {})[key];
     return `<li class="job cls-${key}">
   <a class="job-main" href="${g ? guideUrl(ctx, g.slug) : '#'}">
-    <span class="job-icon${pic ? ' has-img' : ''}" aria-hidden="true">${pic ? `<img src="${e(img(ctx, pic))}" alt="">` : ICONS[info.icon]}</span>
+    <span class="job-icon${pic ? ' has-img' : ''}" aria-hidden="true" data-class-img="${key}">${pic ? `<img src="${e(img(ctx, pic))}" alt="">` : ICONS[info.icon]}</span>
     <span class="job-name">${info.name} <span lang="en">${info.en}</span></span>
     <span class="job-facts">${info.stat} · ${info.town}</span>
   </a>

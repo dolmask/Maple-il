@@ -224,12 +224,11 @@ function renderShot(name, caption, opts) {
   const file = (opts.images || {})[name];
   const credit = `צילום מסך מתוך <bdi dir="ltr">MapleStory Classic World © NEXON Korea Corp.</bdi>`;
   if (!file) {
-    return opts.showMissingShots
-      ? `<figure class="shot shot-missing"><div class="shot-frame"><span>מקום לצילום מסך<br><code dir="ltr">${escapeHtml(name)}</code></span></div>${caption ? `<figcaption>${inline(caption, opts)}</figcaption>` : ''}</figure>`
-      : '';
+    // מסגרת ריקה: גלויה בתצוגה המקדימה, מוסתרת לגולשים (מצב העריכה החזותית מציג אותה)
+    return `<figure class="shot shot-missing" data-shot="${escapeHtml(name)}" data-caption="${escapeHtml(caption)}"${opts.showMissingShots ? '' : ' hidden'}><div class="shot-frame"><span>מקום לצילום מסך<br><code dir="ltr">${escapeHtml(name)}</code></span></div>${caption ? `<figcaption>${inline(caption, opts)}</figcaption>` : ''}</figure>`;
   }
   const src = fixUrl('/images/' + file, opts);
-  return `<figure class="shot"><div class="shot-frame"><img src="${src}" alt="${escapeHtml(caption || 'צילום מסך מהמשחק')}" loading="lazy" decoding="async"></div><figcaption>${caption ? `<span>${inline(caption, opts)}</span>` : ''}<small class="shot-credit">${credit}</small></figcaption></figure>`;
+  return `<figure class="shot" data-shot="${escapeHtml(name)}" data-caption="${escapeHtml(caption)}"><div class="shot-frame"><img src="${src}" alt="${escapeHtml(caption || 'צילום מסך מהמשחק')}" loading="lazy" decoding="async"></div><figcaption>${caption ? `<span>${inline(caption, opts)}</span>` : ''}<small class="shot-credit">${credit}</small></figcaption></figure>`;
 }
 
 // כל משבצות צילומי המסך במדריך, לרשימת החוסרים במערכת הניהול
