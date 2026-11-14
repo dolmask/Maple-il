@@ -6,7 +6,7 @@ category: "jobs2"
 cls: "warrior"
 order: 2
 level: "30–70"
-thumb: "https://maplestory.io/api/character/%5B%7B%22itemId%22%3A2000%7D%2C%7B%22itemId%22%3A12000%7D%2C%7B%22itemId%22%3A20000%7D%2C%7B%22itemId%22%3A30000%7D%2C%7B%22itemId%22%3A1040002%7D%2C%7B%22itemId%22%3A1060002%7D%2C%7B%22itemId%22%3A1072001%7D%2C%7B%22itemId%22%3A1312000%7D%5D/stand1/0?showears=false&resize=2"
+thumb: "https://maplestory.io/api/character/%7B%22itemId%22%3A2000%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D%2C%7B%22itemId%22%3A12000%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D%2C%7B%22itemId%22%3A20000%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D%2C%7B%22itemId%22%3A30000%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D%2C%7B%22itemId%22%3A1040009%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D%2C%7B%22itemId%22%3A1060009%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D%2C%7B%22itemId%22%3A1002011%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D%2C%7B%22itemId%22%3A1072001%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D%2C%7B%22itemId%22%3A1312000%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D/stand1/0?showears=false&resize=2"
 summary: "חרב או גרזן, סדר סקילים מלא עם Rage ו-Final Attack, חלוקת STR/DEX, נשקים לכל רמה ומפות האימון הכי טובות לפייטר."
 keywords: ["fighter", "פייטר", "rage", "axe", "sword", "final attack", "crusader"]
 related: ["warrior", "page", "spearman", "training-spots"]

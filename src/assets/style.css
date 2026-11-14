@@ -736,3 +736,5 @@ table { table-layout: auto; word-break: normal; overflow-wrap: anywhere; }
 /* איורי חפצים מ-maplestory.io בתוך הטקסט */
 .item { white-space: nowrap; }
 .item-ic { display: inline-block; width: 1.5em; height: 1.5em; vertical-align: -.4em; margin-inline-end: .2em; object-fit: contain; image-rendering: pixelated; }
+
+.item-ic.mob-ic { width: auto; height: 2.3em; max-width: 4em; vertical-align: -.55em; }

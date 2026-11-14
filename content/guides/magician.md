@@ -5,7 +5,7 @@ category: "jobs"
 cls: "magician"
 order: 2
 level: "1–30"
-thumb: "https://maplestory.io/api/character/%5B%7B%22itemId%22%3A2000%7D%2C%7B%22itemId%22%3A12000%7D%2C%7B%22itemId%22%3A20000%7D%2C%7B%22itemId%22%3A30000%7D%2C%7B%22itemId%22%3A1040002%7D%2C%7B%22itemId%22%3A1060002%7D%2C%7B%22itemId%22%3A1072001%7D%2C%7B%22itemId%22%3A1372000%7D%5D/stand1/0?showears=false&resize=2"
+thumb: "https://maplestory.io/api/character/%7B%22itemId%22%3A2000%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D%2C%7B%22itemId%22%3A12000%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D%2C%7B%22itemId%22%3A20000%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D%2C%7B%22itemId%22%3A30000%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D%2C%7B%22itemId%22%3A1050003%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D%2C%7B%22itemId%22%3A1072001%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D%2C%7B%22itemId%22%3A1372000%2C%22version%22%3A%22208.2.0%22%2C%22region%22%3A%22GMS%22%7D/stand1/0?showears=false&resize=2"
 summary: "Magic Claw או Energy Bolt? חלוקת INT ו-LUK, שלוש תוכניות סקילים, שרביטים לכל רמה, מגן, מפות ושיקויים לקוסם."
 keywords: ["magician", "mage", "קוסם", "magic claw", "energy bolt", "ellinia", "אלינייה", "int"]
 related: ["fp-wizard", "il-wizard", "cleric", "second-job-advancement"]
