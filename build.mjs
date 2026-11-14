@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { parseFrontMatter, listShots } from './src/lib/markdown.js';
 import { homePage, guidePage, categoryPage, allGuidesPage, staticPage, notFoundPage, rankingPage, playerPage, rankingOn } from './src/lib/render.js';
 import { fetchRanking } from './scripts/fetch-ranking.mjs';
+import { unpackRows, jobInfo } from './src/lib/ranking-data.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(ROOT, 'dist');
@@ -85,6 +86,11 @@ if (rankingOn(ctx)) {
   write('ranking/data.json', JSON.stringify(data));
   write('ranking/index.html', rankingPage(ctx));
   write('ranking/player/index.html', playerPage(ctx));
+  // סיכום לבדיקה ביומן הבנייה: מקצועות לא מוכרים (למשל ג'וב שלישי חדש) וסוגי מתחילים
+  const ur = unpackRows(data);
+  const count = f => Object.entries(ur.reduce((o, r) => { const k = String(f(r)); o[k] = (o[k] || 0) + 1; return o; }, {})).map(([k, v]) => `${k}:${v}`).join(', ');
+  const unknown = [...new Set(ur.filter(r => jobInfo(r.job).family === 'other').map(r => r.job))];
+  if (ur.length) console.log(`  מקצועות: ${count(r => r.job)}\n  דרגות: ${count(r => r.job_tier)} · משפחות: ${count(r => r.family)} · מתחילים: ${count(r => r.beginner_type)} · עם תמונה: ${ur.filter(r => r.photo).length}${unknown.length ? `\n  ⚠ מקצועות לא מוכרים: ${unknown.join(', ')}` : ''}`);
   console.log(`✔ דירוג: ${data.rows.length} שחקנים${data.meta.keyed ? ' (עם מפתח)' : ''}${data.meta.stale ? ' (נתונים קודמים)' : ''}${data.meta.empty ? ' (ריק)' : ''}`);
 }
 write('.nojekyll', '');
