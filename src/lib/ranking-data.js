@@ -34,7 +34,7 @@ export const TIER_LABEL = ['מתחיל', "ג'וב ראשון", "ג'וב שני",
 const ALIASES = {
   'f/p wizard': 'Wizard (Fire/Poison)', 'fp wizard': 'Wizard (Fire/Poison)', 'fire/poison wizard': 'Wizard (Fire/Poison)',
   'i/l wizard': 'Wizard (Ice/Lightning)', 'il wizard': 'Wizard (Ice/Lightning)', 'ice/lightning wizard': 'Wizard (Ice/Lightning)',
-  'archer': 'Bowman',
+  'archer': 'Bowman', 'swordsman': 'Warrior',
 };
 const lower = Object.fromEntries(Object.keys(JOBS).map(k => [k.toLowerCase(), k]));
 

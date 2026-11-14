@@ -11,6 +11,8 @@ test('jobInfo maps known jobs to Hebrew and family', () => {
   assert.equal(h.guide, 'hunter');
   assert.equal(jobInfo('Wizard (Fire/Poison)').he, 'קוסם אש/רעל');
   assert.equal(jobInfo('Beginner').family, 'beginner');
+  assert.equal(jobInfo('Swordsman').family, 'warrior');
+  assert.equal(jobInfo('Archer').he, 'קשת');
 });
 
 test('jobInfo falls back for unknown jobs', () => {
