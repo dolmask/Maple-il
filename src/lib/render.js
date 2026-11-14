@@ -418,7 +418,7 @@ export function rankingPage(ctx) {
       <p>בקרוב תוכלו לרשום כאן את הדמות שלכם, עם צילום מסך מהמשחק, ולהופיע בדירוג של הקהילה הישראלית, כולל גילדות וג'אמפ קווסטים.</p>
     </div>
     <ol class="podium" id="rankPodium" aria-label="שלושת הראשונים"></ol>
-    <div class="table-wrap rank-table-wrap">
+    <div class="rank-table-wrap">
       <table class="rank-table" id="rankTable">
         <caption class="sr-only" id="rankCaption">דירוג השחקנים</caption>
         <thead><tr><th scope="col">#</th><th scope="col">דמות</th><th scope="col">מקצוע</th><th scope="col">רמה</th><th scope="col">Fame</th><th scope="col" class="col-seen">נבדק</th></tr></thead>

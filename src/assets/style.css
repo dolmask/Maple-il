@@ -521,7 +521,8 @@ mark { background: color-mix(in srgb, var(--gold) 40%, transparent); color: inhe
 .fam-warrior { --c: var(--c-warrior); } .fam-magician { --c: var(--c-magician); } .fam-bowman { --c: var(--c-bowman); } .fam-thief { --c: var(--c-thief); } .fam-beginner { --c: var(--leaf); } .fam-other { --c: var(--muted); }
 .vf { display: inline-grid; color: var(--link); font-size: .9em; --ic-hole: var(--paper); }
 
-.rank-table-wrap { margin: 0 16px 6px; }
+.rank-table-wrap { margin: 0 16px 6px; overflow-x: auto; border: 1px solid var(--line-2); border-radius: 12px; background: var(--paper-3); }
+.rank-table { overflow-wrap: normal; word-break: normal; }
 .rank-table th { font-size: .85rem; }
 .rank-table td { vertical-align: middle; }
 .rank-table td:first-child { font-weight: 800; }
