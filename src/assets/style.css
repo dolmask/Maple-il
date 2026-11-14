@@ -738,3 +738,158 @@ table { table-layout: auto; word-break: normal; overflow-wrap: anywhere; }
 .item-ic { display: inline-block; width: 1.5em; height: 1.5em; vertical-align: -.4em; margin-inline-end: .2em; object-fit: contain; image-rendering: pixelated; }
 
 .item-ic.mob-ic { width: auto; height: 2.3em; max-width: 4em; vertical-align: -.55em; }
+
+/* ==========================================================================
+   v2 · "יום שמשי באי ויקטוריה": קליל, ציורי, עם מעט מלל
+   ========================================================================== */
+:root { --scene-1: #66BCFF; --scene-2: #BFE6FF; --scene-3: #F2FAFF; --grass-1: #6BCB4B; --grass-2: #3F9B33; --dirt: #A8743C; --sun: #FFD84D; --pop: #FF7A3D; }
+:root[data-theme="dark"] { --scene-1: #0E1F4D; --scene-2: #1B3777; --scene-3: #2C4F93; --grass-1: #3E7D34; --grass-2: #2A5A24; --dirt: #4A3320; --sun: #CFE3FF; }
+:root[data-theme="light"] { --page: #F3FAFF; --paper: #FFFFFF; --paper-2: #F2F8FF; --paper-3: #E4F1FF; --line: #CFE3F5; --line-2: #AFCDE8; }
+body { background: var(--page); }
+
+/* --- הסצנה העליונה --- */
+.scene { position: relative; overflow: hidden; isolation: isolate; padding: 34px 0 150px; background: linear-gradient(180deg, var(--scene-1) 0%, var(--scene-2) 62%, var(--scene-3) 100%); }
+.scene-in { position: relative; z-index: 2; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.scene h1 { margin: 0 0 10px; max-width: 16ch; font-size: clamp(2.3rem, 7.4vw, 4.2rem); line-height: 1.08; color: #fff; text-shadow: 0 3px 0 #1F5FA8, 0 6px 14px rgba(20,60,120,.35); -webkit-text-stroke: 1px #1F5FA8; paint-order: stroke fill; }
+.scene p { margin: 0 0 22px; font-size: clamp(1.05rem, 3.4vw, 1.3rem); font-weight: 700; color: #0F3D75; max-width: 30ch; }
+:root[data-theme="dark"] .scene p { color: #D5E4FF; }
+.scene .hero-search { max-width: 520px; min-height: 62px; border-radius: 999px; border: 3px solid #1F5FA8; background: #fff; color: #4A6A8E; font-weight: 700; box-shadow: 0 5px 0 #1F5FA8, 0 12px 24px rgba(20,60,120,.25); transition: transform .15s, box-shadow .15s; }
+.scene .hero-search:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #1F5FA8, 0 16px 28px rgba(20,60,120,.28); }
+.scene .hero-search:active { transform: translateY(3px); box-shadow: 0 2px 0 #1F5FA8; }
+.scene .hero-search svg { color: var(--pop); font-size: 1.5rem; }
+.scene .shot { margin-top: 24px; }
+.cloud { position: absolute; z-index: 1; left: 0; width: 96px; height: 30px; border-radius: 40px; background: #fff; opacity: .92; }
+.cloud::before, .cloud::after { content: ""; position: absolute; background: #fff; border-radius: 50%; }
+.cloud::before { width: 44px; height: 44px; left: 14px; top: -22px; } .cloud::after { width: 32px; height: 32px; left: 48px; top: -14px; }
+.c1 { top: 38px; transform: scale(1.1); } .c2 { top: 118px; transform: scale(.75); opacity: .75; } .c3 { top: 70px; transform: scale(1.5); opacity: .6; }
+:root[data-theme="dark"] .cloud { opacity: .14; }
+.ground { position: absolute; z-index: 1; inset-inline: 0; bottom: 0; height: 96px; background: linear-gradient(180deg, var(--grass-1) 0 18px, var(--grass-2) 18px 26px, var(--dirt) 26px); border-top: 4px solid #2C7A24; }
+.ground::after { content: ""; position: absolute; inset-inline: 0; top: 26px; bottom: 0; background: repeating-linear-gradient(90deg, rgba(0,0,0,.07) 0 18px, transparent 18px 44px); }
+.walker { position: absolute; left: 0; bottom: 70px; z-index: calc(1 + var(--z)); will-change: transform; transform: translateX(105vw); }
+.walker .mob { display: block; max-height: 96px; width: auto; filter: drop-shadow(0 4px 3px rgba(0,0,0,.25)); animation: none; }
+@keyframes walk { from { transform: translateX(105vw); } to { transform: translateX(-30vw); } }
+@keyframes drift { from { transform: translateX(-160px) var(--sc, scale(1)); } to { transform: translateX(110vw) var(--sc, scale(1)); } }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes pop-in { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .walker { animation: walk var(--d) linear var(--delay) infinite; }
+  .c1 { --sc: scale(1.1); animation: drift 70s linear infinite; } .c2 { --sc: scale(.75); animation: drift 95s linear -30s infinite; } .c3 { --sc: scale(1.5); animation: drift 130s linear -70s infinite; }
+}
+.a11y-motion .walker, .a11y-motion .cloud { animation: none !important; }
+.a11y-motion .walker { transform: translateX(calc(8vw * (var(--z) + 1))); }
+
+/* --- כותרות מקטע --- */
+.block { padding-block: 44px 0; }
+.sec-title { margin: 0 0 20px; text-align: center; font-size: clamp(1.7rem, 5vw, 2.3rem); color: var(--ink); }
+.sec-title::after { content: ""; display: block; width: 64px; height: 6px; margin: 10px auto 0; border-radius: 6px; background: var(--pop); }
+
+/* --- בחירת מקצוע --- */
+.pick { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.pick-card { --c: var(--pop); display: flex; flex-direction: column; border-radius: 26px; background: color-mix(in srgb, var(--c) 13%, #fff); border: 3px solid color-mix(in srgb, var(--c) 70%, #fff); box-shadow: 0 6px 0 color-mix(in srgb, var(--c) 70%, #fff), 0 14px 22px rgba(20,50,90,.1); transition: transform .18s, box-shadow .18s; }
+.pick-card:hover { transform: translateY(-4px); box-shadow: 0 10px 0 color-mix(in srgb, var(--c) 70%, #fff), 0 20px 28px rgba(20,50,90,.14); }
+:root[data-theme="dark"] .pick-card { background: color-mix(in srgb, var(--c) 18%, var(--paper)); }
+.pick-main { display: flex; flex-direction: column; align-items: center; padding: 16px 10px 6px; text-decoration: none; color: var(--ink); }
+.pick-art { display: grid; place-items: end center; width: 100%; height: 132px; }
+.pick-art img { max-height: 128px; width: auto; max-width: 100%; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 5px 4px rgba(0,0,0,.2)); transition: transform .2s; }
+.pick-card:hover .pick-art img { transform: scale(1.08) translateY(-4px); }
+.pick-art .pick-ic { display: none; font-size: 64px; color: var(--c); }
+.pick-art:not(.has-img) .pick-ic { display: block; }
+.pick-name { font-family: var(--font-display); font-size: 1.7rem; line-height: 1.1; margin-top: 8px; }
+.pick-en { font-weight: 800; font-size: .85rem; color: var(--c); }
+.pick-branches { list-style: none; margin: 8px 0 0; padding: 10px 8px 12px; display: flex; justify-content: center; gap: 6px; border-top: 3px dashed color-mix(in srgb, var(--c) 40%, #fff); }
+.pick-branches li { flex: 1 1 0; max-width: 92px; }
+.pick-branches a { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 2px; border-radius: 14px; text-decoration: none; color: var(--ink); font-weight: 800; font-size: .82rem; line-height: 1.15; text-align: center; transition: background .15s, transform .15s; }
+.pick-branches a:hover { background: color-mix(in srgb, var(--c) 22%, #fff); transform: translateY(-2px); }
+.pb-art { display: grid; place-items: end center; width: 100%; height: 58px; }
+.pb-art img { max-height: 58px; width: auto; max-width: 100%; object-fit: contain; image-rendering: pixelated; }
+
+/* --- מסלול ההתקדמות --- */
+.path { list-style: none; margin: 0; padding: 8px 6px 18px; display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x proximity; position: relative; }
+.path li { flex: 0 0 150px; scroll-snap-align: center; }
+.path a { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 10px 14px; height: 100%; border-radius: 24px; text-decoration: none; text-align: center; background: #fff; color: var(--ink); border: 3px solid var(--line-2); box-shadow: 0 5px 0 var(--line-2); transition: transform .18s; }
+:root[data-theme="dark"] .path a { background: var(--paper); }
+.path a:hover { transform: translateY(-4px) rotate(-1deg); }
+.step-art { display: grid; place-items: end center; height: 84px; width: 100%; }
+.step-art .mob { max-height: 80px; width: auto; max-width: 100%; animation: none; filter: drop-shadow(0 4px 3px rgba(0,0,0,.2)); }
+.step-lv { font-family: var(--font-display); background: var(--pop); color: #fff; padding: 1px 14px; border-radius: 999px; font-size: 1.05rem; box-shadow: 0 2px 0 rgba(0,0,0,.18); }
+.step-label { font-weight: 800; font-size: .92rem; line-height: 1.3; }
+
+/* --- אריחי קטגוריה --- */
+.tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.tile { --c: #4DA3FF; }
+.tile a { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; min-height: 190px; padding: 14px 10px 16px; border-radius: 26px; text-decoration: none; color: #fff; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 82%, #fff), var(--c)); border: 3px solid color-mix(in srgb, var(--c) 70%, #000); box-shadow: 0 6px 0 color-mix(in srgb, var(--c) 62%, #000), 0 14px 22px rgba(20,50,90,.14); transition: transform .18s, box-shadow .18s; }
+.tile a:hover { transform: translateY(-5px) rotate(-.6deg); box-shadow: 0 11px 0 color-mix(in srgb, var(--c) 62%, #000), 0 20px 28px rgba(20,50,90,.18); }
+.tile a:active { transform: translateY(3px); box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 62%, #000); }
+.tile-art { position: relative; display: grid; place-items: end center; height: 104px; width: 100%; }
+.tile-art .mob { max-height: 100px; width: auto; max-width: 100%; animation: none; filter: drop-shadow(0 5px 3px rgba(0,0,0,.28)); }
+.tile-ic { position: absolute; inset-inline-start: 2px; top: 0; font-size: 26px; opacity: .85; }
+.tile-name { font-family: var(--font-display); font-size: 1.45rem; line-height: 1.1; text-align: center; text-shadow: 0 2px 0 rgba(0,0,0,.22); }
+.tile-count { position: absolute; top: 10px; inset-inline-end: 10px; min-width: 30px; height: 30px; display: grid; place-items: center; padding: 0 8px; border-radius: 999px; background: #fff; color: color-mix(in srgb, var(--c) 70%, #000); font-weight: 900; font-size: .95rem; box-shadow: 0 2px 0 rgba(0,0,0,.2); }
+.t0 { --c: #4DA3FF; } .t1 { --c: #FF8A3D; } .t2 { --c: #3FBF6B; } .t3 { --c: #B07CF0; } .t4 { --c: #F2A81C; } .t5 { --c: #F0617A; } .t6 { --c: #2FBBC4; } .t7 { --c: #7B8CF0; }
+.all-link { text-align: center; margin: 26px 0 0; }
+.btn-pill { display: inline-block; padding: 12px 30px; border-radius: 999px; font-weight: 900; font-size: 1.1rem; text-decoration: none; color: #fff; background: var(--pop); border: 3px solid #D95A1F; box-shadow: 0 5px 0 #D95A1F; transition: transform .15s, box-shadow .15s; }
+.btn-pill:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #D95A1F; text-decoration: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .pick-card, .tile, .path li { animation: pop-in .5s both; }
+  .pick-card:nth-child(2), .tile:nth-child(2) { animation-delay: .06s; } .pick-card:nth-child(3), .tile:nth-child(3) { animation-delay: .12s; } .pick-card:nth-child(4), .tile:nth-child(4) { animation-delay: .18s; }
+  .pick-art img { animation: bob 2.6s ease-in-out infinite; } .pick-card:nth-child(2n) .pick-art img { animation-delay: -1.2s; }
+}
+@media (max-width: 900px) { .pick, .tiles { grid-template-columns: repeat(2, 1fr); gap: 12px; } .tile a { min-height: 164px; } }
+@media (max-width: 420px) { .pick-name { font-size: 1.45rem; } .pick-art { height: 112px; } .pick-art img { max-height: 108px; } .tile-name { font-size: 1.2rem; } .scene { padding-bottom: 130px; } }
+
+/* --- רשימות מדריכים: תמונה גדולה, מעט מלל --- */
+.g-icon { width: 64px; height: 64px; border-radius: 18px; }
+.g-icon img { object-fit: contain; object-position: center bottom; padding: 3px; }
+.g-sum { display: none; }
+.list-head p { margin-top: 4px; }
+.pick-card.cls-warrior { --c: #FF6B4A; } .pick-card.cls-magician { --c: #4F8EFF; } .pick-card.cls-bowman { --c: #3FB950; } .pick-card.cls-thief { --c: #9B6BEA; }
+.scene h1 { text-wrap: balance; max-width: 18ch; } .scene p { text-wrap: balance; }
+.tiles { grid-template-columns: repeat(3, 1fr); }
+.tile-art .mob, .step-art .mob { scale: 1.35; transform-origin: 50% 100%; }
+.tile-art, .step-art { overflow: visible; }
+.tile a { min-height: 200px; }
+@media (max-width: 900px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .scene { padding-bottom: 190px; } .walker { bottom: 62px; } .walker .mob { max-height: 78px; } }
+
+/* --- עמודי מדריך: אותה שפה עליזה --- */
+.window { border: 3px solid var(--line-2); border-radius: 24px; box-shadow: 0 5px 0 var(--line-2); overflow: hidden; }
+.window::before, .window-bar::before, .window-bar::after { display: none; }
+.window-bar { border-radius: 0; border-bottom: 0; background: linear-gradient(180deg, #5BB0FF, #3E92E6); text-shadow: 0 2px 0 rgba(0,0,0,.18); }
+.quest-bar .crumbs, .quest-bar .crumbs a { color: #fff; }
+.guide-head { border-bottom: 0; padding-bottom: 8px; }
+.guide-head h1 { font-size: clamp(2rem, 6.4vw, 2.9rem); line-height: 1.15; text-wrap: balance; }
+.prose h2 { display: inline-flex; width: auto; margin: 2.2em 0 .7em; padding: 4px 20px 6px; border-radius: 999px; background: var(--pop); color: #fff; font-size: 1.45rem; box-shadow: 0 4px 0 #D95A1F; text-shadow: 0 2px 0 rgba(0,0,0,.15); }
+.prose h2::before { display: none; }
+.prose h2 .anchor { color: #fff; }
+.prose h3 { font-size: 1.25rem; color: var(--pop); }
+.box { border-radius: 22px; border: 3px solid color-mix(in srgb, var(--bc) 55%, #fff); border-inline-start-width: 3px; background: color-mix(in srgb, var(--bc) 10%, #fff); box-shadow: 0 4px 0 color-mix(in srgb, var(--bc) 55%, #fff); padding: 16px 20px 6px; }
+:root[data-theme="dark"] .box { background: color-mix(in srgb, var(--bc) 14%, var(--paper)); }
+.box-title { font-family: var(--font-display); font-weight: 400; font-size: 1.15rem; }
+.box-stats { background: linear-gradient(180deg, #FFF8E1, #FFEFC2); color: #3A2A08; border-color: #F2C14E; box-shadow: 0 4px 0 #F2C14E; padding: 16px 20px; }
+.box-stats .box-title { color: #B8620B; border-bottom: 3px dashed #F2C14E; }
+.stat-row { border-bottom: 2px dotted rgba(184,98,11,.28); font-size: 1.02rem; }
+.stat-k { color: #7A5A1E; } .stat-v { color: #3A2A08; } .stat-wide { color: #7A5A1E; }
+.box-stats a { color: #B8620B; }
+:root[data-theme="dark"] .box-stats { background: linear-gradient(180deg, #2A2210, #1E190B); color: #FFE9B0; }
+:root[data-theme="dark"] .stat-k, :root[data-theme="dark"] .stat-wide { color: #D9C48A; } :root[data-theme="dark"] .stat-v { color: #FFE9B0; }
+.table-wrap { border: 3px solid var(--line-2); border-radius: 22px; box-shadow: 0 4px 0 var(--line-2); background: #fff; }
+:root[data-theme="dark"] .table-wrap { background: var(--paper); }
+.item-ic { width: 1.7em; height: 1.7em; vertical-align: -.5em; }
+.cover-mobs { border: 3px solid var(--line-2); border-radius: 24px; box-shadow: 0 4px 0 var(--line-2); min-height: 150px; background: linear-gradient(180deg, var(--scene-1), var(--scene-2) 70%, var(--scene-3)); }
+.cover-mobs .mob { max-height: 112px; } .cover-mobs .mob-char { max-height: 136px; }
+.cover-ground { height: 16px; background: linear-gradient(180deg, var(--grass-1) 0 6px, var(--dirt) 6px); border-top: 3px solid #2C7A24; }
+
+/* --- רשימות (קטגוריה / כל המדריכים): כרטיסים גדולים --- */
+.g-list { background: transparent; border: 0; box-shadow: none; overflow: visible; display: grid; gap: 14px; }
+.g-list li + li { border-top: 0; }
+.g-row { grid-template-columns: 78px 1fr auto; gap: 14px; padding: 12px 16px; border-radius: 24px; background: #fff; border: 3px solid var(--line-2); box-shadow: 0 5px 0 var(--line-2); transition: transform .15s, box-shadow .15s; }
+:root[data-theme="dark"] .g-row { background: var(--paper); }
+.g-row:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 8px 0 var(--line-2); }
+.g-row:hover .g-title { color: var(--pop); text-decoration: none; }
+.g-icon { width: 78px; height: 78px; border-radius: 20px; background: linear-gradient(180deg, var(--scene-2), var(--scene-3)); border: 0; }
+.g-icon svg { font-size: 34px; }
+.g-title { font-family: var(--font-display); font-size: 1.25rem; line-height: 1.25; }
+.g-meta .lv { background: var(--pop); color: #fff; border-radius: 999px; padding: 2px 12px; font-weight: 900; }
+@media (max-width: 520px) { .g-row { grid-template-columns: 64px 1fr; } .g-icon { width: 64px; height: 64px; } .g-meta { grid-column: 2; } }
+.g-row .g-meta .lv, .path .lv { background: var(--pop); color: #fff; }
+.list-mob { inset-inline-end: 4px; top: 8px; max-height: 96px; scale: 1.2; transform-origin: 100% 0; }

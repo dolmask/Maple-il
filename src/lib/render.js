@@ -85,7 +85,7 @@ ${canonical ? `<meta property="og:url" content="${e(canonical)}">` : ''}
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Suez+One&family=Assistant:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${url(ctx, 'assets/style.css')}${ctx.version ? '?v=' + ctx.version : ''}">
-<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t;var a=JSON.parse(localStorage.getItem('a11y')||'{}');for(var k in a){if(k==='size')document.documentElement.dataset.size=a[k];else if(a[k])document.documentElement.classList.add('a11y-'+k)}}catch(e){}</script>
+<script>try{var t=localStorage.getItem('theme')||'light';document.documentElement.dataset.theme=t;var a=JSON.parse(localStorage.getItem('a11y')||'{}');for(var k in a){if(k==='size')document.documentElement.dataset.size=a[k];else if(a[k])document.documentElement.classList.add('a11y-'+k)}}catch(e){}</script>
 ${ads.enabled && ads.client && !ctx.preview ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${e(ads.client)}" crossorigin="anonymous"></script>` : ''}
 ${c.analyticsId && !ctx.preview ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${e(c.analyticsId)}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${e(c.analyticsId)}');</script>` : ''}
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}
@@ -259,51 +259,51 @@ export function homePage(ctx) {
     const g = ctx.guides.find(x => x.cls === key && x.category === 'jobs');
     const branches = ctx.guides.filter(x => x.cls === key && x.category === 'jobs2');
     const pic = (c.classImages || {})[key];
-    return `<li class="job cls-${key}">
-  <a class="job-main" href="${g ? guideUrl(ctx, g.slug) : '#'}">
-    <span class="job-icon${pic ? ' has-img' : ''}" aria-hidden="true" data-class-img="${key}">${pic ? `<img src="${e(img(ctx, pic))}" alt="" loading="lazy" decoding="async" onerror="this.parentNode.classList.remove('has-img');this.remove()">${ICONS[info.icon]}` : ICONS[info.icon]}</span>
-    <span class="job-name">${info.name} <span lang="en">${info.en}</span></span>
-    <span class="job-facts">${info.stat} · ${info.town}</span>
+    return `<li class="pick-card cls-${key}">
+  <a class="pick-main" href="${g ? guideUrl(ctx, g.slug) : '#'}">
+    <span class="pick-art${pic ? ' has-img' : ''}" aria-hidden="true" data-class-img="${key}">${pic ? `<img src="${e(img(ctx, pic))}" alt="" loading="lazy" decoding="async" onerror="this.parentNode.classList.remove('has-img');this.remove()">` : ''}<span class="pick-ic">${ICONS[info.icon]}</span></span>
+    <span class="pick-name">${info.name}</span>
+    <span class="pick-en" lang="en">${info.en}</span>
   </a>
-  ${branches.length ? `<p class="job-branches"><span class="sr-only">ענפים בג'וב השני: </span>${branches.map(b => `<a href="${guideUrl(ctx, b.slug)}">${e(b.short || b.title)}</a>`).join('')}</p>` : ''}
+  ${branches.length ? `<ul class="pick-branches">${branches.map(b => `<li><a href="${guideUrl(ctx, b.slug)}"><span class="pb-art" aria-hidden="true">${b.thumb ? `<img src="${e(img(ctx, b.thumb))}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ''}</span><span class="pb-name">${e(b.short || b.title)}</span></a></li>`).join('')}</ul>` : ''}
 </li>`;
   }).join('');
 
-  const journey = (c.journey || []).map(step => {
+  const journey = (c.journey || []).map((step, i) => {
     const g = ctx.guides.find(x => x.slug === step.slug);
     if (!g) return '';
-    return `<li><a href="${guideUrl(ctx, g.slug)}"><span class="lv">${e(step.lv)}</span><span>${e(step.label)}</span></a></li>`;
+    const mob = thumbMob(g) || (c.heroMobs || [])[i % Math.max(1, (c.heroMobs || []).length)];
+    return `<li style="--i:${i}"><a href="${guideUrl(ctx, g.slug)}"><span class="step-art" aria-hidden="true">${mobImg(mob, 'mob')}</span><span class="step-lv">${e(step.lv)}</span><span class="step-label">${e(step.label)}</span></a></li>`;
   }).join('');
 
-  const cats = c.categories.filter(cat => cat.id !== 'jobs' && cat.id !== 'jobs2').map(cat => {
+  const tiles = c.categories.filter(cat => cat.id !== 'jobs' && cat.id !== 'jobs2').map((cat, i) => {
     const list = byCat(cat.id);
     if (!list.length) return '';
-    return `<section class="cat-panel" aria-labelledby="cat-${cat.id}">
-  <h3 id="cat-${cat.id}"><a href="${categoryUrl(ctx, cat.id)}"><span class="cat-ic${cat.mob ? ' has-img' : ''}" aria-hidden="true">${cat.mob ? mobImg(cat.mob, 'cat-mob') : ''}${ICONS[cat.icon] || ''}</span>${e(cat.name)}</a><span class="count">${list.length}</span></h3>
-  <ul>${list.map(g => `<li><a href="${guideUrl(ctx, g.slug)}">${t(g.short && g.category !== 'jobs2' ? g.title : g.title)}</a>${g.level ? `<span class="lv">${e(g.level)}</span>` : ''}</li>`).join('')}</ul>
-</section>`;
+    return `<li class="tile t${i % 8}"><a href="${categoryUrl(ctx, cat.id)}"><span class="tile-art" aria-hidden="true">${mobImg(cat.mob, 'mob')}<span class="tile-ic">${ICONS[cat.icon] || ''}</span></span><span class="tile-name">${e(cat.short || cat.name)}</span><span class="tile-count">${list.length}</span></a></li>`;
   }).join('');
 
+  const walkers = (c.heroMobs || []).map((id, i) => `<span class="walker" style="--d:${26 + (i * 7) % 19}s;--delay:-${(i * 5.3).toFixed(1)}s;--z:${i % 3}">${mobImg(id, 'mob')}</span>`).join('');
+
   const body = `
-<section class="hero">
-  <div class="wrap hero-in">
+<section class="scene">
+  <span class="cloud c1" aria-hidden="true"></span><span class="cloud c2" aria-hidden="true"></span><span class="cloud c3" aria-hidden="true"></span>
+  <div class="wrap scene-in">
     <h1 data-cfg="heroTitle">${e(c.heroTitle)}</h1>
     <p data-cfg="heroText">${e(c.heroText)}</p>
-    <button class="hero-search" type="button" data-open-search>${ICONS.search}<span>חפשו מדריך, מפה או מקצוע…</span></button>
-    ${(c.heroMobs || []).length ? `<div class="hero-mobs" aria-hidden="true">${c.heroMobs.map(id => mobImg(id)).join('')}</div>` : ''}
+    <button class="hero-search" type="button" data-open-search>${ICONS.search}<span>חפשו מקצוע, מפה או משימה</span></button>
     ${renderMarkdown('[[shot home-hero | ' + (c.heroShotCaption || 'MapleStory Classic World') + ']]', { base: ctx.base, images: ctx.images, showMissingShots: false }).html}
   </div>
+  <div class="ground" aria-hidden="true">${walkers}</div>
 </section>
 <section class="wrap block" aria-labelledby="jobsH">
-  <div class="window">
-    <div class="window-bar"><h2 id="jobsH">בחרו מקצוע</h2><small>ג'וב ראשון ב-Lv 10, ענף ב-Lv 30</small></div>
-    <ul class="jobs">${jobCards}</ul>
-  </div>
+  <h2 class="sec-title" id="jobsH">מי אתם?</h2>
+  <ul class="pick">${jobCards}</ul>
 </section>
-${journey ? `<section class="wrap block" aria-labelledby="startH"><div class="window"><div class="window-bar"><h2 id="startH">מתחילים כאן</h2><small>הסדר המומלץ לשחקן חדש</small></div><ol class="journey">${journey}</ol></div></section>` : ''}
+${journey ? `<section class="wrap block" aria-labelledby="startH"><h2 class="sec-title" id="startH">המסע שלכם</h2><ol class="path">${journey}</ol></section>` : ''}
 <section class="wrap block" aria-labelledby="allH">
-  <div class="block-head"><h2 id="allH">כל המדריכים</h2><a href="${url(ctx, 'guides/')}">לרשימה המלאה</a></div>
-  <div class="catalog">${cats}</div>
+  <h2 class="sec-title" id="allH">מה מחפשים?</h2>
+  <ul class="tiles">${tiles}</ul>
+  <p class="all-link"><a class="btn-pill" href="${url(ctx, 'guides/')}">כל המדריכים</a></p>
 </section>
 ${adSlot(ctx, 'inArticle')}`;
   return layout(ctx, { title: '', description: c.description, path: '', body, active: 'home' });
