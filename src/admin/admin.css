@@ -111,3 +111,34 @@ label.f small { font-weight: 600; color: var(--muted); }
 .shots-table td:last-child { white-space: nowrap; }
 
 .vis-frame { display: block; width: 100%; height: calc(100vh - 210px); min-height: 520px; border: 1px solid var(--line-2); border-radius: 14px; background: var(--page); box-shadow: var(--shadow); }
+
+/* crop dialog */
+.crop { width: 100%; max-width: 980px; }
+.crop .window-bar { align-items: center; }
+.crop-stage { position: relative; display: grid; place-items: center; max-height: 68vh; overflow: hidden; background: repeating-conic-gradient(var(--paper-2) 0 25%, var(--paper) 0 50%) 0 0 / 18px 18px; border-radius: 10px; user-select: none; }
+.crop-stage img { display: block; max-width: 100%; max-height: 68vh; cursor: crosshair; touch-action: none; }
+.crop-stage { width: fit-content; margin-inline: auto; }
+.crop-sel { position: absolute; border: 2px solid #4FD1FF; box-shadow: 0 0 0 9999px rgba(0,0,0,.55); pointer-events: none; direction: ltr; }
+/* unmatched assignment */
+.assign { list-style: none; margin: 0 0 12px; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.assign li { display: flex; flex-direction: column; gap: 6px; padding: 8px; border: 1px solid var(--line-2); border-radius: 12px; background: var(--paper-2); }
+.assign img { width: 100%; aspect-ratio: 16/9; object-fit: contain; background: #000; border-radius: 8px; }
+/* shot list */
+.shotlist { max-width: 820px; }
+.sl-group h2 { font-size: 1.25rem; margin: 26px 0 4px; }
+.sl-group ul { list-style: none; margin: 8px 0 0; padding: 0; }
+.sl-group li { display: flex; gap: 12px; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid var(--line); line-height: 1.5; }
+.sl-group li.done { opacity: .6; }
+.sl-group li.done strong { text-decoration: line-through; }
+.sl-box { flex: none; display: grid; place-items: center; width: 22px; height: 22px; margin-top: 2px; border: 2px solid var(--line-2); border-radius: 5px; font-weight: 800; color: var(--leaf); }
+.sl-group code { font-size: .82rem; padding: 0 5px; border-radius: 4px; background: var(--paper-2); }
+.print-only { display: none; }
+@media print {
+  .admin .sky, .admin .no-print, .admin .toast { display: none !important; }
+  .admin { background: #fff; color: #000; }
+  .admin-main { padding: 0; }
+  .print-only { display: block; }
+  .sl-group li { break-inside: avoid; border-color: #ccc; }
+  .sl-group li.done { opacity: 1; }
+  .shotlist .muted { color: #444; }
+}

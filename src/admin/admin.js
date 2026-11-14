@@ -117,6 +117,7 @@ function route() {
   if (view === 'settings') return renderSettings(type);
   if (view === 'media') return renderMedia();
   if (view === 'visual') return renderVisual(type || '');
+  if (view === 'shotlist') return renderShotList();
   return renderDashboard(type === 'pages' ? 'pages' : 'guides');
 }
 
@@ -764,9 +765,11 @@ async function renderMedia() {
 <div class="dash-head"><a class="btn btn-ghost btn-sm" href="#/list/guides">חזרה</a><h1>תמונות</h1><span class="muted">${files.length} תמונות</span></div>
 <label class="dropzone window" id="drop">
   <input type="file" accept="image/*" multiple hidden id="mediaIn">
-  <strong>גררו לכאן תמונות, או לחצו לבחירה</strong>
-  <span class="muted small">אפשר כמה תמונות ביחד. עד 3MB לתמונה. קובץ עם שם שכבר קיים יחליף את הקודם.</span>
+  <strong>גררו לכאן תמונות או תיקייה שלמה, או לחצו לבחירה</strong>
+  <span class="muted small">קובץ ששמו זהה לשם של מסגרת (למשל <code dir="ltr">henesys.png</code>) נכנס אוטומטית למקום שלו. השאר יוצגו לשיוך בלחיצה. כל תמונה מוקטנת ונדחסת לפני ההעלאה.</span>
 </label>
+<div class="row" style="margin-top:10px"><label class="btn btn-ghost btn-sm">בחירת תיקייה שלמה<input type="file" id="folderIn" webkitdirectory directory multiple hidden></label><a class="btn btn-ghost btn-sm" href="#/shotlist">רשימת צילום להדפסה</a></div>
+<div id="unmatched"></div>
 <div class="row" style="margin:14px 0 10px"><input class="in filter" id="mFilter" type="search" placeholder="סינון לפי שם…"></div>
 <div class="media-grid big" id="mGrid">
 ${files.map(f => `<div class="media-card" data-name="${e(f.name)}">
@@ -790,8 +793,55 @@ ${files.map(f => `<div class="media-card" data-name="${e(f.name)}">
   const drop = $('#drop');
   ['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, ev => { ev.preventDefault(); drop.classList.add('is-over'); }));
   ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, ev => { ev.preventDefault(); drop.classList.remove('is-over'); }));
-  drop.addEventListener('drop', async ev => { const fl = [...ev.dataTransfer.files]; if (fl.length) { await uploadMany(fl, files); refresh(); } });
-  $('#mediaIn').addEventListener('change', async ev => { const fl = [...ev.target.files]; ev.target.value = ''; if (fl.length) { await uploadMany(fl, files); refresh(); } });
+  // שיוך אוטומטי לפי שם הקובץ
+  const shotNames = new Set(shots.map(sh => sh.name));
+  const baseOf = n => cleanName(n).replace(/\.[^.]+$/, '');
+  async function bulk(list) {
+    const imgs = list.filter(f => IMG_RE.test(f.name));
+    if (!imgs.length) return toast('לא נמצאו קובצי תמונה.', true);
+    const matched = imgs.filter(f => shotNames.has(baseOf(f.name)));
+    const rest = imgs.filter(f => !shotNames.has(baseOf(f.name)));
+    let ok = 0; const errs = [];
+    for (const f of matched) {
+      toast(`מעלה ${ok + errs.length + 1} מתוך ${matched.length}: ${f.name}`, false, 60000);
+      try { const pf = await prepareImage(f, 'shot'); await uploadImage(pf, files, baseOf(f.name)); ok++; }
+      catch (x) { errs.push(x.message); }
+    }
+    if (matched.length) { toast(errs.length ? errs.join(' ') : `${ok} צילומים נכנסו למקום שלהם.`, !!errs.length, 7000); checkDeploy(true); }
+    if (rest.length) showUnmatched(rest); else refresh();
+  }
+  function showUnmatched(rest) {
+    const missingNames = shots.filter(sh => !have.has(sh.name));
+    const box = $('#unmatched');
+    box.innerHTML = `<section class="window" style="margin-top:14px"><div class="window-bar"><span>${rest.length} תמונות לשיוך</span><small>בחרו לכל תמונה לאן היא שייכת</small></div><div class="panel"><ul class="assign">${rest.map((f, i) => `<li><img src="${URL.createObjectURL(f)}" alt=""><span dir="ltr" class="small">${e(f.name)}</span><select class="in" data-i="${i}"><option value="">תמונה כללית (בלי שיוך)</option>${missingNames.map(sh => `<option value="${e(sh.name)}">${e(sh.caption || sh.name)}</option>`).join('')}<optgroup label="החלפת צילום קיים">${shots.filter(sh => have.has(sh.name)).map(sh => `<option value="${e(sh.name)}">${e(sh.caption || sh.name)}</option>`).join('')}</optgroup></select></li>`).join('')}</ul><div class="row"><button class="btn" type="button" id="assignGo">העלאה</button><button class="btn btn-ghost" type="button" id="assignCancel">ביטול</button></div></div></section>`;
+    $('#assignCancel').onclick = () => { box.innerHTML = ''; };
+    $('#assignGo').onclick = async () => {
+      const sels = [...box.querySelectorAll('select')];
+      let n = 0;
+      for (const sl of sels) {
+        const f = rest[+sl.dataset.i];
+        toast(`מעלה ${++n} מתוך ${sels.length}…`, false, 60000);
+        try { const pf = await prepareImage(f, sl.value ? 'shot' : 'other'); await uploadImage(pf, files, sl.value || null); }
+        catch (x) { toast(x.message, true, 8000); }
+      }
+      toast('התמונות הועלו.'); checkDeploy(true); refresh();
+    };
+  }
+  drop.addEventListener('drop', async ev => {
+    const items = [...(ev.dataTransfer.items || [])];
+    const out = [];
+    const walk = entry => new Promise(res => {
+      if (!entry) return res();
+      if (entry.isFile) entry.file(f => { out.push(f); res(); }, () => res());
+      else if (entry.isDirectory) { const rd = entry.createReader(); const all = []; const read = () => rd.readEntries(async ents => { if (!ents.length) { for (const en of all) await walk(en); res(); } else { all.push(...ents); read(); } }, () => res()); read(); }
+      else res();
+    });
+    if (items.length && items[0].webkitGetAsEntry) { for (const it of items) await walk(it.webkitGetAsEntry()); }
+    else out.push(...ev.dataTransfer.files);
+    if (out.length) bulk(out);
+  });
+  $('#mediaIn').addEventListener('change', ev => { const fl = [...ev.target.files]; ev.target.value = ''; if (fl.length) bulk(fl); });
+  $('#folderIn').addEventListener('change', ev => { const fl = [...ev.target.files]; ev.target.value = ''; if (fl.length) bulk(fl); });
   $('#mFilter').addEventListener('input', ev => { const q = ev.target.value.toLowerCase(); app.querySelectorAll('.media-card').forEach(c => { c.hidden = q && !c.dataset.name.includes(q); }); });
   $('#mGrid').addEventListener('click', async ev => {
     const c = ev.target.closest('[data-copy]');
@@ -816,7 +866,9 @@ ${files.map(f => `<div class="media-card" data-name="${e(f.name)}">
     const file = ev.target.files[0]; ev.target.value = ''; if (!file) return;
     try {
       toast('מעלה צילום מסך…', false, 60000);
-      await uploadImage(file, files, ev.target.dataset.shot);
+      const pf = await prepareImage(file, 'shot', { crop: true, title: 'חיתוך: ' + ev.target.dataset.shot });
+      if (!pf) { toast('בוטל.'); return; }
+      await uploadImage(pf, files, ev.target.dataset.shot);
       toast('הצילום הועלה. הוא יופיע באתר תוך כדקה-שתיים.'); checkDeploy(true); refresh();
     } catch (x) { toast(x.message, true); }
   }));
@@ -827,6 +879,71 @@ ${files.map(f => `<div class="media-card" data-name="${e(f.name)}">
     await uploadMany([renamed], files); refresh();
   }));
 }
+
+// ---------------- image prep: crop, resize, compress ----------------
+// לפני כל העלאה: חיתוך (אופציונלי), הקטנה לרוחב שמתאים למקום, ודחיסה ל-WebP. GIF מועלה כמו שהוא.
+const IMG_LIMITS = { shot: 1400, cover: 1600, thumb: 256, class: 256, other: 1600 };
+function loadImg(blob) {
+  return new Promise((res, rej) => { const u = URL.createObjectURL(blob); const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error('לא הצלחתי לקרוא את התמונה.')); im.src = u; });
+}
+function cropDialog(im, title) {
+  return new Promise(resolve => {
+    const layer = document.createElement('div');
+    layer.className = 'picker-layer';
+    layer.innerHTML = `<div class="window crop" role="dialog" aria-modal="true" aria-label="חיתוך תמונה">
+      <div class="window-bar"><span>${e(title || 'חיתוך התמונה')}</span><small>גררו על התמונה כדי לסמן את האזור שרוצים לשמור</small></div>
+      <div class="panel">
+        <div class="crop-stage"><img alt="" draggable="false"><div class="crop-sel" hidden></div></div>
+        <div class="row" style="margin-top:12px"><button type="button" class="btn" data-act="crop" disabled>שמירת האזור שסימנתי</button><button type="button" class="btn btn-ghost" data-act="full">שמירה בלי חיתוך</button><span class="spacer"></span><button type="button" class="btn btn-ghost" data-act="cancel">ביטול</button></div>
+      </div></div>`;
+    document.body.appendChild(layer);
+    const stage = layer.querySelector('.crop-stage'), shown = stage.querySelector('img'), box = stage.querySelector('.crop-sel'), okBtn = layer.querySelector('[data-act="crop"]');
+    shown.src = im.src;
+    let start = null, rect = null;
+    const pos = ev => { const r = shown.getBoundingClientRect(); return { x: Math.max(0, Math.min(r.width, ev.clientX - r.left)), y: Math.max(0, Math.min(r.height, ev.clientY - r.top)) }; };
+    const draw = (a, b) => {
+      const x = Math.min(a.x, b.x), y = Math.min(a.y, b.y), w = Math.abs(a.x - b.x), h = Math.abs(a.y - b.y);
+      box.hidden = false; Object.assign(box.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' });
+      rect = { x, y, w, h }; okBtn.disabled = w < 12 || h < 12;
+    };
+    shown.addEventListener('pointerdown', ev => { ev.preventDefault(); shown.setPointerCapture(ev.pointerId); start = pos(ev); draw(start, start); });
+    shown.addEventListener('pointermove', ev => { if (start) draw(start, pos(ev)); });
+    shown.addEventListener('pointerup', () => { start = null; });
+    const done = v => { layer.remove(); document.removeEventListener('keydown', onKey); resolve(v); };
+    const onKey = ev => { if (ev.key === 'Escape') done(null); if (ev.key === 'Enter') done(rect && !okBtn.disabled ? scaled() : 'full'); };
+    document.addEventListener('keydown', onKey);
+    const scaled = () => { const k = im.naturalWidth / shown.getBoundingClientRect().width; return { x: rect.x * k, y: rect.y * k, w: rect.w * k, h: rect.h * k }; };
+    layer.addEventListener('click', ev => {
+      const a = ev.target.closest('[data-act]'); if (!a) return;
+      if (a.dataset.act === 'cancel') done(null);
+      else if (a.dataset.act === 'full') done('full');
+      else done(scaled());
+    });
+    layer.querySelector('[data-act="full"]').focus();
+  });
+}
+async function prepareImage(file, kind = 'other', { crop = false, title = '' } = {}) {
+  if (/gif$/i.test(file.type) || /\.svg$/i.test(file.name)) return file;
+  const im = await loadImg(file);
+  let src = { x: 0, y: 0, w: im.naturalWidth, h: im.naturalHeight };
+  if (crop) {
+    const r = await cropDialog(im, title);
+    if (r === null) return null;
+    if (r !== 'full') src = r;
+  }
+  const maxW = IMG_LIMITS[kind] || IMG_LIMITS.other;
+  const scale = Math.min(1, maxW / src.w);
+  const cv = document.createElement('canvas');
+  cv.width = Math.round(src.w * scale); cv.height = Math.round(src.h * scale);
+  const g = cv.getContext('2d'); g.imageSmoothingQuality = 'high';
+  g.drawImage(im, src.x, src.y, src.w, src.h, 0, 0, cv.width, cv.height);
+  const blob = await new Promise(r => cv.toBlob(r, 'image/webp', 0.86));
+  const base = file.name.replace(/\.[^.]+$/, '') || 'image';
+  if (blob && blob.type === 'image/webp') return new File([blob], base + '.webp', { type: 'image/webp' });
+  const jpg = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.88));
+  return new File([jpg], base + '.jpg', { type: 'image/jpeg' });
+}
+const fmtKB = n => n > 1048576 ? (n / 1048576).toFixed(1) + 'MB' : Math.round(n / 1024) + 'KB';
 
 // ---------------- visual image editing ----------------
 // מציג את האתר האמיתי בתוך מסגרת, ומוסיף כפתור העלאה ליד כל מקום שאפשר להציג בו תמונה:
@@ -841,6 +958,8 @@ body.has-hud { padding-bottom: 0 !important; }
 .vis-btn:hover { filter: brightness(1.08); }
 .vis-btn.small { top: auto; bottom: -10px; inset-inline-start: -10px; padding: 4px 7px; min-height: 26px; font-size: 12px; border-radius: 8px; }
 .vis-busy .vis-btn { opacity: .6; pointer-events: none; }
+[data-vis] { cursor: copy; }
+.vis-active { outline: 3px solid #4FD1FF !important; outline-offset: 3px; box-shadow: 0 0 0 8px rgba(79,209,255,.18); }
 .g-icon[data-vis], .job-icon[data-vis] { overflow: visible !important; }
 `;
 async function renderVisual(rawPath) {
@@ -860,6 +979,7 @@ async function renderVisual(rawPath) {
   <label class="f" style="min-width:min(420px,100%)"><span class="sr-only">עמוד</span><select class="in" id="vPage">${pages.map(x => `<option value="${e(x.p)}"${x.p === path ? ' selected' : ''}>${e(x.t)}</option>`).join('')}</select></label>
 </div>
 <p class="muted small">זה האתר כפי שהגולשים רואים אותו. ליד כל מקום שאפשר לשים בו תמונה יש כפתור העלאה. התמונה נשמרת במאגר ומופיעה כאן מיד, ובאתר עצמו תוך כדקה-שתיים. מקומות מסומנים בקו מקווקו זהוב; מסגרות ריקות מוצגות כאן בלבד, ולגולשים הן מוסתרות עד שמעלים תמונה. אפשר גם לנווט בתוך האתר בלחיצה על קישורים.</p>
+<p class="small"><a href="#/shotlist">רשימת הצילום המלאה</a> · <strong>הדרך המהירה:</strong> צלמו מסך במשחק, לחצו כאן על המקום שבו התמונה צריכה להופיע, והדביקו עם <kbd>Ctrl</kbd>+<kbd>V</kbd>. לפני השמירה אפשר לחתוך את האזור הרלוונטי, והתמונה מוקטנת ונדחסת אוטומטית.</p>
 <iframe id="vFrame" class="vis-frame" title="האתר במצב עריכת תמונות" src="${SITE_BASE}${path}"></iframe>
 <input type="file" id="vFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden>`;
   const frame = $('#vFrame'), sel = $('#vPage'), fileIn = $('#vFile');
@@ -883,11 +1003,16 @@ async function renderVisual(rawPath) {
     await putFile('site.config.json', JSON.stringify(cfg, null, 2) + '\n', `תמונת מקצוע: ${key}`, f.sha);
     config.classImages = cfg.classImages;
   }
-  async function doUpload(el, baseName, after) {
+  async function doUpload(el, baseName, after, kind) {
     const file = await pickFile(); if (!file) return;
+    return handleFile(el, file, baseName, after, kind);
+  }
+  async function handleFile(el, rawFile, baseName, after, kind) {
     el.classList.add('vis-busy');
     try {
-      toast('מעלה תמונה…', false, 60000);
+      const file = await prepareImage(rawFile, kind, { crop: true, title: el.dataset.caption || 'חיתוך התמונה' });
+      if (!file) { el.classList.remove('vis-busy'); return; }
+      toast(`מעלה תמונה (${fmtKB(file.size)})…`, false, 60000);
       const path = await uploadImage(file, files, baseName);
       files = await listImages().catch(() => files);
       if (after) await after(path);
@@ -912,9 +1037,28 @@ async function renderVisual(rawPath) {
     }
     const b = el.querySelector('.vis-btn'); if (b) b.textContent = b.dataset.replaceLabel;
   }
-  function addBtn(el, label, replaceLabel, has, small, handler) {
+  let active = null;
+  function select(el) {
+    if (active) active.classList.remove('vis-active');
+    active = el; el.classList.add('vis-active');
+    toast('נבחר מקום לתמונה. עכשיו אפשר להדביק צילום מסך עם Ctrl+V.', false, 3500);
+  }
+  async function onPaste(ev) {
+    const item = [...(ev.clipboardData ? ev.clipboardData.items : [])].find(i => i.type.startsWith('image/'));
+    if (!item) return;
+    ev.preventDefault();
+    if (!active) { toast('קודם לחצו על המקום שבו התמונה צריכה להופיע, ואז הדביקו.', true); return; }
+    const blob = item.getAsFile();
+    const file = new File([blob], 'paste.png', { type: blob.type || 'image/png' });
+    active._vis(file);
+  }
+  document.addEventListener('paste', onPaste);
+  window.addEventListener('hashchange', () => document.removeEventListener('paste', onPaste), { once: true });
+  function addBtn(el, label, replaceLabel, has, small, handler, fileHandler) {
     if (el.querySelector(':scope > .vis-btn')) return;
     el.setAttribute('data-vis', '');
+    el._vis = fileHandler;
+    el.addEventListener('click', ev => { if (ev.target.closest('.vis-btn')) return; ev.preventDefault(); ev.stopPropagation(); select(el); }, true);
     const b = el.ownerDocument.createElement('button');
     b.type = 'button'; b.className = 'vis-btn' + (small ? ' small' : '');
     b.dataset.replaceLabel = replaceLabel; b.textContent = has ? replaceLabel : label;
@@ -928,27 +1072,74 @@ async function renderVisual(rawPath) {
     const cur = frame.contentWindow.location.pathname.slice(SITE_BASE.length);
     if ([...sel.options].some(o => o.value === cur)) { sel.value = cur; history.replaceState(null, '', '#/visual/' + encodeURIComponent(cur)); }
     const st = doc.createElement('style'); st.textContent = VIS_CSS; doc.head.appendChild(st);
+    doc.addEventListener('paste', onPaste);
+    active = null;
     doc.querySelectorAll('[data-shot][hidden], [data-slot][hidden]').forEach(n => n.removeAttribute('hidden'));
     doc.querySelectorAll('[data-shot]').forEach(el => {
       const name = el.dataset.shot;
-      addBtn(el, 'העלאת צילום מסך', 'החלפת צילום', !el.classList.contains('shot-missing'), false, () => doUpload(el, name));
+      addBtn(el, 'העלאת צילום מסך', 'החלפת צילום', !el.classList.contains('shot-missing'), false, () => doUpload(el, name, null, 'shot'), f => handleFile(el, f, name, null, 'shot'));
     });
     doc.querySelectorAll('[data-slot="cover"]').forEach(el => {
       const slug = el.dataset.guide;
-      addBtn(el, 'העלאת באנר', 'החלפת באנר', !el.classList.contains('cover-missing'), false, () => doUpload(el, `cover-${slug}`, p => setGuideField(slug, 'cover', p)));
+      const after = p => setGuideField(slug, 'cover', p);
+      addBtn(el, 'העלאת באנר', 'החלפת באנר', !el.classList.contains('cover-missing'), false, () => doUpload(el, `cover-${slug}`, after, 'cover'), f => handleFile(el, f, `cover-${slug}`, after, 'cover'));
     });
     doc.querySelectorAll('[data-thumb]').forEach(el => {
       const slug = el.dataset.thumb;
-      addBtn(el, 'תמונה', 'החלפה', el.classList.contains('has-img'), true, () => doUpload(el, `thumb-${slug}`, p => setGuideField(slug, 'thumb', p)));
+      const after = p => setGuideField(slug, 'thumb', p);
+      addBtn(el, 'תמונה', 'החלפה', el.classList.contains('has-img'), true, () => doUpload(el, `thumb-${slug}`, after, 'thumb'), f => handleFile(el, f, `thumb-${slug}`, after, 'thumb'));
     });
     doc.querySelectorAll('[data-class-img]').forEach(el => {
       const key = el.dataset.classImg;
-      addBtn(el, 'תמונה', 'החלפה', el.classList.contains('has-img'), true, () => doUpload(el, `class-${key}`, p => setClassImage(key, p)));
+      const after = p => setClassImage(key, p);
+      addBtn(el, 'תמונה', 'החלפה', el.classList.contains('has-img'), true, () => doUpload(el, `class-${key}`, after, 'class'), f => handleFile(el, f, `class-${key}`, after, 'class'));
     });
   }
   frame.addEventListener('load', decorate);
   // ייתכן שהעמוד נטען כבר בזמן שחיכינו לרשימת התמונות
   try { if (frame.contentDocument && frame.contentDocument.readyState === 'complete' && frame.contentDocument.body && frame.contentDocument.body.childElementCount) decorate(); } catch {}
+}
+
+// ---------------- printable shot list ----------------
+// רשימת צילום לפי מקום במשחק, כדי לצלם הכול בסיבוב אחד
+const SHOT_GROUPS = [
+  { t: 'האי מייפל (Maple Island)', tip: 'רק דמות חדשה. צלמו לפני שעולים על הסירה.', n: ['character-creation', 'maple-island', 'shanks-boat'] },
+  { t: 'ליט הארבור (Lith Harbor)', n: ['lith-harbor'] },
+  { t: 'הניסיס (Henesys)', n: ['henesys', 'citizenship-board'] },
+  { t: 'אלינייה (Ellinia) והיער שמצפון לה', n: ['ellinia', 'hollow-entrance'] },
+  { t: 'Forgotten Hollow', tip: 'נפתח ב-18.11.2026. הבוס מופיע כל 60–120 דקות.', n: ['rotten-mushmom'] },
+  { t: 'פריון (Perion)', n: ['perion'] },
+  { t: 'קרנינג סיטי (Kerning City) והסאבווי', n: ['kerning-city', 'transfer-area', 'wraith-subway', 'shumi-jq'] },
+  { t: 'KPQ (צריך פארטי של 4)', tip: 'צלמו כל שלב בזמן ריצה אחת.', n: ['lakelis', 'kpq-stage1', 'kpq-ropes', 'kpq-platforms', 'kpq-barrels', 'king-slime'] },
+  { t: 'סליפיווד (Sleepywood) והמערות', n: ['ant-tunnel', 'sleepy-dungeon', 'sauna-robe', 'sabitrama-jq', 'john-jq'] },
+  { t: 'שוק חופשי (Free Market)', n: ['free-market'] },
+  { t: 'חלונות במשחק (אפשר מכל מקום)', tip: 'פתחו את החלון וצלמו. חלונות הסקילים דורשים דמות מהמקצוע המתאים.', n: ['classic-world-title', 'victoria-island-map', 'stat-window', 'party-window', 'scroll-window', 'crafting-window', 'four-classes', 'second-job-test'] },
+  { t: 'חלונות סקילים, ג\'וב ראשון', n: ['warrior-skills', 'magician-skills', 'bowman-skills', 'thief-skills'] },
+  { t: 'חלונות סקילים, ג\'וב שני', n: ['fighter-skills', 'page-skills', 'spearman-skills', 'fp-skills', 'il-skills', 'cleric-skills', 'hunter-skills', 'crossbowman-skills', 'assassin-skills', 'bandit-skills'] },
+  { t: 'דף הבית', tip: 'נוף יפה מהמשחק, רחב.', n: ['home-hero'] },
+];
+async function renderShotList() {
+  let files = [];
+  try { files = await listImages(); } catch {}
+  const have = new Set(files.map(f => f.name.replace(/\.[^.]+$/, '')));
+  const all = new Map();
+  manifest.guides.forEach(g => (g.shots || []).forEach(sh => { if (!all.has(sh.name)) all.set(sh.name, { ...sh, where: [] }); all.get(sh.name).where.push(g.short || g.title); }));
+  (manifest.siteShots || []).forEach(sh => { if (!all.has(sh.name)) all.set(sh.name, { ...sh, where: [sh.where] }); });
+  const used = new Set();
+  const groupHtml = SHOT_GROUPS.map(gr => {
+    const items = gr.n.filter(n => all.has(n)).map(n => { used.add(n); return all.get(n); });
+    return items.length ? { ...gr, items } : null;
+  }).filter(Boolean);
+  const leftovers = [...all.values()].filter(sh => !used.has(sh.name));
+  if (leftovers.length) groupHtml.push({ t: 'עוד', items: leftovers });
+  const total = all.size, done = [...all.keys()].filter(n => have.has(n)).length;
+  app.innerHTML = `
+<div class="dash-head no-print"><a class="btn btn-ghost btn-sm" href="#/media">חזרה</a><h1>רשימת צילום</h1><span class="muted">${done} מתוך ${total} כבר באתר</span><span class="spacer"></span><button class="btn" type="button" onclick="print()">הדפסה</button></div>
+<div class="shotlist">
+  <p class="print-only"><strong>מייפלורז: רשימת צילום מסך.</strong> ${done} מתוך ${total} כבר באתר.</p>
+  <p class="muted small">טיפ: במשחק צלמו עם <kbd>Print Screen</kbd>. אחר כך גררו את כל התיקייה ללשונית "תמונות", או הדביקו כל צילום עם <kbd>Ctrl</kbd>+<kbd>V</kbd> במסך "עריכת תמונות על גבי האתר". כדאי לשנות את שם הקובץ לשם שבסוגריים, ואז הוא נכנס למקום שלו לבד.</p>
+  ${groupHtml.map(gr => `<section class="sl-group"><h2>${e(gr.t)}</h2>${gr.tip ? `<p class="muted small">${e(gr.tip)}</p>` : ''}<ul>${gr.items.map(sh => `<li class="${have.has(sh.name) ? 'done' : ''}"><span class="sl-box" aria-hidden="true">${have.has(sh.name) ? '✓' : ''}</span><span><strong>${e(sh.caption || sh.name)}</strong> <code dir="ltr">${e(sh.name)}</code><small class="muted"> · ${e(sh.where.join(', '))}</small></span></li>`).join('')}</ul></section>`).join('')}
+</div>`;
 }
 
 boot();
