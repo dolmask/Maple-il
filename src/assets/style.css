@@ -732,3 +732,7 @@ table { table-layout: auto; word-break: normal; overflow-wrap: anywhere; }
 
 .cover-mobs .mob-char { max-height: 120px; }
 .g-icon img[src*="/character/"], .job-icon img[src*="/character/"] { object-fit: contain; object-position: center bottom; }
+
+/* איורי חפצים מ-maplestory.io בתוך הטקסט */
+.item { white-space: nowrap; }
+.item-ic { display: inline-block; width: 1.5em; height: 1.5em; vertical-align: -.4em; margin-inline-end: .2em; object-fit: contain; image-rendering: pixelated; }

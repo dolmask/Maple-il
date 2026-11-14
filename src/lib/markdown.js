@@ -1,3 +1,4 @@
+import { addItemIcons } from './items.js';
 // מנוע Markdown קטן ללא תלויות — משותף לבנייה (Node) ולתצוגה המקדימה במערכת הניהול (דפדפן).
 // תומך: כותרות, פסקאות, הדגשה, קישורים, תמונות, רשימות (כולל מקוננות), טבלאות,
 // ציטוטים, קו מפריד, קוד, ותיבות מיוחדות בסגנון המשחק (:::tip / :::warning / :::info / :::npc / :::stats).
@@ -112,7 +113,7 @@ export function renderMarkdown(src, opts = {}) {
   const headings = [];
   const usedIds = new Set();
   let h2count = 0;
-  const html = renderBlocks(lines, opts, headings, usedIds, () => ++h2count);
+  const html = addItemIcons(renderBlocks(lines, opts, headings, usedIds, () => ++h2count));
   return { html, headings };
 }
 
