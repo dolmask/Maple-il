@@ -48,7 +48,7 @@ export function adSlot(ctx, kind) {
 }
 
 // ---------- layout ----------
-export function layout(ctx, { title, description = '', path = '', body, active = '', jsonld = null, noindex = false, edit = 'settings', hud = null }) {
+export function layout(ctx, { title, description = '', path = '', body, active = '', jsonld = null, noindex = false, edit = 'settings', hud = null, scripts = '' }) {
   const c = ctx.config;
   const fullTitle = title ? `${title} | ${c.siteName}` : `${c.siteName} — ${c.tagline}`;
   const canonical = c.siteUrl ? c.siteUrl.replace(/\/$/, '') + '/' + path.replace(/^\//, '') : '';
@@ -103,6 +103,7 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script
   <nav class="catnav" id="mainNav" aria-label="קטגוריות">
     <div class="wrap catnav-in">
       <a href="${url(ctx, 'guides/')}"${active === 'all' ? ' aria-current="page"' : ''}>כל המדריכים</a>
+      ${rankingOn(ctx) ? `<a href="${url(ctx, 'ranking/')}"${active === 'ranking' ? ' aria-current="page"' : ''}>דירוג</a>` : ''}
       ${nav}
     </div>
   </nav>
@@ -146,6 +147,7 @@ ${hud ? `<div class="hud" aria-hidden="true"><span class="hud-lv"><small>LV.</sm
     </nav>
     <nav aria-label="על האתר">
       <h2>האתר</h2>
+      ${rankingOn(ctx) ? `<a href="${url(ctx, 'ranking/')}">דירוג השחקנים</a>` : ''}
       <a href="${url(ctx, 'about/')}">אודות</a>
       <a href="${url(ctx, 'accessibility/')}">הצהרת נגישות</a>
       <a href="${url(ctx, 'privacy/')}">מדיניות פרטיות</a>
@@ -159,6 +161,7 @@ ${hud ? `<div class="hud" aria-hidden="true"><span class="hud-lv"><small>LV.</sm
 </footer>
 <script>window.SITE_BASE=${JSON.stringify(ctx.base || '/')};</script>
 <script src="${url(ctx, 'assets/site.js')}${ctx.version ? '?v=' + ctx.version : ''}" defer></script>
+${scripts}
 </body>
 </html>`;
 }
@@ -336,4 +339,119 @@ export function staticPage(ctx, p) {
 export function notFoundPage(ctx) {
   const body = `<section class="wrap narrow page-pad lost"><h1>הפורטל הזה לא מוביל לשום מקום</h1><p>העמוד שחיפשתם לא קיים, או שהועבר למקום אחר.</p><p class="row-btns"><a class="btn" href="${url(ctx)}">לדף הבית</a><button class="btn btn-ghost" type="button" data-open-search>חיפוש מדריך</button></p></section>`;
   return layout(ctx, { title: 'העמוד לא נמצא', body, noindex: true });
+}
+
+// ---------- ranking ----------
+export function rankingOn(ctx) {
+  return !!(ctx.config.ranking && ctx.config.ranking.enabled);
+}
+
+const MSIO = 'https://maplestory.io/api/gms/208.2.0/mob/';
+function mobImg(id, cls = 'rank-mob') {
+  if (!id) return '';
+  return `<img class="${cls}" src="${MSIO}${encodeURIComponent(id)}/render/stand" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
+}
+
+function rankCredit(ctx) {
+  return `<aside class="rank-credit" aria-label="מקור הנתונים">
+  <p><strong>מקור הנתונים: <a href="https://classicrank.com" target="_blank" rel="noopener">ClassicRank</a>.</strong> את הנתונים אוספת קהילת ClassicRank מתוך המשחק, והם מתעדכנים אצלנו אוטומטית בערך כל חצי שעה. מייפלורז לא אוסף נתונים מהמשחק בעצמו.</p>
+  <p>לא מופיעים או שהנתונים ישנים? ClassicRank מעדכנים דמויות שנראות בשוק החופשי (Free Market), מומלץ בערוץ 1. <a href="https://classicrank.com/Scan" target="_blank" rel="noopener">איך זה עובד</a>.</p>
+  <p class="rank-credit-legal">תמונות הדמויות: ClassicRank. איורי המפלצות: © NEXON, דרך <a href="https://maplestory.io" target="_blank" rel="noopener">maplestory.io</a>. MapleStory Classic World © NEXON Korea Corp. <a href="${url(ctx, 'copyright/')}">זכויות יוצרים</a></p>
+</aside>`;
+}
+
+const RANK_TABS = [
+  ['overall', 'כללי', 'לפי רמה'],
+  ['fame', 'פרסום', 'לפי Fame'],
+  ['class', 'מקצוע', 'לפי מקצוע'],
+  ['islander', 'אי ההתחלה', 'מתחילים שלא עזבו את האי'],
+  ['permanent', 'מתחילים לנצח', 'נשארו Beginner'],
+  ['israel', 'ישראלים', 'בקרוב'],
+];
+
+export function rankingPage(ctx) {
+  const r = ctx.config.ranking || {};
+  const mobs = r.mobs || {};
+  const familyOpts = [['', 'כל המקצועות'], ['warrior', 'לוחם'], ['magician', 'קוסם'], ['bowman', 'קשת'], ['thief', 'גנב'], ['beginner', 'מתחיל']]
+    .map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
+  const tabs = RANK_TABS.map(([id, label, hint], i) =>
+    `<button type="button" class="rank-tab" data-tab="${id}" aria-pressed="${i === 0}"${id === 'israel' ? ' data-soon' : ''}><span>${label}</span><small>${hint}</small></button>`).join('');
+
+  const body = `
+<div class="wrap page-pad rank-page">
+  <nav class="crumbs" aria-label="מיקום באתר"><a href="${url(ctx)}">ראשי</a></nav>
+  <header class="rank-head">
+    <div>
+      <h1>דירוג השחקנים</h1>
+      <p>כל השחקנים של MapleStory Classic World לפי רמה, Fame ומקצוע. אפשר לסנן, לחפש לפי שם ולשתף קישור לכל תצוגה.</p>
+    </div>
+    <div class="rank-mobs" aria-hidden="true">${mobImg(mobs.overall)}</div>
+  </header>
+  <dl class="rank-stats" id="rankStats">
+    <div><dt>שחקנים מדורגים</dt><dd data-stat="total">…</dd></div>
+    <div><dt>מוצגים כאן</dt><dd data-stat="shown">…</dd></div>
+    <div><dt>רמה ממוצעת</dt><dd data-stat="avgLevel">…</dd></div>
+    <div><dt>Fame ממוצע</dt><dd data-stat="avgFame">…</dd></div>
+    <div><dt>עודכן</dt><dd data-stat="updated">…</dd></div>
+  </dl>
+  <section class="window rank-window" aria-labelledby="rankTitle">
+    <div class="window-bar"><h2 id="rankTitle">דירוג כללי</h2><small id="rankSub">לפי רמה</small></div>
+    <div class="rank-tabs" role="group" aria-label="סוג הדירוג">${tabs}</div>
+    <form class="rank-filters" id="rankFilters" role="search" aria-label="סינון הדירוג">
+      <label class="rf rf-q"><span>חיפוש לפי שם</span><input type="search" name="q" autocomplete="off" placeholder="שם הדמות" dir="auto"></label>
+      <label class="rf"><span>מקצוע</span><select name="family">${familyOpts}</select></label>
+      <label class="rf"><span>ענף</span><select name="job"><option value="">כל הענפים</option></select></label>
+      <label class="rf"><span>דרגה</span><select name="tier"><option value="">הכול</option><option value="0">מתחיל</option><option value="1">ג'וב ראשון</option><option value="2">ג'וב שני</option></select></label>
+      <fieldset class="rf rf-range"><legend>רמה</legend><input type="number" name="min" min="1" max="200" inputmode="numeric" aria-label="מרמה" placeholder="מ-"><span aria-hidden="true">–</span><input type="number" name="max" min="1" max="200" inputmode="numeric" aria-label="עד רמה" placeholder="עד"></fieldset>
+      <div class="rf rf-checks">
+        <label class="chk"><input type="checkbox" name="true" value="1"><span>דירוג אמיתי</span></label>
+        <label class="chk"><input type="checkbox" name="verified" value="1"><span>רק מאומתים</span></label>
+      </div>
+      <button type="reset" class="btn btn-ghost rf-reset">איפוס</button>
+      <p class="rf-note" id="trueNote">"דירוג אמיתי" מסתיר דמויות שסומנו ב-ClassicRank כבוטים.</p>
+    </form>
+    <p class="rank-live" id="rankLive" aria-live="polite"></p>
+    <div id="rankSoon" class="rank-soon" hidden>
+      ${mobImg(mobs.israel, 'rank-soon-mob')}
+      <h3>דירוג השחקנים הישראלים: בקרוב</h3>
+      <p>בקרוב תוכלו לרשום כאן את הדמות שלכם, עם צילום מסך מהמשחק, ולהופיע בדירוג של הקהילה הישראלית, כולל גילדות וג'אמפ קווסטים.</p>
+    </div>
+    <ol class="podium" id="rankPodium" aria-label="שלושת הראשונים"></ol>
+    <div class="table-wrap rank-table-wrap">
+      <table class="rank-table" id="rankTable">
+        <caption class="sr-only" id="rankCaption">דירוג השחקנים</caption>
+        <thead><tr><th scope="col">#</th><th scope="col">דמות</th><th scope="col">מקצוע</th><th scope="col">רמה</th><th scope="col">Fame</th><th scope="col" class="col-seen">נבדק</th></tr></thead>
+        <tbody><tr><td colspan="6" class="rank-msg">טוען את הדירוג…</td></tr></tbody>
+      </table>
+    </div>
+    <nav class="rank-pager" id="rankPager" aria-label="עמודי הדירוג"></nav>
+  </section>
+  ${rankCredit(ctx)}
+  <noscript><p class="empty">כדי לראות את הדירוג צריך להפעיל JavaScript בדפדפן.</p></noscript>
+</div>
+<script>window.RANK_CFG=${JSON.stringify({ pageSize: r.pageSize || 25, mobs })};</script>`;
+  return layout(ctx, {
+    title: 'דירוג השחקנים',
+    description: 'דירוג כל השחקנים במייפל סטורי קלאסיק (MapleStory Classic World) לפי רמה, Fame ומקצוע, בעברית. סינון לפי ענף, דרגה וטווח רמות.',
+    path: 'ranking/', body, active: 'ranking', edit: 'settings',
+    scripts: `<script type="module" src="${url(ctx, 'assets/ranking.js')}${ctx.version ? '?v=' + ctx.version : ''}"></script>`,
+  });
+}
+
+export function playerPage(ctx) {
+  const r = ctx.config.ranking || {};
+  const body = `
+<div class="wrap narrow page-pad rank-page">
+  <nav class="crumbs" aria-label="מיקום באתר"><a href="${url(ctx)}">ראשי</a><span aria-hidden="true">/</span><a href="${url(ctx, 'ranking/')}">דירוג</a></nav>
+  <article class="window player" id="playerCard" aria-live="polite">
+    <div class="window-bar"><h1 class="player-bar-title">פרופיל שחקן</h1></div>
+    <div class="player-in"><p class="rank-msg">טוען…</p></div>
+  </article>
+  ${rankCredit(ctx)}
+</div>
+<script>window.RANK_CFG=${JSON.stringify({ pageSize: r.pageSize || 25, mobs: r.mobs || {}, player: true })};</script>`;
+  return layout(ctx, {
+    title: 'פרופיל שחקן', description: 'פרופיל שחקן בדירוג מייפל סטורי קלאסיק', path: 'ranking/player/', body, active: 'ranking', noindex: true,
+    scripts: `<script type="module" src="${url(ctx, 'assets/ranking.js')}${ctx.version ? '?v=' + ctx.version : ''}"></script>`,
+  });
 }

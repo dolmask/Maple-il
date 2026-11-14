@@ -135,5 +135,19 @@
     "email": "",
     "phone": "",
     "updated": "14.11.2026"
+  },
+  "ranking": {
+    "enabled": true,
+    "pageSize": 25,
+    "maxRows": 10000,
+    "source": "https://classicrank.com/api/v1",
+    "mobs": {
+      "overall": "6130101",
+      "fame": "1210102",
+      "class": "130100",
+      "islander": "100100",
+      "permanent": "100101",
+      "israel": "210100"
+    }
   }
 }
