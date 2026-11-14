@@ -31,6 +31,8 @@ sources: ["https://meowdb.com/msclassic/guides/jump-quests"]
 
 שומי בקרנינג סיטי איבדה כסף באתר הבנייה של הסאבווי. מ-{{lv 35}}.
 
+[[shot shumi-jq | משימת הקפיצה של שומי (Shumi)]]
+
 - **כניסה:** מראים כרטיס ל-**The Ticket Gate** בעמדת הכרטיסים של הסאבווי בקרנינג. **כל קומה (B1, B2, B3) צריכה כרטיס משלה.**
 - **מיקום:** Kerning City Subway, Construction Site B1 עד B3.
 - **שלבים:** 10 מפות (3 ב-B1, 3 ב-B2, 4 ב-B3). המפה האחרונה בכל קומה היא Subway Depot.
@@ -50,6 +52,8 @@ sources: ["https://meowdb.com/msclassic/guides/jump-quests"]
 
 מתחילים אצל ג'ון בליט הארבור. **מ-{{lv 65}}** (לפני ההשקה זה היה 45).
 
+[[shot john-jq | יער הסבלנות של ג'ון (John)]]
+
 - **כניסה:** מדברים עם **הפסל המסתורי (Mysterious Statue)** בסליפיווד.
 - **שלבים:** 7 מפות. מהירות וקפיצה בברירת מחדל.
 
@@ -64,6 +68,8 @@ sources: ["https://meowdb.com/msclassic/guides/jump-quests"]
 ## 3. יער הסבלנות של סביטרמה (Sabitrama's Forest of Patience)
 
 מתחילים אצל סביטרמה בסליפיווד. הראשונה מ-{{lv 25}}, השנייה מ-{{lv 50}}.
+
+[[shot sabitrama-jq | יער הסבלנות של סביטרמה (Sabitrama)]]
 
 - **כניסה:** מדברים עם שיין (Shane) באלינייה. הוא גובה דמי כניסה עד שמסיימים את המשימה הראשונה.
 - **שלבים:** 5 מפות. Haste מותר רק בשלב 3.

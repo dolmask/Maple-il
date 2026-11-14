@@ -33,6 +33,8 @@ sources: ["https://meowdb.com/msclassic/guides/il-wizard-class-guide", "https://
 | Teleport | 20 | השתגרות של עד 150 פיקסלים, 15 MP |
 | Slow | 20 | מאט מפלצות ומוריד התחמקות ל-10 שניות |
 
+[[shot il-skills | חלון הסקילים של קוסם קרח/ברק]]
+
 ## סדר הסקילים (בלי איפוס)
 
 - **Lv 30:** Teleport 1

@@ -390,3 +390,46 @@ mark { background: color-mix(in srgb, var(--tip-gold) 55%, transparent); color: 
 .edit-fab { position: fixed; bottom: 18px; inset-inline-end: 18px; z-index: 30; display: inline-flex; align-items: center; gap: 6px; padding: 11px 18px; border-radius: 12px; background: var(--tip-bg); color: var(--tip-gold); font-weight: 800; text-decoration: none; border: 2px solid var(--tip-gold); box-shadow: 0 3px 0 rgba(0,0,0,.3); }
 .edit-fab::before { content: "✎"; }
 @media print { .edit-fab { display: none; } }
+
+/* screenshots from the game (uploaded by the site owner) */
+.shot { margin: 1.5em 0; }
+.shot-frame { position: relative; padding: 5px; border-radius: 14px; background: linear-gradient(180deg, #34456f, var(--tip-bg)); box-shadow: 0 3px 0 var(--frame), inset 0 0 0 1px rgba(255,255,255,.12); }
+.shot-frame::before { content: ""; position: absolute; inset: 5px; border-radius: 9px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); pointer-events: none; }
+.prose .shot-frame img { display: block; width: 100%; height: auto; max-height: 540px; object-fit: contain; border: 0; border-radius: 9px; background: #0b1226; }
+.shot figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; padding: 7px 4px 0; font-size: .92rem; line-height: 1.5; }
+.shot figcaption > span { font-weight: 700; }
+.shot-credit { color: var(--muted); font-size: .78rem; }
+.shot-missing .shot-frame { background: var(--paper-2); box-shadow: none; border: 2px dashed var(--frame); }
+.shot-missing .shot-frame span { display: grid; place-items: center; min-height: 150px; text-align: center; color: var(--muted); font-weight: 700; }
+
+/* accessibility menu */
+.a11y-panel { position: fixed; top: 76px; inset-inline-end: 16px; z-index: 45; width: min(300px, calc(100vw - 32px)); }
+.a11y-panel[hidden] { display: none; }
+.a11y-panel .window-bar { align-items: center; }
+.a11y-x { border: 0; background: transparent; color: #fff; font-size: 1.1rem; cursor: pointer; padding: 2px 6px; border-radius: 6px; }
+.a11y-body { display: flex; flex-direction: column; gap: 6px; padding: 12px; }
+.a11y-row { display: flex; align-items: center; gap: 6px; font-weight: 700; }
+.a11y-row span { flex: 1; }
+.a11y-body button { font: inherit; font-weight: 700; padding: 8px 12px; border-radius: 10px; border: 2px solid var(--line); background: var(--paper-2); color: var(--ink); cursor: pointer; text-align: start; min-height: 44px; }
+.a11y-row button { min-width: 52px; text-align: center; }
+.a11y-tog[aria-pressed="true"] { background: var(--tip-bg); color: var(--tip-gold); border-color: var(--tip-bg); }
+.a11y-tog[aria-pressed="true"]::after { content: " ✓"; }
+.a11y-reset { background: transparent !important; }
+.a11y-body a { font-weight: 700; padding: 4px 2px; }
+:root[data-size="l"] { font-size: 112.5%; }
+:root[data-size="xl"] { font-size: 125%; }
+:root[data-size="xxl"] { font-size: 140%; }
+:root[data-size] body { font-size: 1.0625rem; }
+.a11y-links a { text-decoration: underline !important; text-decoration-thickness: 2px !important; outline: 2px solid color-mix(in srgb, var(--maple) 60%, transparent); outline-offset: 1px; }
+.a11y-font body, .a11y-font h1, .a11y-font h2, .a11y-font h3, .a11y-font h4, .a11y-font .g-title, .a11y-font .brand-text strong { font-family: Arial, "Segoe UI", system-ui, sans-serif !important; letter-spacing: .01em; }
+.a11y-spacing .prose p, .a11y-spacing .prose li { line-height: 2.1; word-spacing: .12em; }
+.a11y-motion *, .a11y-motion *::before, .a11y-motion *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+.a11y-contrast { --page: #000; --paper: #000; --paper-2: #111; --ink: #fff; --muted: #f0f0f0; --line: #fff; --frame: #fff; --link: #7fdcff; --maple-ink: #ffd35c; --tip-bg: #000; --tip-ink: #fff; --tip-dim: #fff; --bar-1: #000; --bar-2: #000; }
+.a11y-contrast body { background: #000; }
+.a11y-contrast .sky { background: #000 !important; }
+.a11y-contrast .clouds, .a11y-contrast .grass { display: none; }
+.a11y-contrast .brand, .a11y-contrast .nav-link, .a11y-contrast .icon-btn { color: #fff !important; background: #000 !important; border-color: #fff !important; }
+.a11y-contrast .window-bar { border-bottom: 2px solid #fff; }
+.a11y-contrast a { color: #7fdcff; }
+.a11y-contrast .lv { background: #ffd35c; color: #000; }
+.hero-text .shot { margin: 22px 0 0; max-width: 560px; }

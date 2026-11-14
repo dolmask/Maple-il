@@ -22,6 +22,8 @@ sources: ["https://meowdb.com/msclassic/guides/what-is-maplestory-classic-worlds
 | **Greater** | "10%" | 10% | המשבצת נשרפת, הפריט שלם |
 | **Chaos** | "כאוס" | 10% | **הפריט יכול להיות מושמד** |
 
+[[shot scroll-window | חלון שימוש במגילה על פריט]]
+
 ככל שהסיכוי נמוך יותר, התוספת גדולה יותר. **רק מגילות Chaos יכולות להשמיד פריט.** מגילת Chaos נותנת תוספת קבועה גדולה יותר מ-Greater.
 
 :::warning Chaos רק על מה שאתם מוכנים להפסיד

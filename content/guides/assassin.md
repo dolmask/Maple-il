@@ -33,6 +33,8 @@ sources: ["https://meowdb.com/msclassic/guides/assassin-class-guide", "https://m
 | Haste | 20 | +30 מהירות ו-+10 קפיצה לכל הפארטי ל-300 שניות |
 | Drain | 30 | התקפה מטווח שיכולה לספוג חלק מהנזק כ-HP (11 נקודות בבילד) |
 
+[[shot assassin-skills | חלון הסקילים של המתנקש]]
+
 ## סדר הסקילים
 
 - **Lv 30:** Haste 1

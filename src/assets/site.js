@@ -11,6 +11,41 @@
     try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {}
   });
 
+  // accessibility menu
+  var A = {};
+  try { A = JSON.parse(localStorage.getItem('a11y') || '{}'); } catch (e) {}
+  var root = document.documentElement;
+  var sizes = ['', 'l', 'xl', 'xxl'];
+  function a11yApply() {
+    ['contrast', 'links', 'font', 'motion', 'spacing'].forEach(function (k) {
+      root.classList.toggle('a11y-' + k, !!A[k]);
+      var b = document.querySelector('[data-a11y="' + k + '"]');
+      if (b) b.setAttribute('aria-pressed', A[k] ? 'true' : 'false');
+    });
+    if (A.size) root.dataset.size = A.size; else delete root.dataset.size;
+    try { localStorage.setItem('a11y', JSON.stringify(A)); } catch (e) {}
+  }
+  var ap = $('#a11yPanel'), ao = $('#a11yOpen');
+  if (ap && ao) {
+    var closeA = function () { ap.hidden = true; ao.setAttribute('aria-expanded', 'false'); };
+    ao.addEventListener('click', function () {
+      ap.hidden = !ap.hidden; ao.setAttribute('aria-expanded', ap.hidden ? 'false' : 'true');
+      if (!ap.hidden) ap.querySelector('button').focus();
+    });
+    ap.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-a11y],[data-a11y-close]'); if (!b) return;
+      if (b.hasAttribute('data-a11y-close')) { closeA(); ao.focus(); return; }
+      var k = b.dataset.a11y, i = sizes.indexOf(A.size || '');
+      if (k === 'bigger') A.size = sizes[Math.min(sizes.length - 1, i + 1)];
+      else if (k === 'smaller') A.size = sizes[Math.max(0, i - 1)];
+      else if (k === 'reset') A = {};
+      else A[k] = !A[k];
+      a11yApply();
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !ap.hidden) { closeA(); ao.focus(); } });
+    a11yApply();
+  }
+
   // mobile menu
   var mt = $('#menuToggle'), nav = $('#mainNav');
   if (mt && nav) mt.addEventListener('click', function () {
@@ -80,6 +115,12 @@
       if (e.key === '/' && layer.hidden && !/input|textarea/i.test(document.activeElement.tagName)) { e.preventDefault(); openSearch(); }
       if (layer.hidden) return;
       var links = results.querySelectorAll('a');
+      if (e.key === 'Tab') {
+        var f = layer.querySelectorAll('input, button, a[href]');
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
       if (e.key === 'Escape') closeSearch();
       else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
         e.preventDefault();

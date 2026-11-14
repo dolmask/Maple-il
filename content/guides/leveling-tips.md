@@ -43,6 +43,8 @@ sources: ["https://meowdb.com/msclassic/guides/maplestory-classic-glossary"]
 
 פארטי (עד שישה שחקנים) נותן **בונוס EXP** שגדל עם מספר החברים וההריגות המשותפות.
 
+[[shot party-window | חלון הפארטי]]
+
 - חבר שלא תקף, לא ספג נזק ולא השתמש בסקיל במשך **10 שניות** מפסיק לקבל EXP מהפארטי.
 - ב-[KPQ](/guides/kerning-party-quest/) פארטי של ארבעה הוא חובה.
 - **Haste** (גנבים), **Rage** (פייטר), **Meditation** (קוסמים) ו-**Bless** (קלריק) הופכים כל פארטי לחזק יותר.

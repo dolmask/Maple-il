@@ -33,6 +33,8 @@ sources: ["https://meowdb.com/msclassic/guides/spearman-class-guide", "https://m
 | Rush | 20 | דוהר ופוגע בעד שש מפלצות ב-80% |
 | Polearm Mastery | 1 | נקודה עודפת במסלול החנית |
 
+[[shot spearman-skills | חלון הסקילים של הספירמן]]
+
 ## סדר הסקילים (חנית)
 
 - **Lv 30:** Rush 1

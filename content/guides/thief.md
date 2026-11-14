@@ -14,6 +14,8 @@ sources: ["https://meowdb.com/msclassic/guides/thief-class-guide"]
 
 הגנב (Thief) מהיר, חמקמק וחזק מאוד, אבל דורש קצת תכנון כבר מההתחלה. מקבלים אותו ב-{{lv 10}} אצל **האדון האפל (Dark Lord)** מתחת לבר הג'אז (Fusion Jazz Bar) בקרנינג סיטי (Kerning City). אין דרישת סטטים.
 
+[[shot kerning-city | קרנינג סיטי (Kerning City), עיר הגנבים]]
+
 :::stats הגנב בקצרה
 סטט ראשי: LUK
 סטט משני: DEX (לטפרים ולשריון)
@@ -72,6 +74,8 @@ DEX נשאר 5. Lv 10–15 הולכים ל-LUK, ו-STR עולה ברמות 16, 1
 | Keen Eyes | 15 | +200 לטווח הזריקה (400 סה"כ) |
 | Disorder | 20 | מוריד למפלצת התקפה והגנה ל-12 שניות. פותח את Dark Sight |
 | Dark Sight | 20 | הופך אתכם לבלתי נראים. שימושי לתנועה |
+
+[[shot thief-skills | חלון הסקילים של הגנב]]
 
 ## סדר סקילים: Lucky Seven
 

@@ -34,6 +34,8 @@ sources: ["https://meowdb.com/msclassic/guides/fighter-class-guide", "https://me
 | Rage | 30 | +40 כוח התקפה ו-40- הגנה ל-300 שניות, לכל הפארטי באזור |
 | Rush | 20 | דוהר קדימה ופוגע בעד שש מפלצות ב-80% |
 
+[[shot fighter-skills | חלון הסקילים של הפייטר]]
+
 Power Guard שייך לג'וב השלישי (Crusader) ועוד לא במשחק. הג'וב השני נותן 121 נקודות SP עד Lv 70.
 
 ## סדר הסקילים (גרזן)

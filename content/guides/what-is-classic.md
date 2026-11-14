@@ -13,6 +13,8 @@ sources: ["https://meowdb.com/msclassic/guides/what-is-maplestory-classic-worlds
 
 **MapleStory Classic World** (בקיצור MSCW, ובעברית פשוט "מייפל קלאסיק") הוא עולם חדש ורשמי של Nexon שבנוי סביב מייפל סטורי של פעם, לפני עדכון ה-Big Bang של 2010. כל הדמויות מתחילות מ-Lv 1, עם כלכלה נפרדת לגמרי מהמשחק הרגיל.
 
+[[shot classic-world-title | מסך הפתיחה של MapleStory Classic World]]
+
 :::stats העולם הקלאסי במבט אחד
 השקה כללית: 21 באוקטובר 2026
 גישה מוקדמת (Founder's Access): מ-6 באוקטובר 2026
@@ -37,6 +39,8 @@ sources: ["https://meowdb.com/msclassic/guides/what-is-maplestory-classic-worlds
 
 **ארבעת המקצועות המקוריים**: לוחם (Warrior), קוסם (Magician), קשת (Bowman) וגנב (Thief). כל אחד בוחר ג'וב ראשון ב-Lv 10, ואחד מעשרה ענפים בג'וב השני ב-Lv 30. הרמה המקסימלית היא 100, כך שמ-Lv 30 עד Lv 100 נמצאים בג'וב השני.
 
+[[shot victoria-island-map | מפת האי ויקטוריה (Victoria Island)]]
+
 **האי ויקטוריה (Victoria Island)** במלואו: הניסיס (Henesys), אלינייה (Ellinia), פריון (Perion), קרנינג סיטי (Kerning City), ליט הארבור (Lith Harbor) וסליפיווד (Sleepywood), כולל הסאבווי של קרנינג ומערות הנמלים.
 
 **תוכן חדש שלא היה במייפל המקורי:**
@@ -58,6 +62,8 @@ sources: ["https://meowdb.com/msclassic/guides/what-is-maplestory-classic-worlds
 ## שדרוג ציוד: ארבע דרגות מגילות
 
 במקום אחוזי ה-10%/60%/100% המוכרים, המגילות מחולקות לדרגות:
+
+[[shot scroll-window | חלון שימוש במגילה על פריט]]
 
 | דרגה | סיכוי הצלחה | הערה |
 |---|---|---|

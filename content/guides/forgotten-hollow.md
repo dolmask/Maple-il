@@ -26,6 +26,8 @@ sources: ["https://meowdb.com/msclassic/guides/forgotten-hollow-the-new-endgame-
 
 הכניסה היא דרך **The Tree Tunnel At the Forest Up North**, שמגיעים אליה מ-**The Forest North of Ellinia**. המשימה **Welcome to the Hollow** שולחת אתכם במורד המנהרה.
 
+[[shot hollow-entrance | הכניסה ל-Forgotten Hollow]]
+
 **הדרך חזרה:** הפורטל למעלה נמצא ב-**Forgotten Entrance III**. הולכים מערבה דרך Forgotten Entrance II ו-I, ואז Primeval Forest III, II ו-I, עד העיר.
 
 :::tip מגילות חזרה
@@ -115,6 +117,8 @@ EXP: 844
 מיוחד: אל-מתה, מחדשת 864 HP בכל פעימה
 ספאון: כל 60–120 דקות (לפי דיווחי שחקנים)
 :::
+
+[[shot rotten-mushmom | Rotten Mushmom, הבוס של Forgotten Hollow]]
 
 היא נמצאת ב-**Someone Else's Grave**, מפה נסתרת שיוצאת מ-**Decayed Tunnel I**. בגלל ההתחדשות שלה, צריך נזק קבוע וגבוה. **בואו עם פארטי ושיקויים**, ואל תנסו לבד בלי ניסיון.
 

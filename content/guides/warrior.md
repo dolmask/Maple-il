@@ -14,6 +14,8 @@ sources: ["https://meowdb.com/msclassic/guides/warrior-class-guide"]
 
 הלוחם (Warrior) הוא מקצוע הקרב הפנים-אל-פנים של מייפל: הרבה HP, הגנה גבוהה ומכות חזקות. מקבלים אותו ב-{{lv 10}} בפריון (Perion) אצל **רוקד עם באלרוג (Dances With Balrog)**, בלי שום דרישת סטטים.
 
+[[shot perion | פריון (Perion), עיר הלוחמים]]
+
 :::stats הלוחם בקצרה
 סטט ראשי: STR
 סטט משני: DEX (רק לדרישות ציוד)
@@ -73,6 +75,8 @@ sources: ["https://meowdb.com/msclassic/guides/warrior-class-guide"]
 | Improved HP Recovery | 15 | מגדיל את ה-HP שמקבלים משיקויים, עד +50% |
 | Max HP Increase | 15 | +12% HP מקסימלי ב-3 נקודות (מומלץ לעצור ב-3) |
 | Iron Body | 20 | +הגנה פיזית ל-300 שניות, 15 MP |
+
+[[shot warrior-skills | חלון הסקילים של הלוחם]]
 
 ב-Lv 1–4 של Power Strike הוא עולה רק 4 MP, וזו אחת הסיבות שכדאי להעלות אותו בהדרגה.
 

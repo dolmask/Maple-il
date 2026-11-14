@@ -105,3 +105,7 @@ label.f small { font-weight: 600; color: var(--muted); }
 .picker-layer { position: fixed; inset: 0; z-index: 50; background: rgba(10,20,40,.55); display: flex; align-items: flex-start; justify-content: center; padding: 6vh 16px 16px; }
 .picker { width: 100%; max-width: 760px; }
 .picker .window-bar { align-items: center; }
+
+.shots-table.only-missing tr.ok { display: none; }
+.shots-table code { font-size: .82rem; }
+.shots-table td:last-child { white-space: nowrap; }

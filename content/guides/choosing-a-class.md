@@ -18,6 +18,8 @@ sources: ["https://meowdb.com/msclassic/guides/class-dps-rankings", "https://meo
 
 בוחרים מקצוע ב-{{lv 10}}, וענף (Branch) ב-{{lv 30}}. הבחירה בג'וב השני היא לתמיד, אז שווה לחשוב עליה מראש.
 
+[[shot four-classes | ארבעת המקצועות: לוחם, קוסם, קשת וגנב]]
+
 | מקצוע | סטט ראשי | עיר | ענפים בג'וב השני |
 |---|---|---|---|
 | לוחם (Warrior) | STR | פריון (Perion) | פייטר (Fighter), פייג' (Page), ספירמן (Spearman) |

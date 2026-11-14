@@ -129,5 +129,11 @@
   "attribution": {
     "text": "מקור: Nexon, המשחק MapleStory Classic World",
     "url": "https://maplestoryworlds.nexon.com/"
+  },
+  "accessibility": {
+    "name": "",
+    "email": "",
+    "phone": "",
+    "updated": "14.11.2026"
   }
 }

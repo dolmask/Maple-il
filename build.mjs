@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { parseFrontMatter } from './src/lib/markdown.js';
+import { parseFrontMatter, listShots } from './src/lib/markdown.js';
 import { homePage, guidePage, categoryPage, allGuidesPage, staticPage, notFoundPage } from './src/lib/render.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -33,7 +33,13 @@ const guides = readDir('content/guides')
     String(a.title).localeCompare(String(b.title), 'he'));
 const pages = readDir('content/pages');
 
-const ctx = { config, base, guides, version: Date.now().toString(36) };
+// תמונות שהועלו: שם בלי סיומת → שם הקובץ (לצילומי המסך)
+const imgDir = path.join(ROOT, 'content/images');
+const images = {};
+if (fs.existsSync(imgDir)) for (const f of fs.readdirSync(imgDir)) {
+  if (/\.(png|jpe?g|gif|webp|svg)$/i.test(f)) images[f.replace(/\.[^.]+$/, '')] = f;
+}
+const ctx = { config, base, guides, images, version: Date.now().toString(36) };
 
 function write(rel, content) {
   const file = path.join(OUT, rel);
@@ -81,8 +87,9 @@ write('search-index.json', JSON.stringify(guides.map(g => ({
 write('admin/manifest.json', JSON.stringify({
   built: new Date().toISOString(),
   config,
-  guides: guides.map(({ body, ...meta }) => meta),
+  guides: guides.map(({ body, ...meta }) => ({ ...meta, shots: listShots(body) })),
   pages: pages.map(({ body, ...meta }) => meta),
+  siteShots: [{ name: 'home-hero', caption: 'צילום מסך גדול לדף הבית, ליד הכותרת', where: 'דף הבית' }],
 }, null, 1));
 
 // SEO files

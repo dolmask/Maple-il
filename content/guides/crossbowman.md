@@ -33,6 +33,8 @@ sources: ["https://meowdb.com/msclassic/guides/crossbowman-class-guide", "https:
 | Soul Arrow: Crossbow | 20 | יורים בלי לצרוך חצים ל-300 שניות, 5 MP |
 | Amazon's Judgement | 20 | קריטיים יכולים להאט (נקודה אחת בבילד) |
 
+[[shot crossbowman-skills | חלון הסקילים של הקשת הצולבת]]
+
 ## סדר הסקילים
 
 - **Lv 30:** Iron Arrow 1

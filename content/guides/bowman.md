@@ -14,6 +14,8 @@ sources: ["https://meowdb.com/msclassic/guides/bowman-class-guide"]
 
 הקשת (Bowman) יורה מרחוק, נשאר בטוח ומשאיר את המפלצות במרחק. מקבלים אותו ב-{{lv 10}} בהניסיס (Henesys) אצל **אתנה פירס (Athena Pierce)**. כבר מההתחלה כדאי להחליט אם תלכו לקשת רגילה (Bow, בדרך לצייד) או לקשת צולבת (Crossbow), כי הדרישות שונות.
 
+[[shot henesys | הניסיס (Henesys), עיר הקשתים]]
+
 :::stats הקשת בקצרה
 סטט ראשי: DEX
 סטט משני: STR (רק לדרישות נשק)
@@ -69,6 +71,8 @@ sources: ["https://meowdb.com/msclassic/guides/bowman-class-guide"]
 | The Eye of Amazon | 15 | +120 פיקסלים לטווח |
 | Focus | 10 | +10 דיוק, +14 התחמקות ל-170 שניות |
 | Power Knockback | 20 | הודף עד שתי מפלצות 140 פיקסלים אחורה |
+
+[[shot bowman-skills | חלון הסקילים של הקשת]]
 
 **Arrow Blow או Double Shot?** שניהם 240% ברמה מקסימלית. Arrow Blow זול יותר ב-MP, צורך פחות חצים ומגיע רחוק יותר. Double Shot נותן נזק יציב יותר ויכול לחלק מכות בין שתי מפלצות.
 

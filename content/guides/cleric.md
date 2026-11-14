@@ -33,6 +33,8 @@ sources: ["https://meowdb.com/msclassic/guides/cleric-class-guide"]
 | MP Eater | 20 | 20 | סופג MP, לכל היותר פעם ב-5 שניות |
 | Teleport | 20 | 20 | השתגרות 150 פיקסלים, 15 MP |
 
+[[shot cleric-skills | חלון הסקילים של הקלריק]]
+
 ## סדר הסקילים
 
 **בילד פארטי:** Holy Arrow 30 עד Lv 41 → Heal 5 ב-Lv 42 → Invincible 5 ו-Bless 16 עד Lv 49 → Heal 30 ב-Lv 58 → MP Eater 20 ב-Lv 64 → Teleport 20 ב-Lv 70.

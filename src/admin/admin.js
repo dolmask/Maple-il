@@ -313,6 +313,7 @@ ${draft ? `<div class="box box-info" id="draftBox" style="padding:10px 14px"><di
         <button type="button" class="tb" data-ins="lv">תג רמה</button>
         <span class="tb-sep"></span>
         <button type="button" class="tb" data-ins="img">תמונה</button>
+        <button type="button" class="tb" data-ins="shot">צילום מסך</button>
         <button type="button" class="tb" data-ins="ad">מקום לפרסומת</button>
         <button type="button" class="tb" data-ins="help">עזרה</button>
         <input type="file" id="imgInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
@@ -329,6 +330,7 @@ ${draft ? `<div class="box box-info" id="draftBox" style="padding:10px 14px"><di
         <tr><td><code>:::tip כותרת</code> … <code>:::</code></td><td>תיבת טיפ ירוקה. גם <code>warning</code>, <code>info</code></td></tr>
         <tr><td><code>:::npc שם (Name)</code> … <code>:::</code></td><td>בועת דיבור של NPC</td></tr>
         <tr><td><code>:::stats כותרת</code><br><code>מפתח: ערך</code><br><code>:::</code></td><td>כרטיס נתונים כהה, כמו חלון פריט במשחק</td></tr>
+        <tr><td><code>[[shot henesys | כיתוב]]</code></td><td>מסגרת לצילום מסך. מופיעה באתר רק אחרי שמעלים בלשונית "תמונות" קובץ בשם הזה (למשל henesys.png)</td></tr>
         <tr><td><code>[[ad]]</code></td><td>מקום לפרסומת. אם לא שמים, פרסומת נכנסת אוטומטית לפני הכותרת השלישית</td></tr>
       </tbody></table></div>
       <p class="muted">שמות ערים ודמויות: בעברית עם האנגלית בסוגריים. שמות של מפות, פריטים וסקילים: באנגלית, כמו במשחק.</p>
@@ -396,7 +398,7 @@ ${draft ? `<div class="box box-info" id="draftBox" style="padding:10px 14px"><di
   let pvTimer = null;
   function renderPreview() {
     const { d, b } = collect();
-    const ctx = { config: { ...config }, base: SITE_BASE, guides: manifest.guides.filter(g => g.slug !== origSlug && g.slug !== d.slug), preview: true };
+    const ctx = { config: { ...config }, base: SITE_BASE, guides: manifest.guides.filter(g => g.slug !== origSlug && g.slug !== d.slug), preview: true, images: previewImages };
     let html;
     if (isPage) html = staticPage(ctx, { ...d, slug: d.slug || 'page', body: b });
     else {
@@ -418,7 +420,12 @@ ${draft ? `<div class="box box-info" id="draftBox" style="padding:10px 14px"><di
     }, 350);
   }
   form.addEventListener('input', schedule);
+  let previewImages = {};
   renderPreview();
+  listImages().then(files => {
+    files.forEach(f => { previewImages[f.name.replace(/\.[^.]+$/, '')] = f.name; localImages[`images/${f.name}`] = localImages[`images/${f.name}`] || f.download_url; });
+    renderPreview();
+  }).catch(() => {});
 
   app.querySelectorAll('[data-pv]').forEach(btn => btn.addEventListener('click', () => {
     app.querySelectorAll('[data-pv]').forEach(x => x.classList.toggle('is-on', x === btn));
@@ -460,6 +467,7 @@ ${draft ? `<div class="box box-info" id="draftBox" style="padding:10px 14px"><di
     stats: () => block(':::stats כותרת הכרטיס\nרמה: 30\nHP: 1,000\nחולשה: אש\n:::'),
     lv: () => insert('{{lv ', '}}', '30'),
     ad: () => block('[[ad]]'),
+    shot: () => block('[[shot שם-באנגלית | כיתוב מתחת לתמונה]]'),
     img: () => openPicker(path => block(`![תיאור התמונה](${path})`)),
     help: () => { const h = $('#helpBox'); h.hidden = !h.hidden; },
   };
@@ -575,6 +583,15 @@ async function renderSettings(section) {
       ${Object.entries(CLASS_INFO).map(([k, info]) => `<label class="f">${info.name} (${info.en})<span class="row"><input class="in" name="ci_${k}" dir="ltr" value="${v((cfg.classImages || {})[k])}" placeholder="/images/…" style="flex:1"><button type="button" class="btn btn-ghost btn-sm" data-pick="ci_${k}">בחירה</button></span></label>`).join('')}
     </div>
   </div></section>
+  <section class="window" id="a11ySection"><div class="window-bar"><span>הצהרת נגישות: פרטי קשר</span></div><div class="panel ed-form">
+    <p class="muted small">החוק מחייב לפרסם בהצהרת הנגישות פרטי קשר של רכז/ת נגישות. הפרטים יופיעו בעמוד <a href="${SITE_BASE}accessibility/" target="_blank" rel="noopener">הצהרת נגישות</a>.</p>
+    <div class="grid-2">
+      <label class="f">שם רכז/ת הנגישות<input class="in" name="a11yName" value="${v((cfg.accessibility || {}).name)}"></label>
+      <label class="f">דוא״ל<input class="in" name="a11yEmail" type="email" dir="ltr" value="${v((cfg.accessibility || {}).email)}"></label>
+      <label class="f">טלפון<input class="in" name="a11yPhone" type="tel" dir="ltr" value="${v((cfg.accessibility || {}).phone)}"></label>
+      <label class="f">תאריך עדכון ההצהרה<input class="in" name="a11yUpdated" value="${v((cfg.accessibility || {}).updated)}" placeholder="14.11.2026"></label>
+    </div>
+  </div></section>
   <section class="window" id="catSection"><div class="window-bar"><span>קטגוריות</span></div><div class="panel ed-form">
     <p class="muted small">השמות והתיאורים של הקטגוריות, כפי שהם מופיעים בתפריט ובעמודי הקטגוריה.</p>
     ${(cfg.categories || []).map((c, i) => `<div class="grid-3">
@@ -616,6 +633,7 @@ async function renderSettings(section) {
       heroTitle: f.heroTitle.value.trim(), heroText: f.heroText.value.trim(), footerText: f.footerText.value.trim(),
       siteUrl: f.siteUrl.value.trim().replace(/\/$/, ''), customDomain: f.customDomain.value.trim(), analyticsId: f.analyticsId.value.trim(),
       attribution: { text: f.attrText.value.trim(), url: f.attrUrl.value.trim() },
+      accessibility: { name: f.a11yName.value.trim(), email: f.a11yEmail.value.trim(), phone: f.a11yPhone.value.trim(), updated: f.a11yUpdated.value.trim() },
       categories: (cfg.categories || []).map((c, i) => ({ ...c, name: f['cat_name_' + i].value.trim() || c.name, short: f['cat_short_' + i].value.trim(), desc: f['cat_desc_' + i].value.trim() })),
       classImages: Object.fromEntries(Object.keys(CLASS_INFO).map(k => [k, f['ci_' + k].value.trim()]).filter(([, x]) => x)),
       ads: { enabled: f.adsEnabled.checked, client: f.adsClient.value.trim(), slots: { top: f.slotTop.value.trim(), inArticle: f.slotIn.value.trim(), sidebar: f.slotSide.value.trim() } },
@@ -650,10 +668,12 @@ function cleanName(name) {
 }
 const readDataUrl = file => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(file); });
 // מעלה תמונה ל-content/images. אם קיים קובץ באותו שם, מחליף אותו (sha נדרש להחלפה).
-async function uploadImage(file, existing = []) {
+async function uploadImage(file, existing = [], forcedBase = null) {
   if (!IMG_RE.test(file.name)) throw new Error(`${file.name}: זה לא קובץ תמונה (PNG, JPG, GIF, WEBP, SVG).`);
   if (file.size > 3 * 1024 * 1024) throw new Error(`${file.name}: גדול מ-3MB. הקטינו אותו ונסו שוב.`);
-  const name = cleanName(file.name);
+  const name = forcedBase ? cleanName(forcedBase + (file.name.match(/\.[a-z0-9]+$/i) || ['.png'])[0]) : cleanName(file.name);
+  // אותו צילום עם סיומת אחרת: מחליפים את הקודם
+  if (forcedBase) for (const f of existing.filter(x => x.name !== name && x.name.replace(/\.[^.]+$/, '') === forcedBase)) { await deleteFile(`content/images/${f.name}`, f.sha, `החלפת צילום מסך: ${f.name}`); }
   const dataUrl = await readDataUrl(file);
   const prev = existing.find(f => f.name === name);
   await putFile(`content/images/${name}`, dataUrl.split(',')[1], `${prev ? 'החלפת' : 'הוספת'} תמונה: ${name}`, prev && prev.sha, true);
@@ -726,6 +746,16 @@ async function renderMedia() {
     if (!g.thumb) need.push('תמונת כרטיס');
     return need.length ? `<tr><td>${e(g.title)}</td><td>${need.join(', ')}</td><td><a class="btn btn-ghost btn-sm" href="#/edit/guides/${encodeURIComponent(g.slug)}">הוספה</a></td></tr>` : '';
   }).join('');
+  const have = new Set(files.map(f => f.name.replace(/\.[^.]+$/, '')));
+  const shotMap = new Map();
+  manifest.guides.forEach(g => (g.shots || []).forEach(sh => {
+    if (!shotMap.has(sh.name)) shotMap.set(sh.name, { ...sh, guides: [] });
+    shotMap.get(sh.name).guides.push(g);
+  }));
+  (manifest.siteShots || []).forEach(sh => { if (!shotMap.has(sh.name)) shotMap.set(sh.name, { ...sh, guides: [], where: sh.where }); });
+  const shots = [...shotMap.values()];
+  const shotsMissing = shots.filter(sh => !have.has(sh.name));
+  const shotRows = shots.map(sh => `<tr class="${have.has(sh.name) ? 'ok' : ''}"><td dir="ltr"><code>${e(sh.name)}</code></td><td>${e(sh.caption)}</td><td>${sh.where ? e(sh.where) : ''}${sh.guides.map(g => `<a href="${SITE_BASE}guides/${encodeURIComponent(g.slug)}/" target="_blank" rel="noopener">${e(g.short || g.title)}</a>`).join(', ')}</td><td>${have.has(sh.name) ? '<span class="lv">הועלה</span>' : ''} <label class="btn btn-ghost btn-sm">${have.has(sh.name) ? 'החלפה' : 'העלאה'}<input type="file" accept="image/*" hidden data-shot="${e(sh.name)}"></label></td></tr>`).join('');
   const classMissing = Object.entries(CLASS_INFO).filter(([k]) => !(config.classImages || {})[k]).map(([, i]) => i.name);
 
   app.innerHTML = `
@@ -743,6 +773,11 @@ ${files.map(f => `<div class="media-card" data-name="${e(f.name)}">
   <div class="row"><button class="tb" data-copy="/images/${e(f.name)}">העתקת קוד</button><label class="tb">החלפה<input type="file" accept="image/*" hidden data-replace="${e(f.name)}"></label><button class="tb" data-del="${e(f.name)}" data-sha="${e(f.sha)}">מחיקה</button></div>
 </div>`).join('') || '<p class="muted">אין עדיין תמונות.</p>'}
 </div>
+<section class="window" style="margin-top:26px" id="shotsSection"><div class="window-bar"><span>צילומי מסך במדריכים</span><small>${shots.length - shotsMissing.length} מתוך ${shots.length} הועלו</small></div><div class="panel">
+  <p class="muted small">כל שורה היא מסגרת שמחכה לצילום מסך מהמשחק. "העלאה" שומרת את הקובץ בשם הנכון, והוא יופיע במקום שלו בכל המדריכים תוך כדקה-שתיים. מסגרת בלי תמונה לא מוצגת לגולשים. מומלץ לחתוך את הצילום לחלק הרלוונטי בלבד, ולהעלות PNG או JPG ברוחב של עד 1200 פיקסלים.</p>
+  <label class="check-f small" style="margin-bottom:8px"><input type="checkbox" id="onlyMissing" checked> להציג רק את מה שחסר</label>
+  <div class="table-wrap"><table class="shots-table"><thead><tr><th>שם הקובץ</th><th>מה לצלם</th><th>מופיע ב</th><th></th></tr></thead><tbody>${shotRows}</tbody></table></div>
+</div></section>
 <section class="window" style="margin-top:26px"><div class="window-bar"><span>מה עוד חסר</span></div><div class="panel">
   <p class="muted small">לכל מדריך אפשר להוסיף באנר (בראש המדריך) ותמונת כרטיס (ברשימות ובדף הבית). "הוספה" פותחת את המדריך בעורך, ושם לוחצים "בחירה" ליד השדה.</p>
   ${classMissing.length ? `<p><strong>תמונות מקצועות לדף הבית:</strong> חסרות ל${classMissing.join(', ')}. <a href="#/settings">להגדרות</a></p>` : '<p>תמונות המקצועות בדף הבית: הכול מוכן.</p>'}
@@ -772,6 +807,17 @@ ${files.map(f => `<div class="media-card" data-name="${e(f.name)}">
       catch (x) { toast(x.message, true); }
     }
   });
+  const tableEl = app.querySelector('.shots-table');
+  const applyFilter = () => tableEl.classList.toggle('only-missing', $('#onlyMissing').checked);
+  $('#onlyMissing').addEventListener('change', applyFilter); applyFilter();
+  app.querySelectorAll('[data-shot]').forEach(inp => inp.addEventListener('change', async ev => {
+    const file = ev.target.files[0]; ev.target.value = ''; if (!file) return;
+    try {
+      toast('מעלה צילום מסך…', false, 60000);
+      await uploadImage(file, files, ev.target.dataset.shot);
+      toast('הצילום הועלה. הוא יופיע באתר תוך כדקה-שתיים.'); checkDeploy(true); refresh();
+    } catch (x) { toast(x.message, true); }
+  }));
   app.querySelectorAll('[data-replace]').forEach(inp => inp.addEventListener('change', async ev => {
     const file = ev.target.files[0]; if (!file) return;
     const target = ev.target.dataset.replace;

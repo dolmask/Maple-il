@@ -16,6 +16,7 @@ export const ICONS = {
   boot: wrap('<path d="M9 3h9v12l9 5v5H5v-6l4-2z" fill="currentColor"/><path d="M5 25h22v3H5z" fill="currentColor" opacity=".6"/>'),
   search: wrap('<circle cx="14" cy="14" r="8" stroke="currentColor" stroke-width="3" fill="none"/><path d="M20 20l7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>'),
   menu: wrap('<path d="M5 9h22M5 16h22M5 23h22" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>'),
+  access: wrap('<circle cx="16" cy="5.5" r="3.2" fill="currentColor"/><path d="M5 10.5l11 2 11-2M16 12.5v7l-5 9M16 19.5l5 9" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'),
   moon: wrap('<path d="M19 3a13 13 0 1 0 10 19A11 11 0 0 1 19 3z" fill="currentColor"/>'),
   sun: wrap('<circle cx="16" cy="16" r="6" fill="currentColor"/><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6 6l3 3M23 23l3 3M6 26l3-3M23 9l3-3" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>'),
 };

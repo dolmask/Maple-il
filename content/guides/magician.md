@@ -14,6 +14,8 @@ sources: ["https://meowdb.com/msclassic/guides/magician-class-guide"]
 
 הקוסם (Magician) תוקף מרחוק עם לחשים, מתעלם מהמהירות של הנשק, ומחזיק את אחת הבחירות הכי מעניינות בג'וב השני. מקבלים אותו ב-{{lv 10}} בספרייה של אלינייה (Ellinia) אצל **גרנדל הזקן מאוד (Grendel the Really Old)**.
 
+[[shot ellinia | אלינייה (Ellinia), עיר הקוסמים]]
+
 :::stats הקוסם בקצרה
 סטט ראשי: INT
 סטט משני: LUK (רק לדרישות שרביטים)
@@ -55,6 +57,8 @@ sources: ["https://meowdb.com/msclassic/guides/magician-class-guide"]
 | Improved MP Recovery (IMR) | 15 | מחזיר 1% MP כל 10 שניות, ומגדיל MP משיקויים עד +25% |
 | Max MP Increase (MMI) | 3 | +12% MP מקסימלי ב-3 נקודות |
 | Magic Armor (MA) | 20 | +120 הגנה פיזית וקסומה ל-600 שניות. נפתח עם MG 3 |
+
+[[shot magician-skills | חלון הסקילים של הקוסם]]
 
 ## שלוש תוכניות סקילים
 

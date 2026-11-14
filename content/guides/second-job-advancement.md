@@ -32,6 +32,8 @@ sources: ["https://meowdb.com/msclassic/guides/fighter-class-guide", "https://me
 4. מחליפים את הגולות ב-**The Proof of a Hero** (הוכחת הגיבור).
 5. חוזרים למורה בעיר עם ההוכחה ובוחרים ענף.
 
+[[shot second-job-test | מפת המבחן לג'וב השני ואיסוף Dark Marbles]]
+
 ## לפי מקצוע
 
 | מקצוע | מורה בעיר | מורה המבחן | ענפים |

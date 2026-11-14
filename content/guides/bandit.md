@@ -33,6 +33,8 @@ sources: ["https://meowdb.com/msclassic/guides/bandit-class-guide", "https://meo
 | Dagger Booster | 20 | +2 שלבי מהירות (9 נקודות בבילד = 180 שניות) |
 | Nimble Recovery | 20 | התחמקות יכולה להחזיר HP ו-MP (12 נקודות בבילד) |
 
+[[shot bandit-skills | חלון הסקילים של השודד]]
+
 ## איפוס SP או לא?
 
 רוב השודדים מתחילים את הג'וב השני עם טופר ו-Lucky Seven (המסלול שנקרא "סינדיט"), כי Savage Blow עוקף את Lucky Seven רק בסביבות Lv 36–40 ועם ציוד מתאים.

@@ -135,6 +135,10 @@ function renderBlocks(lines, opts, headings, usedIds, onH2) {
     // ad marker
     if (/^\s*\[\[ad\]\]\s*$/.test(line)) { out.push('<!--AD-->'); i++; continue; }
 
+    // screenshot slot: [[shot name | caption]]
+    let sm = line.match(/^\s*\[\[shot\s+([a-z0-9-]+)\s*(?:\|\s*(.*?))?\s*\]\]\s*$/);
+    if (sm) { out.push(renderShot(sm[1], sm[2] || '', opts)); i++; continue; }
+
     // custom container
     let m = line.match(/^:::\s*(tip|warning|info|npc|stats)\s*(.*)$/);
     if (m) {
@@ -206,13 +210,31 @@ function renderBlocks(lines, opts, headings, usedIds, onH2) {
     // paragraph
     const buf = [];
     while (i < lines.length && !isBlank(lines[i]) &&
-      !/^(#{1,4}\s|:::|```|\s*>|\s*\||\s*([-*+]|\d+[.)])\s+|\s*(-{3,}|\*{3,})\s*$|\s*\[\[ad\]\])/.test(lines[i])) {
+      !/^(#{1,4}\s|:::|```|\s*>|\s*\||\s*([-*+]|\d+[.)])\s+|\s*(-{3,}|\*{3,})\s*$|\s*\[\[(ad\]\]|shot\s))/.test(lines[i])) {
       buf.push(lines[i++]);
     }
     if (buf.length) out.push(`<p>${buf.map(l => inline(l.trim(), opts)).join('<br>')}</p>`);
     else i++;
   }
   return out.join('\n');
+}
+
+// צילום מסך מהמשחק: מוצג רק אם בעל האתר העלה קובץ בשם הזה (בכל סיומת)
+function renderShot(name, caption, opts) {
+  const file = (opts.images || {})[name];
+  const credit = `צילום מסך מתוך <bdi dir="ltr">MapleStory Classic World © NEXON Korea Corp.</bdi>`;
+  if (!file) {
+    return opts.showMissingShots
+      ? `<figure class="shot shot-missing"><div class="shot-frame"><span>מקום לצילום מסך<br><code dir="ltr">${escapeHtml(name)}</code></span></div>${caption ? `<figcaption>${inline(caption, opts)}</figcaption>` : ''}</figure>`
+      : '';
+  }
+  const src = fixUrl('/images/' + file, opts);
+  return `<figure class="shot"><div class="shot-frame"><img src="${src}" alt="${escapeHtml(caption || 'צילום מסך מהמשחק')}" loading="lazy" decoding="async"></div><figcaption>${caption ? `<span>${inline(caption, opts)}</span>` : ''}<small class="shot-credit">${credit}</small></figcaption></figure>`;
+}
+
+// כל משבצות צילומי המסך במדריך, לרשימת החוסרים במערכת הניהול
+export function listShots(src) {
+  return [...String(src).matchAll(/^\s*\[\[shot\s+([a-z0-9-]+)\s*(?:\|\s*(.*?))?\s*\]\]\s*$/gm)].map(m => ({ name: m[1], caption: m[2] || '' }));
 }
 
 function renderContainer(type, title, inner, opts, headings, usedIds, onH2) {

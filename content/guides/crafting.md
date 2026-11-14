@@ -25,6 +25,8 @@ sources: ["https://meowdb.com/msclassic/crafting"]
 | Leatherworking (עבודת עור) | ג'יי אם (JM From tha Streetz), קרנינג סיטי | עור מעובד ושריון (Aqua, Gold, Dark Brace) | Armor Crafting Catalyst |
 | Arcforge (חישול קסום) | כרישרמה (Chrishrama), סליפיווד | אבני חן, קלף, מגילות, ופריטים כמו Fairy Wand | Scroll Crafting Catalyst |
 
+[[shot crafting-window | חלון היצירה (Crafting)]]
+
 ## איך פותחים
 
 - **{{lv 10}}:** כל מורה נותן מבחן התחלה (להרוג מפלצות ולהביא חומרים). מי שעובר פותח את ההתמחות ברמת יצירה 1.

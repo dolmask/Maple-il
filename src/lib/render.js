@@ -17,6 +17,14 @@ function img(ctx, src) {
   return /^https?:\/\//.test(src) ? src : url(ctx, src.replace(/^\//, ''));
 }
 
+// מילוי פרטים מההגדרות בעמודים (למשל פרטי רכז הנגישות): {{a11y.email}}
+function fillTokens(ctx, body) {
+  return body.replace(/\{\{(a11y)\.([a-zA-Z]+)\}\}/g, (m, grp, key) => {
+    const v = ((ctx.config.accessibility || {})[key] || '').trim();
+    return v || '(יעודכן בקרוב)';
+  });
+}
+
 function catOf(ctx, id) {
   return ctx.config.categories.find(c => c.id === id) || { id, name: id, icon: 'book', desc: '' };
 }
@@ -69,7 +77,7 @@ ${canonical ? `<meta property="og:url" content="${e(canonical)}">` : ''}
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${url(ctx, 'assets/style.css')}${ctx.version ? '?v=' + ctx.version : ''}">
-<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t;var a=JSON.parse(localStorage.getItem('a11y')||'{}');for(var k in a){if(k==='size')document.documentElement.dataset.size=a[k];else if(a[k])document.documentElement.classList.add('a11y-'+k)}}catch(e){}</script>
 ${ads.enabled && ads.client && !ctx.preview ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${e(ads.client)}" crossorigin="anonymous"></script>` : ''}
 ${c.analyticsId && !ctx.preview ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${e(c.analyticsId)}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${e(c.analyticsId)}');</script>` : ''}
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}
@@ -85,6 +93,7 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script
     </a>
     <div class="bar-tools">
       <button class="icon-btn" id="searchOpen" aria-label="חיפוש מדריך">${ICONS.search}</button>
+      <button class="icon-btn" id="a11yOpen" aria-label="תפריט נגישות" aria-expanded="false" aria-controls="a11yPanel">${ICONS.access}</button>
       <button class="icon-btn" id="themeToggle" aria-label="מצב לילה / יום"><span class="i-moon">${ICONS.moon}</span><span class="i-sun">${ICONS.sun}</span></button>
       <button class="icon-btn menu-btn" id="menuToggle" aria-label="תפריט" aria-expanded="false" aria-controls="mainNav">${ICONS.menu}</button>
     </div>
@@ -95,6 +104,19 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script
   </nav>
   <div class="grass" aria-hidden="true"></div>
 </header>
+<div class="a11y-panel window" id="a11yPanel" role="dialog" aria-label="תפריט נגישות" hidden>
+  <div class="window-bar"><span>נגישות</span><button class="a11y-x" type="button" data-a11y-close aria-label="סגירת תפריט הנגישות">✕</button></div>
+  <div class="a11y-body">
+    <div class="a11y-row" role="group" aria-label="גודל טקסט"><span>גודל טקסט</span><button type="button" data-a11y="smaller" aria-label="הקטנת טקסט">א-</button><button type="button" data-a11y="bigger" aria-label="הגדלת טקסט">א+</button></div>
+    <button type="button" class="a11y-tog" data-a11y="contrast" aria-pressed="false">ניגודיות גבוהה</button>
+    <button type="button" class="a11y-tog" data-a11y="links" aria-pressed="false">הדגשת קישורים</button>
+    <button type="button" class="a11y-tog" data-a11y="font" aria-pressed="false">גופן קריא</button>
+    <button type="button" class="a11y-tog" data-a11y="motion" aria-pressed="false">עצירת אנימציות</button>
+    <button type="button" class="a11y-tog" data-a11y="spacing" aria-pressed="false">ריווח שורות</button>
+    <button type="button" class="a11y-reset" data-a11y="reset">איפוס הגדרות</button>
+    <a href="${url(ctx, 'accessibility/')}">הצהרת נגישות</a>
+  </div>
+</div>
 <div class="search-layer" id="searchLayer" hidden>
   <div class="search-box" role="dialog" aria-modal="true" aria-label="חיפוש">
     <div class="search-field">${ICONS.search}<input id="searchInput" type="search" placeholder="חפשו מדריך, מקצוע, מפה או מפלצת…" autocomplete="off"><button class="search-close" id="searchClose" aria-label="סגירה">Esc</button></div>
@@ -117,10 +139,12 @@ ${body}
     <nav aria-label="על האתר">
       <a href="${url(ctx, 'about/')}">אודות</a>
       <a href="${url(ctx, 'privacy/')}">מדיניות פרטיות</a>
+      <a href="${url(ctx, 'accessibility/')}">הצהרת נגישות</a>
+      <a href="${url(ctx, 'copyright/')}">זכויות יוצרים ו-Nexon</a>
       <a href="${url(ctx, 'guides/')}">כל המדריכים</a>
     </nav>
   </div>
-  <p class="wrap disclaimer">MapleStory ו-MapleStory Classic World, וכן כל השמות, הדמויות, התמונות, הסימנים המסחריים ושאר החומרים מהמשחק, הם קניינה של NEXON Korea Corporation ושל NEXON America Inc. כל הזכויות שמורות להן. מייפלורז הוא אתר מעריצים לא רשמי: הוא אינו קשור ל-Nexon, אינו ממומן על ידה ואינו מאושר על ידה. <a href="${url(ctx, 'about/')}#זכויות-יוצרים">זכויות יוצרים</a>${c.attribution && c.attribution.text ? ` · ${c.attribution.url ? `<a href="${e(c.attribution.url)}" target="_blank" rel="noopener">${e(c.attribution.text)}</a>` : e(c.attribution.text)}` : ''}</p>
+  <p class="wrap disclaimer">MapleStory ו-MapleStory Classic World, וכן כל השמות, הדמויות, התמונות, הסימנים המסחריים ושאר החומרים מהמשחק, הם קניינה של NEXON Korea Corporation ושל NEXON America Inc. כל הזכויות שמורות להן. מייפלורז הוא אתר מעריצים לא רשמי: הוא אינו קשור ל-Nexon, אינו ממומן על ידה ואינו מאושר על ידה. <a href="${url(ctx, 'copyright/')}">זכויות יוצרים</a> · <a href="https://m.nexon.com/terms/716" target="_blank" rel="noopener">מדריך ה-IP של Nexon ליוצרי תוכן</a>${c.attribution && c.attribution.text ? ` · ${c.attribution.url ? `<a href="${e(c.attribution.url)}" target="_blank" rel="noopener">${e(c.attribution.text)}</a>` : e(c.attribution.text)}` : ''}</p>
 </footer>
 <script>window.SITE_BASE=${JSON.stringify(ctx.base || '/')};</script>
 <script src="${url(ctx, 'assets/site.js')}${ctx.version ? '?v=' + ctx.version : ''}" defer></script>
@@ -149,7 +173,7 @@ export function guideCard(ctx, g) {
 
 // ---------- guide page ----------
 export function guidePage(ctx, g) {
-  const { html, headings } = renderMarkdown(g.body, { base: ctx.base, autoAds: true });
+  const { html, headings } = renderMarkdown(g.body, { base: ctx.base, autoAds: true, images: ctx.images, showMissingShots: ctx.preview });
   const withAds = html.replace(/<!--AD-->/g, () => adSlot(ctx, 'inArticle'));
   const cat = catOf(ctx, g.category);
   const siblings = ctx.guides.filter(x => x.category === g.category);
@@ -244,6 +268,7 @@ export function homePage(ctx) {
     <h1>${e(c.heroTitle)}</h1>
     <p>${e(c.heroText)}</p>
     <button class="hero-search" type="button" data-open-search>${ICONS.search}<span>חפשו מדריך…</span></button>
+    ${renderMarkdown('[[shot home-hero | ' + (c.heroShotCaption || 'MapleStory Classic World') + ']]', { base: ctx.base, images: ctx.images, showMissingShots: false }).html}
   </div>
   <div class="window jobs-window">
     <div class="window-bar"><span>בחרו מסלול</span><small>ג'וב ראשון ב-Lv 10, ג'וב שני ב-Lv 30</small></div>
@@ -288,7 +313,7 @@ export function allGuidesPage(ctx) {
 }
 
 export function staticPage(ctx, p) {
-  const { html } = renderMarkdown(p.body, { base: ctx.base });
+  const { html } = renderMarkdown(fillTokens(ctx, p.body), { base: ctx.base, images: ctx.images, showMissingShots: ctx.preview });
   const body = `
 <div class="wrap crumbs"><a href="${url(ctx)}">ראשי</a><span aria-hidden="true">‹</span><span>${e(p.title)}</span></div>
 <div class="wrap narrow"><article class="window guide"><header class="guide-head"><div><h1>${e(p.title)}</h1></div></header><div class="prose">${html}</div></article></div>`;

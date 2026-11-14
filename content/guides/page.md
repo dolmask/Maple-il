@@ -33,6 +33,8 @@ sources: ["https://meowdb.com/msclassic/guides/page-class-guide", "https://meowd
 | Rush | 20 | דוהר ופוגע בעד שש מפלצות ב-80% |
 | Sword Mastery | 1 | נקודה עודפת בבילד האלה |
 
+[[shot page-skills | חלון הסקילים של הפייג']]
+
 ## סדר הסקילים
 
 - **Lv 30:** Rush 1

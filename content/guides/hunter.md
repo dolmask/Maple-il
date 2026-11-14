@@ -33,6 +33,8 @@ sources: ["https://meowdb.com/msclassic/guides/hunter-class-guide", "https://meo
 | Soul Arrow: Bow | 20 | יורים בלי לצרוך חצים ל-300 שניות, 5 MP |
 | Amazon's Judgement | 20 | מכות קריטיות יכולות להאט מפלצות (נקודה אחת בבילד) |
 
+[[shot hunter-skills | חלון הסקילים של הצייד]]
+
 ## סדר הסקילים
 
 1. **Lv 30:** Arrow Bomb 1

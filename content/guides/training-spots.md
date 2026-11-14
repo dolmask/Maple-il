@@ -42,6 +42,8 @@ sources: ["https://meowdb.com/msclassic/guides/best-grind-maps-every-level"]
 | Transfer Area (Kerning City Subway) | Stirge (20) | 502,143 | מפה צפופה, מעולה לקוסמים וקשתים |
 | Tree Dungeon, Forest Up North III | Horny Mushroom (22), Green Mushroom | 434,286 | גיבוי כשהסאבווי מלא |
 
+[[shot transfer-area | Transfer Area בסאבווי של קרנינג (Stirge)]]
+
 :::tip Lv 21: הזמן ל-KPQ
 מ-{{lv 21}} נפתח ה[פארטי קווסט של קרנינג](/guides/kerning-party-quest/), שמשלב EXP טוב עם פרסים.
 :::
@@ -53,6 +55,8 @@ sources: ["https://meowdb.com/msclassic/guides/best-grind-maps-every-level"]
 | Ant Tunnel III (Dungeon) | Zombie Mushroom (24), Horny Mushroom | 1,536,786 | אידיאלית ל-Lv 22–25 |
 | Deep Ant Tunnel I (Dungeon) | Zombie Mushroom (24), עד Jr. Boogie | 1,078,060 | קפיצה למערות ה-Evil Eye |
 | Ant Tunnel Park (Dungeon) | Evil Eye (27), Horny/Zombie Mushroom | 981,785 | Lv 23–27 |
+
+[[shot ant-tunnel | מערות הנמלים (Ant Tunnel)]]
 
 ## Lv 26–30
 
@@ -97,6 +101,8 @@ sources: ["https://meowdb.com/msclassic/guides/best-grind-maps-every-level"]
 | Line 1 <Area 4> | Wraith (48) בלבד | 2,570,714 | קטנה יותר (59 נקודות ספאון לעומת 68) |
 | Hot Sand (Florina Road) | Tortie, Clang | – | קוסמי ברק מקבלים בונוס על Clang |
 
+[[shot wraith-subway | קווי הסאבווי עם ה-Wraith]]
+
 ## Lv 51–55
 
 | מפה | מפלצות (רמה) | EXP לשעה | הערות |
@@ -114,6 +120,8 @@ sources: ["https://meowdb.com/msclassic/guides/best-grind-maps-every-level"]
 |---|---|---|---|
 | Sleepy Dungeon V (Dungeon) | Dark Stone Golem (58), Lupin, Curse Eye | 2,585,073 | 88 נקודות ספאון; 7 פורטלים לחנות |
 | Sleepy Dungeon III | Dark Stone Golem (58) | 1,421,809 | 45 נקודות ספאון; כשה-V מלאה |
+
+[[shot sleepy-dungeon | Sleepy Dungeon V]]
 
 ## Lv 61–70
 

@@ -26,6 +26,8 @@ sources: ["https://meowdb.com/msclassic/guides/kerning-city-party-quest-kpq-guid
 
 הבוס הראשון שרוב השחקנים פוגשים, בסוף [ה-KPQ](/guides/kerning-party-quest/).
 
+[[shot king-slime | King Slime]]
+
 - **עמיד** לקודש, אש, קרח וברק. קוסמים יעשו פחות נזק מהרגיל.
 - **מתפצל ל-11 סליימים** כשהוא מת.
 - **קופץ ונוחת.** דווח שקפיצה רגע לפני הנחיתה עוזרת להתחמק.
@@ -34,6 +36,8 @@ sources: ["https://meowdb.com/msclassic/guides/kerning-city-party-quest-kpq-guid
 ## Rotten Mushmom
 
 גרסה רקובה ואל-מתה של המאשמום הקלאסית (שהייתה ברמה 40), הבוס של [Forgotten Hollow](/guides/forgotten-hollow/).
+
+[[shot rotten-mushmom | Rotten Mushmom]]
 
 :::stats Rotten Mushmom
 רמה: 60

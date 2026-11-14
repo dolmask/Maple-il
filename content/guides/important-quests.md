@@ -51,6 +51,8 @@ sources: ["https://meowdb.com/msclassic/guides/beginners-guide-first-steps-in-ma
 | Shumi's Lost Coin / Roll / Sack | 35 | שומי (Shumi), קרנינג סיטי | שלוש משימות קפיצה, 6,720 EXP כל אחת, עד 10,000 מזוס |
 | What Shumi Lost | 35 | שומי, קרנינג סיטי | 20,160 EXP, 12,222 מזוס, 30 Blue Potion, 30 Mana Elixir, 23 מגילות חזרה |
 
+[[shot sauna-robe | חלוק הסאונה (Sauna Robe)]]
+
 **חלוק הסאונה** הוא אחד הפריטים הכי שימושיים במשחק: Blue Sauna Robe לגברים ו-Red Sauna Robe לנשים. 10 משבצות שדרוג על שריון מלא אומר שאפשר להפוך אותו, עם מגילות, לפריט חזק מאוד לסטט הראשי שלכם. [מדריך המגילות](/guides/scrolling/).
 
 ## Lv 39–50: Forgotten Hollow
