@@ -48,7 +48,7 @@ export function adSlot(ctx, kind) {
 }
 
 // ---------- layout ----------
-export function layout(ctx, { title, description = '', path = '', body, active = '', jsonld = null, noindex = false, edit = 'settings' }) {
+export function layout(ctx, { title, description = '', path = '', body, active = '', jsonld = null, noindex = false, edit = 'settings', hud = null }) {
   const c = ctx.config;
   const fullTitle = title ? `${title} | ${c.siteName}` : `${c.siteName} — ${c.tagline}`;
   const canonical = c.siteUrl ? c.siteUrl.replace(/\/$/, '') + '/' + path.replace(/^\//, '') : '';
@@ -82,10 +82,12 @@ ${ads.enabled && ads.client && !ctx.preview ? `<script async src="https://pagead
 ${c.analyticsId && !ctx.preview ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${e(c.analyticsId)}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${e(c.analyticsId)}');</script>` : ''}
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}
 </head>
-<body data-edit="${e(edit)}">
+<body data-edit="${e(edit)}"${hud ? ' class="has-hud"' : ''}>
 <a class="skip" href="#main">דלג לתוכן</a>
 <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
 <header class="top">
+  <div class="clouds" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="hills" aria-hidden="true"></div>
   <div class="top-bar wrap">
     <a class="brand" href="${url(ctx)}" aria-label="${e(c.siteName)}, לדף הבית">
       <span class="brand-leaf">${ICONS.leaf}</span>
@@ -129,7 +131,10 @@ ${adSlot(ctx, 'top')}
 ${body}
 </main>
 <button class="totop" id="toTop" type="button" aria-label="חזרה לראש העמוד" hidden>↑</button>
+${hud ? `<div class="hud" aria-hidden="true"><span class="hud-lv"><small>LV.</small>${e(hud.level || '?')}</span><span class="hud-name">${e(hud.name)}</span><span class="exp"><span class="exp-fill" id="expFill"></span><span class="exp-txt">EXP <b id="expPct">0.00%</b></span></span></div>
+<div class="levelup" id="levelUp" role="status" hidden><strong>LEVEL UP!</strong><span>סיימתם את המדריך.</span>${hud.next ? `<a href="${hud.next.url}">למדריך הבא: ${t(hud.next.title)}</a>` : ''}<button type="button" data-close-lu aria-label="סגירה">✕</button></div>` : ''}
 <footer class="foot">
+  <div class="ground-top" aria-hidden="true"></div>
   <div class="wrap foot-grid">
     <div class="foot-brand">
       <a class="brand" href="${url(ctx)}"><span class="brand-leaf">${ICONS.leaf}</span><span class="brand-text"><strong>${e(c.siteName)}</strong></span></a>
@@ -195,12 +200,13 @@ export function guidePage(ctx, g) {
 
   const body = `
 <div class="wrap guide-layout">
-  <article class="guide${g.cls ? ' cls-' + e(g.cls) : ''}">
-    <nav class="crumbs" aria-label="מיקום באתר"><a href="${url(ctx)}">ראשי</a><span aria-hidden="true">/</span><a href="${categoryUrl(ctx, cat.id)}">${e(cat.short || cat.name)}</a></nav>
+  <article class="guide window${g.cls ? ' cls-' + e(g.cls) : ''}">
+    <div class="window-bar quest-bar"><nav class="crumbs" aria-label="מיקום באתר"><a href="${url(ctx)}">ראשי</a><span aria-hidden="true">/</span><a href="${categoryUrl(ctx, cat.id)}">${e(cat.short || cat.name)}</a></nav>${g.level ? `<span class="lv">Lv ${e(g.level)}</span>` : ''}</div>
+    <div class="guide-in">
     <header class="guide-head">
       <h1>${t(g.title)}</h1>
       ${g.summary ? `<p class="lede">${t(g.summary)}</p>` : ''}
-      <div class="meta">${levelChip(g.level)}<span>${readingTime(g.body)} דקות קריאה</span>${g.updated ? `<span>עודכן ${e(formatDate(g.updated))}</span>` : ''}</div>
+      <div class="meta"><span>${readingTime(g.body)} דקות קריאה</span>${g.updated ? `<span>עודכן ${e(formatDate(g.updated))}</span>` : ''}</div>
     </header>
     ${g.cover ? `<figure class="cover"><img src="${e(img(ctx, g.cover))}" alt="${e(g.coverAlt || '')}"></figure>` : ''}
     ${tocHtml ? `<details class="toc-mobile"><summary>תוכן העניינים <span>${toc.length} סעיפים</span></summary>${tocHtml}</details>` : ''}
@@ -213,9 +219,10 @@ ${withAds}
       ${next ? `<a class="pg next" href="${guideUrl(ctx, next.slug)}"><small>הבא ←</small><span>${t(next.title)}</span></a>` : '<span></span>'}
     </nav>
     ${related.length ? `<section class="related" aria-labelledby="relH"><h2 id="relH">כדאי לקרוא גם</h2>${rowList(ctx, related)}</section>` : ''}
+    </div>
   </article>
   <aside class="side" aria-label="ניווט במדריך">
-    <div class="side-sticky">${tocHtml}${adSlot(ctx, 'sidebar')}</div>
+    <div class="side-sticky">${tocHtml ? `<div class="window toc-window"><div class="window-bar"><span>בעמוד הזה</span></div>${tocHtml}</div>` : ''}${adSlot(ctx, 'sidebar')}</div>
   </aside>
 </div>`;
 
@@ -228,7 +235,7 @@ ${withAds}
     dateModified: g.updated || undefined,
     author: { '@type': 'Organization', name: ctx.config.siteName },
   };
-  return layout(ctx, { title: g.title, description: g.summary, path: `guides/${g.slug}/`, body, active: g.category, jsonld, edit: `guides/${g.slug}` });
+  return layout(ctx, { title: g.title, description: g.summary, path: `guides/${g.slug}/`, body, active: g.category, jsonld, edit: `guides/${g.slug}`, hud: { level: (g.level || '').split(/[–-]/)[0].replace(/\D/g, '') || '?', name: g.short || cat.short || cat.name, next: next ? { url: guideUrl(ctx, next.slug), title: next.title } : null } });
 }
 
 // ---------- home ----------
@@ -274,10 +281,12 @@ export function homePage(ctx) {
   </div>
 </section>
 <section class="wrap block" aria-labelledby="jobsH">
-  <div class="block-head"><h2 id="jobsH">בחרו מקצוע</h2><p>ג'וב ראשון ב-Lv 10, ענף ב-Lv 30</p></div>
-  <ul class="jobs">${jobCards}</ul>
+  <div class="window">
+    <div class="window-bar"><h2 id="jobsH">בחרו מקצוע</h2><small>ג'וב ראשון ב-Lv 10, ענף ב-Lv 30</small></div>
+    <ul class="jobs">${jobCards}</ul>
+  </div>
 </section>
-${journey ? `<section class="wrap block" aria-labelledby="startH"><div class="block-head"><h2 id="startH">מתחילים כאן</h2><p>הסדר המומלץ לשחקן חדש</p></div><ol class="journey">${journey}</ol></section>` : ''}
+${journey ? `<section class="wrap block" aria-labelledby="startH"><div class="window"><div class="window-bar"><h2 id="startH">מתחילים כאן</h2><small>הסדר המומלץ לשחקן חדש</small></div><ol class="journey">${journey}</ol></div></section>` : ''}
 <section class="wrap block" aria-labelledby="allH">
   <div class="block-head"><h2 id="allH">כל המדריכים</h2><a href="${url(ctx, 'guides/')}">לרשימה המלאה</a></div>
   <div class="catalog">${cats}</div>

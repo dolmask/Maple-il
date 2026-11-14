@@ -151,6 +151,15 @@
   function onScroll() {
     ticking = false;
     var y = window.scrollY;
+    var expF = document.getElementById('expFill'), expP = document.getElementById('expPct'), lu = document.getElementById('levelUp');
+    if (expF && article) {
+      var s0 = article.getBoundingClientRect().top + y - 80;
+      var e0 = s0 + article.offsetHeight - window.innerHeight + 160;
+      var p0 = Math.max(0, Math.min(1, (y - s0) / Math.max(1, e0 - s0)));
+      expF.style.width = 'calc(' + (p0 * 100).toFixed(2) + '% - 4px)';
+      expP.textContent = (p0 * 100).toFixed(2) + '%';
+      if (p0 >= 0.995 && lu && !window.__lvShown) { window.__lvShown = true; lu.hidden = false; }
+    }
     if (bar && article) {
       var start = article.getBoundingClientRect().top + y - 80;
       var end = start + article.offsetHeight - window.innerHeight + 160;
@@ -165,6 +174,9 @@
     window.scrollTo({ top: 0 });
     var h = document.querySelector('main h1'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
   });
+
+  var luBox = document.getElementById('levelUp');
+  if (luBox) luBox.addEventListener('click', function (e) { if (e.target.closest('[data-close-lu]')) luBox.hidden = true; });
 
   // TOC highlight
   var tocLinks = document.querySelectorAll('.side .toc a');
