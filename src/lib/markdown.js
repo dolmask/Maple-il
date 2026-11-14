@@ -71,6 +71,8 @@ function inline(text, opts) {
   });
   s = s.replace(/Lv (\d+)(?:\s*[–-]\s*(\d+))?/g, (m, a, b) => b ? `Lv\u00A0${a}\u2060–\u2060${b}` : `Lv\u00A0${a}`);
   s = escapeHtml(s);
+  // טווחי מספרים (11–14, 1,000-2,000) נשארים בסדר הנכון גם בתוך טקסט עברי
+  s = s.replace(/(^|[^\w\u2060])(\d[\d,.]*)\s*([–-])\s*(\d[\d,.]*)(?![\w\u2060])/g, (m, pre, a, d, b) => `${pre}<bdi dir="ltr">${a}–${b}</bdi>`);
   // images ![alt](src)
   s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (_, alt, src) =>
     `<img src="${fixUrl(src, opts)}" alt="${alt}" loading="lazy">`);
@@ -266,7 +268,12 @@ function renderTable(rows, opts) {
   const aligns = splitRow(rows[1]).map(c => c.endsWith(':') && c.startsWith(':') ? 'center' : '');
   const body = rows.slice(2).map(splitRow);
   const th = head.map((h, j) => `<th${aligns[j] ? ` style="text-align:${aligns[j]}"` : ''}>${inline(h, opts)}</th>`).join('');
-  const tb = body.map(r => `<tr>${head.map((_, j) => `<td${aligns[j] ? ` style="text-align:${aligns[j]}"` : ''}>${inline(r[j] ?? '', opts)}</td>`).join('')}</tr>`).join('\n');
+  const labels = head.map(h => escapeHtml(h.replace(/[*`_]/g, '').replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/\{\{lv\s+([^}]*)\}\}/g, 'Lv $1').trim()));
+  const tb = body.map(r => `<tr>${head.map((_, j) => {
+    const cell = inline(r[j] ?? '', opts);
+    const empty = !String(r[j] ?? '').trim();
+    return `<td${labels[j] ? ` data-label="${labels[j]}"` : ''}${empty ? ' class="td-empty"' : ''}${aligns[j] ? ` style="text-align:${aligns[j]}"` : ''}>${cell}</td>`;
+  }).join('')}</tr>`).join('\n');
   const thead = head.every(h => !h) ? '' : `<thead><tr>${th}</tr></thead>`;
   return `<div class="table-wrap${thead ? '' : ' grid-table'}"><table>${thead}<tbody>${tb}</tbody></table></div>`;
 }
