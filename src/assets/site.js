@@ -144,6 +144,28 @@
     }
   } catch (e) {}
 
+  // reading progress + back to top
+  var bar = document.getElementById('progressBar'), top = document.getElementById('toTop');
+  var article = document.querySelector('.guide .prose');
+  var ticking = false;
+  function onScroll() {
+    ticking = false;
+    var y = window.scrollY;
+    if (bar && article) {
+      var start = article.getBoundingClientRect().top + y - 80;
+      var end = start + article.offsetHeight - window.innerHeight + 160;
+      var pct = Math.max(0, Math.min(1, (y - start) / Math.max(1, end - start)));
+      bar.style.width = (pct * 100).toFixed(1) + '%';
+    }
+    if (top) top.hidden = y < 900;
+  }
+  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  onScroll();
+  if (top) top.addEventListener('click', function () {
+    window.scrollTo({ top: 0 });
+    var h = document.querySelector('main h1'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+  });
+
   // TOC highlight
   var tocLinks = document.querySelectorAll('.side .toc a');
   if (tocLinks.length && 'IntersectionObserver' in window) {
