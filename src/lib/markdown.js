@@ -283,7 +283,7 @@ function renderTable(rows, opts) {
   const tb = body.map(r => `<tr>${head.map((_, j) => {
     const cell = inline(r[j] ?? '', opts);
     const empty = !String(r[j] ?? '').trim();
-    return `<td${labels[j] ? ` data-label="${labels[j]}"` : ''}${empty ? ' class="td-empty"' : ''}${aligns[j] ? ` style="text-align:${aligns[j]}"` : ''}>${cell}</td>`;
+    return `<td${labels[j] ? ` data-label="${labels[j]}"` : ''}${empty ? ' class="td-empty"' : ''}${aligns[j] ? ` style="text-align:${aligns[j]}"` : ''}><span class="td-v">${cell}</span></td>`;
   }).join('')}</tr>`).join('\n');
   const thead = head.every(h => !h) ? '' : `<thead><tr>${th}</tr></thead>`;
   return `<div class="table-wrap${thead ? '' : ' grid-table'}"><table>${thead}<tbody>${tb}</tbody></table></div>`;

@@ -4,7 +4,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseFrontMatter, listShots } from './src/lib/markdown.js';
-import { homePage, guidePage, categoryPage, allGuidesPage, staticPage, notFoundPage, rankingPage, playerPage, rankingOn } from './src/lib/render.js';
+import { homePage, guidePage, categoryPage, allGuidesPage, staticPage, notFoundPage, rankingPage, playerPage, rankingOn, characterPage } from './src/lib/render.js';
+import { buildCharacterData } from './src/lib/character-data.js';
+import { CLASS_INFO } from './src/lib/icons.js';
 import { fetchRanking } from './scripts/fetch-ranking.mjs';
 import { unpackRows, jobInfo } from './src/lib/ranking-data.js';
 
@@ -71,6 +73,10 @@ for (const c of config.categories) write(`category/${c.id}/index.html`, category
 for (const p of pages) write(`${p.slug}/index.html`, staticPage(ctx, p));
 write('404.html', notFoundPage(ctx));
 
+// הדמות שלי: הנתונים נאספים מהטבלאות שבמדריכים
+write('character/index.html', characterPage(ctx));
+write('character/data.json', JSON.stringify(buildCharacterData(config, guides, CLASS_INFO)));
+
 // דירוג השחקנים: הנתונים נמשכים מ-ClassicRank בזמן הבנייה (ראו scripts/fetch-ranking.mjs)
 if (rankingOn(ctx)) {
   const rc = config.ranking;
@@ -97,8 +103,9 @@ write('.nojekyll', '');
 
 // search index
 const strip = s => s.replace(/[#*`>|:\[\]()!{}_-]+/g, ' ').replace(/\s+/g, ' ');
+const meEntry = [{ t: 'הדמות שלי', s: 'בחרו מקצוע ורמה וקבלו המלצות מדויקות: אימון, ציוד, AP והצעד הבא', c: 'כלים', l: '', u: 'character/', k: 'דמות character מקצוע רמה המלצות אימון ציוד ap', h: '', b: '' }];
 const rankEntry = rankingOn(ctx) ? [{ t: 'דירוג השחקנים', s: 'כל השחקנים לפי רמה, Fame ומקצוע', c: 'דירוג', l: '', u: 'ranking/', k: 'דירוג ranking rank שחקנים לוח מובילים classicrank fame', h: '', b: '' }] : [];
-write('search-index.json', JSON.stringify(rankEntry.concat(guides.map(g => ({
+write('search-index.json', JSON.stringify(meEntry.concat(rankEntry).concat(guides.map(g => ({
   t: g.title,
   s: g.summary || '',
   c: (config.categories.find(c => c.id === g.category) || {}).name || '',
@@ -121,7 +128,7 @@ write('admin/manifest.json', JSON.stringify({
 // SEO files
 const siteUrl = (config.siteUrl || '').replace(/\/$/, '');
 if (siteUrl) {
-  const urls = ['', 'guides/', ...(rankingOn(ctx) ? ['ranking/'] : []), ...guides.map(g => `guides/${g.slug}/`), ...config.categories.map(c => `category/${c.id}/`), ...pages.map(p => `${p.slug}/`)];
+  const urls = ['', 'guides/', 'character/', ...(rankingOn(ctx) ? ['ranking/'] : []), ...guides.map(g => `guides/${g.slug}/`), ...config.categories.map(c => `category/${c.id}/`), ...pages.map(p => `${p.slug}/`)];
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => {
     const g = guides.find(x => `guides/${x.slug}/` === u);
     return `  <url><loc>${siteUrl}/${u}</loc>${g && g.updated ? `<lastmod>${g.updated}</lastmod>` : ''}</url>`;

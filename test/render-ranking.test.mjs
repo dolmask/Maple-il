@@ -16,7 +16,7 @@ test('ranking page: shell, credit, accessible table, module script', () => {
   assert.match(html, /<script type="module" src="\/Maple-il\/assets\/ranking\.js/);
   assert.match(html, /data-tab="overall"[^>]*aria-pressed="true"/);
   assert.match(html, /maplestory\.io/);
-  assert.match(html, /<a href="\/Maple-il\/ranking\/" aria-current="page">דירוג<\/a>/);
+  assert.match(html, /<a href="\/Maple-il\/ranking\/" aria-current="page">[\s\S]*?דירוג<\/span><\/a>/);
 });
 
 test('player page: shell, credit, noindex', () => {
@@ -28,5 +28,5 @@ test('player page: shell, credit, noindex', () => {
 
 test('ranking link appears in nav on other pages without aria-current', () => {
   const html = homePage(ctx);
-  assert.match(html, /<a href="\/Maple-il\/ranking\/">דירוג<\/a>/);
+  assert.match(html, /<a href="\/Maple-il\/ranking\/"><span class="sn-ic"[\s\S]*?דירוג<\/span><\/a>/);
 });

@@ -46,12 +46,33 @@
     a11yApply();
   }
 
-  // mobile menu
-  var mt = $('#menuToggle'), nav = $('#mainNav');
-  if (mt && nav) mt.addEventListener('click', function () {
-    var open = nav.classList.toggle('is-open');
+  // mobile menu: the sidebar slides in as a drawer
+  var mt = $('#menuToggle'), nav = $('#mainNav'), bd = $('#navBackdrop');
+  function setNav(open) {
+    nav.classList.toggle('is-open', open);
+    if (bd) bd.hidden = !open;
     mt.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
+    document.body.classList.toggle('nav-open', open);
+    if (open) { var f = nav.querySelector('a'); if (f) f.focus(); }
+  }
+  if (mt && nav) {
+    mt.addEventListener('click', function () { setNav(!nav.classList.contains('is-open')); });
+    if (bd) bd.addEventListener('click', function () { setNav(false); mt.focus(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nav.classList.contains('is-open')) { setNav(false); mt.focus(); } });
+  }
+
+  // "הדמות שלי" בכותרת: מציג את הדמות השמורה
+  window.updateMeChip = function () {
+    var chip = $('#meChip'); if (!chip) return;
+    var v = null;
+    try { v = JSON.parse(localStorage.getItem('meView') || 'null'); } catch (e) {}
+    if (!v || !v.name) return;
+    var txt = chip.querySelector('.me-txt'), av = chip.querySelector('.me-av');
+    txt.textContent = v.name + ' · ' + v.lv;
+    chip.setAttribute('aria-label', 'הדמות שלי: ' + v.name + ', רמה ' + v.lv);
+    if (v.img && av) { av.innerHTML = ''; var im = new Image(); im.alt = ''; im.src = v.img; im.onerror = function () { im.remove(); }; av.appendChild(im); chip.classList.add('has-img'); }
+  };
+  window.updateMeChip();
 
   // search
   var layer = $('#searchLayer'), input = $('#searchInput'), results = $('#searchResults');
@@ -117,7 +138,7 @@
     layer.addEventListener('click', function (e) { if (e.target === layer) closeSearch(); });
     input.addEventListener('input', function () { render(input.value); });
     document.addEventListener('keydown', function (e) {
-      if (e.key === '/' && layer.hidden && !/input|textarea/i.test(document.activeElement.tagName)) { e.preventDefault(); openSearch(); }
+      if (layer.hidden && ((e.key === '/' && !/input|textarea|select/i.test(document.activeElement.tagName)) || ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K' || e.code === 'KeyK')))) { e.preventDefault(); openSearch(); return; }
       if (layer.hidden) return;
       var links = results.querySelectorAll('a');
       if (e.key === 'Tab') {
