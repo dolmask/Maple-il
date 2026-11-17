@@ -691,3 +691,6 @@ a.pg-n:hover { border-color: var(--accent); }
   body { background: #fff; color: #000; font-size: 12pt; }
   main { padding: 0; }
 }
+
+/* יעדי לחיצה: קישורי עוגן בכותרות */
+.prose h2 .anchor, .prose h3 .anchor { display: inline-block; min-width: 24px; min-height: 24px; text-align: center; line-height: 24px; }
