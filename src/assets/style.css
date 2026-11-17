@@ -710,3 +710,4 @@ a.pg-n:hover { border-color: var(--accent); }
 
 /* הניסיס: חותכים את קיר האבן האפור שבחצי התחתון של האיור ומשאירים את הכפר והשמיים */
 img[src*="/map/100000000/"] { height: 200% !important; object-position: 60% 0 !important; }
+.td-num { white-space: nowrap; }

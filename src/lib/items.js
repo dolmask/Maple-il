@@ -3,6 +3,33 @@
 // שם שלא כאן פשוט מוצג בלי איור.
 export const API = 'https://maplestory.io/api/gms/208.2.0/';
 export const ITEMS = {
+  "Ryden": 1452005,
+  "Meba": 1472007,
+  "Balanche": 1462003,
+  "Heckler": 1462005,
+  "Rower": 1462007,
+  "Olympus": 1452008,
+  "Zeco": 1432005,
+  "Skylar": 1442010,
+  "Redemption": 1432007,
+  "Cromi": 1372007,
+  "Thorns": 1382006,
+  "Kandine": 1332018,
+  "Cass": 1332009,
+  "Gladius": 1302008,
+  "Sabre": 1302005,
+  "Dark Avenger": 1051006,
+  "Screw": 4003000,
+  "Pink Viola": 4031025,
+  "Blue Viola": 4031026,
+  "White Viola": 4031028,
+  "AP Reset": 5050000,
+  "Neocora": 1302011,
+  "Hawkhead": 1312009,
+  "Garnier": 1472000,
+  "Tamus": 1322018,
+  "Vaulter 2000": 1452007,
+  "Orange": 2010009,
   "Adamantium Guards": 1472010,
   "Angel Wings": 1372015,
   "Arc Staff": 1382001,
@@ -175,6 +202,15 @@ export const ITEMS = {
   "Yellow Baseball Cap": 1002061,
 };
 export const MOBS = {
+  "Stirge": "2300100:fly",
+  "Lupin": 3210800,
+  "Clang": 4230104,
+  "Zombie Lupin": 4230101,
+  "Lorang": 3230102,
+  "Croco": 5130103,
+  "Bubbling": 1210103,
+  "Dark Stone Golem": 5130102,
+  "Stone Golem": 5130101,
   "Axe Stump": 1130100,
   "Blue Snail": 100101,
   "Cold Eye": 4230100,
@@ -210,16 +246,46 @@ export const MOBS = {
   "Zombie Mushroom": 2230101,
 };
 
+// NPC: האיור מגיע מ-/npc/{id}/icon
+export const NPCS = {
+  "Athena Pierce": 1012100,
+  "Grendel the Really Old": 1032001,
+  "Dark Lord": 1052001,
+  "Dances With Balrog": 1022000,
+  "Flora the Fairy": 1031000,
+  "Sabitrama": 1061005,
+  "Lakelis": 9020000,
+  "Cloto": 9020001,
+  "Shumi": 1052102,
+  "Nella": 1052103,
+  "Alex": 1052000,
+  "Jane Doe": 1052105,
+  "Tulcus": 1052104,
+  "Biggs": 20002,
+  "Pio": 10000,
+  "Heena": 2101,
+  "Sam": 1011001,
+  "Maria": 2103,
+  "Nina": 2102,
+  "Todd": 2004,
+  "Roger": 2000,
+  "Mai": 10301,
+  "Lucas": 10304,
+};
+
 const esc = n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-const names = [...Object.keys(ITEMS), ...Object.keys(MOBS)].sort((a, b) => b.length - a.length).map(esc);
+const names = [...Object.keys(ITEMS), ...Object.keys(MOBS), ...Object.keys(NPCS)].sort((a, b) => b.length - a.length).map(esc);
 const RE = new RegExp(`(?<![A-Za-z'’])(${names.join('|')})(?![A-Za-z'’])`, 'g');
 const SKIP = /^(a|h[1-6]|code|pre|button|script|style|summary|kbd)$/i;
 
 export function itemIcon(id) {
   return `<img class="item-ic" src="${API}item/${id}/icon" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
 }
+export function npcIcon(id) {
+  return `<img class="item-ic npc-ic" src="${API}npc/${id}/icon" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
+}
 export function mobIcon(id) {
-  return `<img class="item-ic mob-ic" src="${API}mob/${id}/render/stand" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
+  return `<img class="item-ic mob-ic" src="${API}mob/${String(id).split(':')[0]}/render/${String(id).split(':')[1] || 'stand'}" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
 }
 
 // מוסיף איור לפני כל שם חפץ או מפלצת בטקסט (לא בתוך קישורים, כותרות וקוד)
@@ -234,7 +300,7 @@ export function addItemIcons(html) {
       if (m[1]) { const k = stack.lastIndexOf(m[2].toLowerCase()); if (k >= 0) stack.length = k; }
       else stack.push(m[2].toLowerCase());
     } else if (p && !stack.some(t => SKIP.test(t))) {
-      parts[i] = p.replace(RE, n => `<span class="item">${n in MOBS ? mobIcon(MOBS[n]) : itemIcon(ITEMS[n])}${n}</span>`);
+      parts[i] = p.replace(RE, n => `<span class="item">${n in NPCS ? npcIcon(NPCS[n]) : n in MOBS ? mobIcon(MOBS[n]) : itemIcon(ITEMS[n])}${n}</span>`);
     }
   }
   return parts.join('');
