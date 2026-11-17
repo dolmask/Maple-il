@@ -275,7 +275,7 @@ export const NPCS = {
 
 const esc = n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const names = [...Object.keys(ITEMS), ...Object.keys(MOBS), ...Object.keys(NPCS)].sort((a, b) => b.length - a.length).map(esc);
-const RE = new RegExp(`(?<![A-Za-z'’])(${names.join('|')})(?![A-Za-z'’])`, 'g');
+const RE = new RegExp(`(\\()?(?<![A-Za-z'’])(${names.join('|')})(?![A-Za-z'’])(\\))?`, 'g');
 const SKIP = /^(a|h[1-6]|code|pre|button|script|style|summary|kbd)$/i;
 
 export function itemIcon(id) {
@@ -300,7 +300,7 @@ export function addItemIcons(html) {
       if (m[1]) { const k = stack.lastIndexOf(m[2].toLowerCase()); if (k >= 0) stack.length = k; }
       else stack.push(m[2].toLowerCase());
     } else if (p && !stack.some(t => SKIP.test(t))) {
-      parts[i] = p.replace(RE, n => `<span class="item">${n in NPCS ? npcIcon(NPCS[n]) : n in MOBS ? mobIcon(MOBS[n]) : itemIcon(ITEMS[n])}${n}</span>`);
+      parts[i] = p.replace(RE, (all, op, n, cl) => `<span class="item">${op ? '(' : ''}${n in NPCS ? npcIcon(NPCS[n]) : n in MOBS ? mobIcon(MOBS[n]) : itemIcon(ITEMS[n])}${n}${cl ? ')' : ''}</span>`);
     }
   }
   return parts.join('');
