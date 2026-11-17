@@ -694,3 +694,19 @@ a.pg-n:hover { border-color: var(--accent); }
 
 /* יעדי לחיצה: קישורי עוגן בכותרות */
 .prose h2 .anchor, .prose h3 .anchor { display: inline-block; min-width: 24px; min-height: 24px; text-align: center; line-height: 24px; }
+
+/* שמיים בצבעי המשחק מאחורי איורי הערים (האיורים מגיעים שקופים) */
+:root {
+  --sky-henesys: linear-gradient(180deg, #5FA8E8 0%, #9CCBF2 55%, #D6ECFA 100%);
+  --sky-perion: linear-gradient(180deg, #D9783A 0%, #F0A55E 50%, #F7D29A 100%);
+  --sky-ellinia: linear-gradient(180deg, #123B3A 0%, #1F5E4C 55%, #3C8A5F 100%);
+  --sky-kerning: linear-gradient(180deg, #1B1F4A 0%, #3A3F82 55%, #6A6FA8 100%);
+}
+.home-hero, .banner, .town-ph { background: var(--sky-henesys); }
+.cls-warrior .town-ph, .banner.cls-warrior { background: var(--sky-perion); }
+.cls-magician .town-ph, .banner.cls-magician { background: var(--sky-ellinia); }
+.cls-bowman .town-ph, .banner.cls-bowman { background: var(--sky-henesys); }
+.cls-thief .town-ph, .banner.cls-thief { background: var(--sky-kerning); }
+
+/* הניסיס: חותכים את קיר האבן האפור שבחצי התחתון של האיור ומשאירים את הכפר והשמיים */
+img[src*="/map/100000000/"] { height: 200% !important; object-position: 60% 0 !important; }

@@ -243,7 +243,7 @@ export function guidePage(ctx, g) {
       ${g.summary ? `<p class="lede" data-fm="summary">${t(g.summary)}</p>` : ''}
       <div class="meta">${g.level ? `<span class="lv">Lv ${e(g.level)}</span>` : ''}<span>${readingTime(g.body)} דקות קריאה</span>${g.updated ? `<span>עודכן ${e(formatDate(g.updated))}</span>` : ''}</div>
     </header>
-    ${!g.cover ? `<figure class="banner" aria-hidden="true">${townImg(townOf(ctx, g))}${charBanner(g)}${!/\/character\//.test(g.thumb || '') ? mobImg(thumbMob(g) || cat.mob, 'mob') : ''}</figure>` : ''}
+    ${!g.cover ? `<figure class="banner${g.cls ? ' cls-' + e(g.cls) : ''}" aria-hidden="true">${townImg(townOf(ctx, g))}${charBanner(g)}${!/\/character\//.test(g.thumb || '') ? mobImg(thumbMob(g) || cat.mob, 'mob') : ''}</figure>` : ''}
     ${g.cover ? `<figure class="cover" data-slot="cover" data-guide="${e(g.slug)}"><img src="${e(img(ctx, g.cover))}" alt="${e(g.coverAlt || '')}"></figure>` : `<figure class="cover cover-missing shot-missing" data-slot="cover" data-guide="${e(g.slug)}" hidden><div class="shot-frame"><span>באנר למדריך</span></div></figure>`}
     ${g.cls && CLASS_INFO[g.cls] ? `<a class="me-cta" href="${url(ctx, 'character/')}?cls=${e(g.cls)}${g.category === 'jobs2' ? '&amp;branch=' + e(g.slug) + '&amp;lv=30' : ''}"><span>רוצים לראות רק מה שמתאים לרמה שלכם?</span><strong>פתחו את הדמות שלי</strong></a>` : ''}
     ${tocHtml ? `<details class="toc-mobile"><summary>תוכן העניינים <span>${toc.length} סעיפים</span></summary>${tocHtml}</details>` : ''}
