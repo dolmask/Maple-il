@@ -3,6 +3,23 @@
 // שם שלא כאן פשוט מוצג בלי איור.
 export const API = 'https://maplestory.io/api/gms/208.2.0/';
 export const ITEMS = {
+  "Tobi": 2070004,
+  "Steely": 2070005,
+  "Ilbi": 2070006,
+  "Hwabi": 2070007,
+  "Wooden Top": 2070009,
+  "Moon Rock": 4011007,
+  "Steel Plate": 4011001,
+  "Bronze Plate": 4011000,
+  "Mithril Ore": 4010002,
+  "Silver Ore": 4010004,
+  "Gold Ore": 4010006,
+  "Adamantium Ore": 4010003,
+  "Orihalcon Ore": 4010005,
+  "Processed Wood": 4003001,
+  "Garnet": 4021000,
+  "Diamond": 4021007,
+  "Opal": 4021004,
   "Ryden": 1452005,
   "Meba": 1472007,
   "Balanche": 1462003,
