@@ -434,10 +434,9 @@ td .item-ic.mob-ic { width: auto; height: 30px; max-width: 48px; vertical-align:
 :root[data-size="xxl"] { font-size: 140%; }
 .a11y-links a { text-decoration: underline !important; text-decoration-thickness: 2px !important; outline: 2px solid color-mix(in srgb, var(--accent) 60%, transparent); outline-offset: 1px; }
 .a11y-font body, .a11y-font h1, .a11y-font h2, .a11y-font h3, .a11y-font h4, .a11y-font .brand-text strong { font-family: Arial, "Segoe UI", system-ui, sans-serif !important; }
-.a11y-spacing .prose p, .a11y-spacing .prose li { line-height: 2.1; word-spacing: .12em; }
+.a11y-spacing body, .a11y-spacing .prose p, .a11y-spacing .prose li, .a11y-spacing td, .a11y-spacing .lede { line-height: 1.5 !important; letter-spacing: .12em !important; word-spacing: .16em !important; }
+.a11y-spacing .prose p { margin-bottom: 2em !important; }
 .a11y-motion *, .a11y-motion *::before, .a11y-motion *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-.a11y-contrast { --page: #000; --paper: #000; --paper-2: #000; --paper-3: #111; --ink: #fff; --ink-2: #fff; --muted: #fff; --line: #fff; --line-2: #fff; --link: #7fdcff; --accent: #ffb000; --accent-hover: #ffc640; --accent-ink: #000; --tint: #000; --tint-ink: #ffe066; --tip-bg: #000; --sky: #000; }
-.a11y-contrast .home-hero::before { background: rgba(0,0,0,.85); }
 
 /* ---------- floating ---------- */
 .totop { position: fixed; bottom: 18px; inset-inline-start: 18px; z-index: 30; width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font-size: 1.15rem; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-lg); }
@@ -607,7 +606,7 @@ a.pg-n:hover { border-color: var(--accent); }
   main { padding: 18px 20px 32px; }
   .foot { margin: 0 20px; }
   .ad-top { margin: 12px 20px 0; }
-  .cols { grid-template-columns: 1fr; gap: 24px; }
+  .cols { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .rank-stats { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 640px) {
@@ -739,3 +738,63 @@ td .item { white-space: normal; }
   .tile, .town, .g-row { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
   .tile:hover, .town:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.12); }
 }
+
+/* ---------- ניגודיות גבוהה (WCAG AAA: 7:1 ומעלה) ----------
+   שחור ולבן מלאים, קישורים בצהוב, מסגרות לבנות עבות, בלי תמונות רקע, צללים או שקיפויות.
+   הכללים כאן חזקים בכוונה, כדי שלא יישאר רכיב שמתעלם מהמצב. */
+html.a11y-contrast { color-scheme: dark; --page:#000; --paper:#000; --paper-2:#000; --paper-3:#000; --ink:#fff; --ink-2:#fff; --muted:#fff; --line:#fff; --line-2:#fff; --link:#ffff00; --accent:#ffff00; --accent-hover:#fff; --accent-ink:#000; --tint:#000; --tint-ink:#ffff00; --tip-bg:#000; --sky:#000; --shadow:none; --shadow-lg:none; }
+html.a11y-contrast, html.a11y-contrast body { background: #000 !important; color: #fff !important; }
+html.a11y-contrast :where(div, section, article, aside, header, footer, nav, main, ul, ol, li, dl, dt, dd, table, thead, tbody, tr, th, td, caption, p, span, label, details, summary, figure, figcaption, blockquote, form, fieldset, legend, kbd, code, pre, small, strong, em, b, h1, h2, h3, h4, h5, h6, time, dialog):not(img) {
+  background-color: #000 !important; background-image: none !important; color: #fff !important; border-color: #fff !important; box-shadow: none !important; text-shadow: none !important; filter: none !important; opacity: 1 !important;
+}
+html.a11y-contrast :where(.card, .tile, .town, .box, .stats, .me-cta, .toc-window, .home-hero, .banner, .rank-window, .table-wrap, .g-row, .row, input, select, textarea, button, .a11y-panel, .search-box, .searchbar, .me-chip, .icon-btn) { border: 2px solid #fff !important; }
+html.a11y-contrast :where(table, th, td, thead, tbody, tr) { border-color: #fff !important; }
+html.a11y-contrast :where(th, td) { border-width: 1px !important; border-style: solid !important; }
+html.a11y-contrast a, html.a11y-contrast a * { color: #ffff00 !important; background-color: transparent !important; text-decoration: underline !important; text-underline-offset: .18em; }
+html.a11y-contrast a:hover, html.a11y-contrast a:hover * { color: #000 !important; background-color: #ffff00 !important; }
+html.a11y-contrast button, html.a11y-contrast select, html.a11y-contrast input, html.a11y-contrast textarea { background: #000 !important; color: #fff !important; border: 2px solid #fff !important; box-shadow: none !important; }
+html.a11y-contrast .btn, html.a11y-contrast button[type="submit"], html.a11y-contrast .a11y-tog[aria-pressed="true"], html.a11y-contrast [aria-pressed="true"], html.a11y-contrast [aria-selected="true"], html.a11y-contrast [aria-current] { background: #ffff00 !important; color: #000 !important; border-color: #ffff00 !important; }
+html.a11y-contrast .btn *, html.a11y-contrast [aria-pressed="true"] *, html.a11y-contrast [aria-current] * { color: #000 !important; background: transparent !important; }
+html.a11y-contrast ::placeholder { color: #fff !important; opacity: 1 !important; }
+html.a11y-contrast svg { color: inherit; } html.a11y-contrast svg [fill]:not([fill="none"]) { fill: currentColor; } html.a11y-contrast svg [stroke]:not([stroke="none"]) { stroke: currentColor; }
+/* איורים מהמשחק נשארים על משבצת בהירה, כדי שיישארו קריאים */
+html.a11y-contrast :where(.tile-art, .g-icon, .me-av, .char-pic, .item-ic:not(.mob-ic):not(.npc-ic), .town-ph, .branch-ic) { background-color: #fff !important; }
+html.a11y-contrast img { filter: none !important; opacity: 1 !important; }
+/* אזורי תמונה עם טקסט: בלי תמונת רקע מתחת לטקסט */
+html.a11y-contrast .home-hero .hero-town, html.a11y-contrast .home-hero::before, html.a11y-contrast .home-hero::after, html.a11y-contrast .banner::after { display: none !important; }
+html.a11y-contrast .banner { background: #000 !important; }
+/* מיקוד: טבעת צהובה עבה עם מרווח, גלויה על כל רקע (WCAG 2.4.11/2.4.13) */
+html.a11y-contrast :focus-visible { outline: 4px solid #ffff00 !important; outline-offset: 3px !important; box-shadow: 0 0 0 7px #000 !important; }
+html.a11y-contrast .hud, html.a11y-contrast .hud * { background-color: #000 !important; color: #fff !important; }
+html.a11y-contrast .hud .bar > *, html.a11y-contrast .hud [class*="fill"] { background-color: #ffff00 !important; }
+
+/* ---------- נגישות: ניגודיות של רכיבי ממשק (WCAG 1.4.11, לפחות 3:1) ---------- */
+:root { --field-line: #6F6A60; }
+:root[data-theme="dark"] { --field-line: #8E96A1; }
+.field select, .field input, .rf input, .rf select, .cf-field select, .cf-field input, input[type="search"], input[type="number"], input[type="text"], select { border: 1px solid var(--field-line); }
+/* טקסט הגיבור על לוח אטום, לא על תמונה: ניגודיות מובטחת */
+.hero-txt { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 24px; box-shadow: var(--shadow); }
+
+/* ---------- תפריט הנגישות: אפשרויות נוספות ---------- */
+html { scroll-padding-bottom: 56px; }
+.a11y-headings :where(h1, h2, h3, h4) { background: #FFF3B0 !important; color: #000 !important; padding: .12em .4em; border-radius: 4px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.a11y-cursor, .a11y-cursor * { cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24'><path d='M3 2l7 19 2.6-7.4L20 11z' fill='black' stroke='white' stroke-width='1.6' stroke-linejoin='round'/></svg>") 4 2, auto !important; }
+.a11y-gray body { filter: grayscale(1); }
+@media (forced-colors: active) {
+  .btn, .tile, .card, .town, .g-row, .icon-btn, .me-chip, .a11y-body button, input, select { border: 1px solid ButtonText; }
+  :focus-visible { outline: 3px solid Highlight; outline-offset: 2px; }
+  .hero-txt, .banner, .town-ph { forced-color-adjust: none; }
+}
+
+/* ריפלואו ב-320px (WCAG 1.4.10): הכותרת העליונה לא גולשת */
+@media (max-width: 380px) {
+  .top-bar { gap: 4px !important; padding-inline: 6px !important; }
+  .top-bar .icon-btn, .top-bar .menu-btn { width: 40px; height: 40px; min-width: 40px; }
+  .brand-text { display: none; }
+  .me-chip { padding-inline: 4px; }
+}
+.item { white-space: normal; }
+h1, h2, h3, h4, .stat-row, .stat-row *, .item, .hero-txt, .sec-head { overflow-wrap: anywhere; }
+.hero-txt, .sec-head > * { min-width: 0; }
+.cols > *, .row, .row * { min-width: 0; } .row-t, .g-body { overflow-wrap: anywhere; }
+html.a11y-contrast .prose h2::after { background: #ffff00 !important; }

@@ -108,7 +108,7 @@ ${canonical ? `<meta property="og:url" content="${e(canonical)}">` : ''}
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Rubik:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${url(ctx, 'assets/style.css')}${ctx.version ? '?v=' + ctx.version : ''}">
-<script>try{var t=localStorage.getItem('theme')||'light';document.documentElement.dataset.theme=t;var a=JSON.parse(localStorage.getItem('a11y')||'{}');for(var k in a){if(k==='size')document.documentElement.dataset.size=a[k];else if(a[k])document.documentElement.classList.add('a11y-'+k)}}catch(e){}</script>
+<script>try{var t=localStorage.getItem('theme')||'light';document.documentElement.dataset.theme=t;var a=JSON.parse(localStorage.getItem('a11y')||'null');if(a===null){a={};if(matchMedia('(prefers-contrast: more)').matches)a.contrast=true}for(var k in a){if(k==='size')document.documentElement.dataset.size=a[k];else if(a[k])document.documentElement.classList.add('a11y-'+k)}}catch(e){}</script>
 ${ads.enabled && ads.client && !ctx.preview ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${e(ads.client)}" crossorigin="anonymous"></script>` : ''}
 ${c.analyticsId && !ctx.preview ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${e(c.analyticsId)}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${e(c.analyticsId)}');</script>` : ''}
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}
@@ -138,7 +138,10 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script
     <button type="button" class="a11y-tog" data-a11y="links" aria-pressed="false">הדגשת קישורים</button>
     <button type="button" class="a11y-tog" data-a11y="font" aria-pressed="false">גופן קריא</button>
     <button type="button" class="a11y-tog" data-a11y="motion" aria-pressed="false">עצירת אנימציות</button>
-    <button type="button" class="a11y-tog" data-a11y="spacing" aria-pressed="false">ריווח שורות</button>
+    <button type="button" class="a11y-tog" data-a11y="spacing" aria-pressed="false">ריווח טקסט</button>
+    <button type="button" class="a11y-tog" data-a11y="headings" aria-pressed="false">הדגשת כותרות</button>
+    <button type="button" class="a11y-tog" data-a11y="cursor" aria-pressed="false">סמן גדול</button>
+    <button type="button" class="a11y-tog" data-a11y="gray" aria-pressed="false">גווני אפור</button>
     <button type="button" class="a11y-reset" data-a11y="reset">איפוס הגדרות</button>
     <a href="${url(ctx, 'accessibility/')}">הצהרת נגישות</a>
   </div>

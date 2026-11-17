@@ -13,11 +13,11 @@
 
   // accessibility menu
   var A = {};
-  try { A = JSON.parse(localStorage.getItem('a11y') || '{}'); } catch (e) {}
+  try { var saved = localStorage.getItem('a11y'); A = JSON.parse(saved || '{}'); if (saved === null && window.matchMedia && matchMedia('(prefers-contrast: more)').matches) A.contrast = true; } catch (e) {}
   var root = document.documentElement;
   var sizes = ['', 'l', 'xl', 'xxl'];
   function a11yApply() {
-    ['contrast', 'links', 'font', 'motion', 'spacing'].forEach(function (k) {
+    ['contrast', 'links', 'font', 'motion', 'spacing', 'headings', 'cursor', 'gray'].forEach(function (k) {
       root.classList.toggle('a11y-' + k, !!A[k]);
       var b = document.querySelector('[data-a11y="' + k + '"]');
       if (b) b.setAttribute('aria-pressed', A[k] ? 'true' : 'false');
