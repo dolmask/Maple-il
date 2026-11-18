@@ -159,10 +159,10 @@ ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script
     ${sideLink(url(ctx, 'guides/'), 'כל המדריכים', SIDE_ICONS.all, active === 'all')}
     ${rankingOn(ctx) ? sideLink(url(ctx, 'ranking/'), 'דירוג', SIDE_ICONS.rank, active === 'ranking') : ''}
   </div>
-  <h2 class="sn-h">מדריכים</h2>
-  <div class="sn-group">${cats}</div>
-  <h2 class="sn-h">האתר</h2>
-  <div class="sn-group">
+  <p class="sn-h" id="snG">מדריכים</p>
+  <div class="sn-group" role="group" aria-labelledby="snG">${cats}</div>
+  <p class="sn-h" id="snS">האתר</p>
+  <div class="sn-group" role="group" aria-labelledby="snS">
     ${sideLink(url(ctx, 'about/'), 'אודות', SIDE_ICONS.info, active === 'about')}
     ${sideLink(url(ctx, 'accessibility/'), 'הצהרת נגישות', SIDE_ICONS.access, active === 'accessibility')}
   </div>
@@ -281,7 +281,7 @@ ${withAds}
 // ---------- home ----------
 const CLS_OPTS = [['beginner', 'מתחיל'], ['warrior', 'לוחם'], ['magician', 'קוסם'], ['bowman', 'קשת'], ['thief', 'גנב']];
 function classPicker(ctx, { id = 'hp', compact = false } = {}) {
-  return `<form class="picker${compact ? ' picker-sm' : ''}" action="${url(ctx, 'character/')}" method="get" data-me-form>
+  return `<form aria-label="בחירת מקצוע ורמה" class="picker${compact ? ' picker-sm' : ''}" action="${url(ctx, 'character/')}" method="get" data-me-form>
   <div class="field"><label for="${id}-cls">מקצוע</label><select id="${id}-cls" name="cls">${CLS_OPTS.map(([v, l]) => `<option value="${v}"${v === 'warrior' ? ' selected' : ''}>${l}</option>`).join('')}</select></div>
   <div class="field field-lv"><label for="${id}-lv">רמה</label><input id="${id}-lv" name="lv" type="number" inputmode="numeric" min="1" max="200" value="10" required></div>
   <button class="btn" type="submit">מה הצעד הבא שלי?</button>
@@ -404,7 +404,7 @@ export function characterPage(ctx) {
     <div class="char-main">
       <p class="char-kicker">הדמות שלי · נשמרת רק בדפדפן הזה</p>
       <h1 id="charTitle">הדמות שלי</h1>
-      <form class="picker picker-sm" id="charForm" data-me-form>
+      <form aria-label="בחירת מקצוע ורמה" class="picker picker-sm" id="charForm" data-me-form>
         <div class="field"><label for="cf-cls">מקצוע</label><select id="cf-cls" name="cls">${CLS_OPTS.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div>
         <div class="field" id="cf-branch-wrap" hidden><label for="cf-branch">ענף</label><select id="cf-branch" name="branch"></select></div>
         <div class="field field-lv"><label for="cf-lv">רמה</label><input id="cf-lv" name="lv" type="number" inputmode="numeric" min="1" max="200" value="10"></div>
