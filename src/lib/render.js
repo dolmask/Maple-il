@@ -195,14 +195,32 @@ ${body}
 <button class="totop" id="toTop" type="button" aria-label="חזרה לראש העמוד" hidden>↑</button>
 ${hud ? `<div class="hud" aria-hidden="true"><span class="hud-lv"><small>LV.</small>${e(hud.level || '?')}</span><span class="hud-name">${e(hud.name)}</span><span class="exp"><span class="exp-fill" id="expFill"></span><span class="exp-txt">EXP <b id="expPct">0.00%</b></span></span></div>
 <div class="levelup" id="levelUp" role="status" hidden><strong>LEVEL UP!</strong><span>סיימתם את המדריך.</span>${hud.next ? `<a href="${hud.next.url}">למדריך הבא: ${t(hud.next.title)}</a>` : ''}<button type="button" data-close-lu aria-label="סגירה">✕</button></div>` : ''}
+${rankingOn(ctx) ? loginShell(ctx) : ''}
 <script>window.SITE_BASE=${JSON.stringify(ctx.base || '/')};</script>
 <script src="${url(ctx, 'assets/site.js')}${ctx.version ? '?v=' + ctx.version : ''}" defer></script>
 ${scripts}
+${rankingOn(ctx) ? `<script type="module" src="${url(ctx, 'assets/player.js')}${ctx.version ? '?v=' + ctx.version : ''}"></script>` : ''}
 </body>
 </html>`;
 }
 
 // ---------- pieces ----------
+// התחברות עם שם הדמות: החלון והברכה (assets/player.js ממלא אותם)
+function loginShell(ctx) {
+  return `<div class="login-layer" id="loginLayer" hidden></div>
+<div class="login-dialog" id="loginDialog" role="dialog" aria-modal="true" aria-labelledby="loginTitle" hidden>
+  <div class="panel-bar"><span id="loginTitle">התחברות</span><button type="button" class="a11y-x" data-login-close aria-label="סגירה">✕</button></div>
+  <div class="login-body">
+    <form class="login-form" id="loginForm" role="search">
+      <label for="loginName">שם הדמות במשחק</label>
+      <div class="login-row"><input id="loginName" name="name" type="text" required autocomplete="off" spellcheck="false" dir="auto" maxlength="20"><button class="btn" type="submit">חיפוש</button></div>
+    </form>
+    <div class="login-result" id="loginResult" aria-live="polite"></div>
+    <p class="login-note">בלי סיסמה. נשמר רק בדפדפן שלכם. הנתונים מ-<a href="https://classicrank.com" target="_blank" rel="noopener">ClassicRank</a>.</p>
+  </div>
+</div>
+<div class="levelup player-toast" id="playerToast" role="status" hidden></div>`;
+}
 function levelChip(level) {
   return level ? `<span class="lv">Lv ${e(level)}</span>` : '';
 }
@@ -413,6 +431,7 @@ export function characterPage(ctx) {
         <button class="btn btn-ghost" type="button" id="cf-up">עליתי רמה</button>
       </form>
       <div class="char-next" id="charNext"></div>
+      <p class="char-link" id="charLink" hidden></p>
     </div>
   </section>
   <div id="charBody" aria-live="polite"><p class="empty">טוען…</p></div>

@@ -1,6 +1,7 @@
 // "הדמות שלי": בוחרים מקצוע ורמה, ומקבלים רק את מה שמתאים מתוך המדריכים.
 // הנתונים (character/data.json) נאספים בזמן הבנייה מהטבלאות שבמדריכים עצמם.
 import { renderMarkdown, escapeHtml as esc } from './lib/markdown.js';
+import { pickMe } from './lib/player.js';
 
 const base = window.SITE_BASE || '/';
 const $ = s => document.querySelector(s);
@@ -13,10 +14,11 @@ let D = null;
 let me = readMe();
 
 function readMe() {
-  let m = {};
-  try { m = JSON.parse(localStorage.getItem('me') || '{}') || {}; } catch (e) {}
+  let stored = {};
+  try { stored = JSON.parse(localStorage.getItem('me') || '{}') || {}; } catch (e) {}
   const q = new URLSearchParams(location.search);
-  if (q.get('cls')) m = { cls: q.get('cls'), lv: +q.get('lv') || m.lv || 10, branch: q.get('branch') || '' };
+  const fromUrl = q.get('cls') ? { cls: q.get('cls'), lv: +q.get('lv') || stored.lv || 10, branch: q.get('branch') || '' } : null;
+  const m = pickMe(stored, fromUrl, linked());
   return { cls: m.cls || 'warrior', lv: Math.max(1, Math.min(200, Math.round(+m.lv || 10))), branch: m.branch || '' };
 }
 function saveMe() {
@@ -25,6 +27,19 @@ function saveMe() {
   if (me.branch) q.set('branch', me.branch);
   history.replaceState(null, '', '?' + q);
   if (window.updateMeChip) window.updateMeChip();
+}
+
+// הדמות המחוברת (assets/player.js), אם יש
+function linked() {
+  try { const p = JSON.parse(localStorage.getItem('player') || 'null'); return p && p.name ? p : null; } catch (e) { return null; }
+}
+function ago(iso) {
+  const m = Math.round((Date.now() - Date.parse(iso)) / 60000);
+  if (!isFinite(m)) return '';
+  if (m < 2) return 'עכשיו';
+  if (m < 60) return `לפני ${m} דקות`;
+  const h = Math.round(m / 60);
+  return h < 24 ? (h === 1 ? 'לפני שעה' : `לפני ${h} שעות`) : (Math.round(h / 24) === 1 ? 'אתמול' : `לפני ${Math.round(h / 24)} ימים`);
 }
 
 const gUrl = slug => `${base}guides/${slug}/`;
@@ -72,11 +87,19 @@ function render() {
 
   // ראש העמוד
   const name = br && lv >= 30 ? br.name : C.name;
-  $('#charTitle').textContent = `${name}, רמה ${lv}`;
+  const P = linked();
+  $('#charTitle').innerHTML = `<bdi>${esc(P ? P.display : name)}</bdi>, רמה ${lv}`;
   const av = $('#charAv');
-  const pic = (br && lv >= 30 && br.img) || C.img;
+  const clsPic = (br && lv >= 30 && br.img) || C.img;
+  const pic = (P && P.photo) || clsPic;
+  av.onerror = clsPic && pic !== clsPic ? () => { av.onerror = null; av.src = clsPic; } : null;
   if (pic) { av.src = pic; av.hidden = false; } else av.hidden = true;
-  try { localStorage.setItem('meView', JSON.stringify({ name, lv, img: pic || '' })); } catch (e) {}
+  try { localStorage.setItem('meView', JSON.stringify({ name: P ? P.display : name, lv, img: pic || '' })); } catch (e) {}
+  const cl = $('#charLink');
+  if (cl) {
+    cl.hidden = !P;
+    cl.innerHTML = P ? `מחוברים כ-<bdi>${esc(P.display)}</bdi>${P.checked ? ` · נבדק ${esc(ago(P.checked))}` : ''} · <a href="${base}ranking/player/?name=${encodeURIComponent(P.name)}">לעמוד השחקן</a> · <button type="button" class="linkish" data-logout>התנתקות</button>` : '';
+  }
   if (window.updateMeChip) window.updateMeChip();
   const town = C.town ? (typeof C.town === 'object' ? C.town : { id: C.town }) : null;
   $('#charTown').innerHTML = town ? `<img src="${MAP}${town.id}/render?resize=0.25" alt="" loading="lazy" decoding="async"${town.pos ? ` style="object-position:${esc(town.pos)}"` : ''} onerror="window.mlImgErr?mlImgErr(this):this.remove()">` : '';
@@ -131,6 +154,9 @@ ${lv >= 30 ? '<p class="card-sub">בחרו ענף כדי לראות ציוד, AP
   const li = (g, tag) => `<li><a class="row" href="${gUrl(g.slug)}"><span class="row-ic" aria-hidden="true">${g.thumb ? `<img src="${esc(g.thumb)}" alt="" loading="lazy" decoding="async" onerror="window.mlImgErr?mlImgErr(this):this.remove()">` : ''}</span><span class="row-t">${esc(g.title)}</span>${tag ? `<span class="lv">${tag}</span>` : ''}</a></li>`;
   if (now.length || soon.length) out.push(`<section class="card ch-card"><div class="card-head"><h2>מדריכים לרמה שלכם</h2></div><ul class="rows">${now.map(g => li(g, '')).join('')}${soon.map(g => li(g, `בקרוב: Lv ${g.range[0]}`)).join('')}</ul></section>`);
 
+  if (!P && window.playerApi) {
+    out.unshift(`<section class="card ch-card ch-connect"><div class="card-head"><h2>חברו את הדמות שלכם</h2></div><p class="card-sub">מקלידים את שם הדמות במשחק, והרמה והמקצוע יתעדכנו כאן לבד. בלי סיסמה.</p><button type="button" class="btn" data-login-open>התחברות עם שם הדמות</button></section>`);
+  }
   body.innerHTML = out.join('') || '<p class="empty">לא מצאנו המלצות לרמה הזו.</p>';
 }
 
@@ -140,7 +166,10 @@ function update(patch) {
   if (me.cls === 'beginner') me.branch = '';
   const C = D.classes[me.cls];
   if (me.branch && !(C && (C.branches || []).some(b => b.slug === me.branch))) me.branch = '';
-  saveMe(); render();
+  saveMe();
+  const P = linked();
+  if (P && !(P.seenLevel >= me.lv)) { P.seenLevel = me.lv; try { localStorage.setItem('player', JSON.stringify(P)); } catch (e) {} }
+  render();
 }
 
 form.addEventListener('submit', e => e.preventDefault());
@@ -148,6 +177,11 @@ fCls.addEventListener('change', () => update({ cls: fCls.value, branch: '' }));
 fLv.addEventListener('change', () => update({ lv: fLv.value }));
 fBranch.addEventListener('change', () => update({ branch: fBranch.value }));
 $('#cf-up').addEventListener('click', () => update({ lv: me.lv + 1 }));
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-login-open]') && window.playerApi) { window.playerApi.open(); return; }
+  if (e.target.closest('#charLink [data-logout]') && window.playerApi) window.playerApi.logout();
+});
+window.addEventListener('player:change', () => { me = readMe(); if (D) update({}); });
 body.addEventListener('click', e => {
   const b = e.target.closest('[data-branch]');
   if (b) update({ branch: b.dataset.branch });

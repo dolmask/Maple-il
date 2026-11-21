@@ -1005,6 +1005,39 @@ td { border-color: var(--line); }
   .tile-art img { max-width: 40px; max-height: 40px; }
 }
 
+/* ---------- התחברות עם שם הדמות ---------- */
+.login-layer { position: fixed; inset: 0; z-index: 70; background: rgba(15, 12, 8, .55); }
+.login-dialog { position: fixed; z-index: 71; top: max(10vh, calc(var(--top) + 12px)); left: 50%; translate: -50% 0; width: min(420px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto; background: var(--paper); color: var(--ink); border: 3px solid var(--edge); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+.login-body { padding: 16px; display: grid; gap: 12px; }
+.login-form label { display: block; font-weight: 600; margin-bottom: 6px; }
+.login-row { display: flex; gap: 8px; }
+.login-row input { flex: 1; min-width: 0; height: 44px; padding: 0 12px; border: 2px solid var(--line-2); border-radius: 8px; background: var(--paper); color: var(--ink); font: inherit; font-size: 1rem; }
+.login-row .btn { min-height: 44px; }
+.login-result:empty { display: none; }
+.login-result p { margin: 0 0 10px; }
+.login-card { display: flex; align-items: center; gap: 14px; padding: 10px; border-radius: var(--radius); background: var(--paper-2); }
+.login-who { display: grid; gap: 2px; }
+.login-who strong { font-family: var(--font-display); font-size: 1.25rem; }
+.login-q { font-weight: 600; margin: 10px 0 !important; }
+.login-wait, .login-note { color: var(--ink-2); font-size: .9rem; }
+.login-note { margin: 0; }
+.me-chip.is-login { border-color: var(--accent); font-weight: 600; }
+.player-toast { flex-direction: column; gap: 6px; max-height: calc(100vh - 80px); overflow: auto; }
+.player-toast .lu-msg { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+.lu-list { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 6px; width: 100%; text-align: start; }
+.lu-list li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; padding: 6px 10px; border-radius: 8px; background: var(--paper-2); }
+.lu-k { font-size: .8rem; font-weight: 600; color: var(--ink-2); }
+.lu-item { font-weight: 600; direction: ltr; }
+.lu-list .lv { margin-inline-start: auto; }
+.player-toast .lu-me { font-weight: 700; }
+.char-link { margin: 8px 0 0; font-size: .9rem; color: var(--ink-2); }
+.ch-connect .btn { margin-top: 8px; }
+@media (max-width: 640px) {
+  .login-dialog { top: 12px; }
+  .player-toast { bottom: 12px; }
+}
+@media print { .login-dialog, .login-layer, .player-toast { display: none !important; } }
+
 /* ---------- ניגודיות גבוהה (WCAG AAA: 7:1 ומעלה) ----------
    שחור ולבן מלאים, קישורים בצהוב, מסגרות לבנות עבות, בלי תמונות רקע, צללים או שקיפויות.
    הכללים כאן חזקים בכוונה, כדי שלא יישאר רכיב שמתעלם מהמצב. */
@@ -1064,3 +1097,5 @@ h1, h2, h3, h4, .stat-row, .stat-row *, .item, .hero-txt, .sec-head { overflow-w
 .hero-txt, .sec-head > * { min-width: 0; }
 .cols > *, .row, .row * { min-width: 0; } .row-t, .g-body { overflow-wrap: anywhere; }
 html.a11y-contrast .prose h2::after { background: #ffff00 !important; }
+html.a11y-contrast :where(.login-dialog, .login-card, .lu-list li) { border: 2px solid #fff !important; }
+html.a11y-contrast .login-layer { background: rgba(0,0,0,.85) !important; }
