@@ -79,7 +79,7 @@ function render() {
   try { localStorage.setItem('meView', JSON.stringify({ name, lv, img: pic || '' })); } catch (e) {}
   if (window.updateMeChip) window.updateMeChip();
   const town = C.town ? (typeof C.town === 'object' ? C.town : { id: C.town }) : null;
-  $('#charTown').innerHTML = town ? `<img src="${MAP}${town.id}/render?resize=0.25" alt="" loading="lazy" decoding="async"${town.pos ? ` style="object-position:${esc(town.pos)}"` : ''} onerror="this.remove()">` : '';
+  $('#charTown').innerHTML = town ? `<img src="${MAP}${town.id}/render?resize=0.25" alt="" loading="lazy" decoding="async"${town.pos ? ` style="object-position:${esc(town.pos)}"` : ''} onerror="window.mlImgErr?mlImgErr(this):this.remove()">` : '';
 
   // הצעד הבא
   let from, to, label, link;
@@ -112,7 +112,7 @@ ${link && guide(link) ? `<a class="next-link" href="${gUrl(link)}">${esc(guide(l
   // בחירת ענף
   if (me.cls !== 'beginner' && branches.length && (lv >= 25 && !br)) {
     out.unshift(`<section class="card ch-card"><div class="card-head"><h2>${lv >= 30 ? 'באיזה ענף בחרתם?' : `הג'וב השני, בעוד ${30 - lv} רמות`}</h2>${guide('second-job-advancement') ? `<a href="${gUrl('second-job-advancement')}">איך עוברים את המבחן</a>` : ''}</div>
-<ul class="branches">${branches.map(b => `<li><button type="button" class="branch" data-branch="${b.slug}"${lv < 30 ? ' disabled' : ''}>${b.img ? `<img src="${esc(b.img)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ''}<span>${esc(b.name)}</span></button><a href="${gUrl(b.slug)}">המדריך</a></li>`).join('')}</ul>
+<ul class="branches">${branches.map(b => `<li><button type="button" class="branch" data-branch="${b.slug}"${lv < 30 ? ' disabled' : ''}>${b.img ? `<img src="${esc(b.img)}" alt="" loading="lazy" decoding="async" onerror="window.mlImgErr?mlImgErr(this):this.remove()">` : ''}<span>${esc(b.name)}</span></button><a href="${gUrl(b.slug)}">המדריך</a></li>`).join('')}</ul>
 ${lv >= 30 ? '<p class="card-sub">בחרו ענף כדי לראות ציוד, AP וסקילים שמתאימים לו.</p>' : ''}</section>`);
   }
   if (me.cls === 'beginner') {
@@ -128,7 +128,7 @@ ${lv >= 30 ? '<p class="card-sub">בחרו ענף כדי לראות ציוד, AP
   };
   const now = D.guides.filter(g => fits(g) && g.range[0] <= lv && lv <= g.range[1] && g.slug !== 'training-spots');
   const soon = D.guides.filter(g => fits(g) && g.range[0] > lv && g.range[0] <= lv + 5);
-  const li = (g, tag) => `<li><a class="row" href="${gUrl(g.slug)}"><span class="row-ic" aria-hidden="true">${g.thumb ? `<img src="${esc(g.thumb)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ''}</span><span class="row-t">${esc(g.title)}</span>${tag ? `<span class="lv">${tag}</span>` : ''}</a></li>`;
+  const li = (g, tag) => `<li><a class="row" href="${gUrl(g.slug)}"><span class="row-ic" aria-hidden="true">${g.thumb ? `<img src="${esc(g.thumb)}" alt="" loading="lazy" decoding="async" onerror="window.mlImgErr?mlImgErr(this):this.remove()">` : ''}</span><span class="row-t">${esc(g.title)}</span>${tag ? `<span class="lv">${tag}</span>` : ''}</a></li>`;
   if (now.length || soon.length) out.push(`<section class="card ch-card"><div class="card-head"><h2>מדריכים לרמה שלכם</h2></div><ul class="rows">${now.map(g => li(g, '')).join('')}${soon.map(g => li(g, `בקרוב: Lv ${g.range[0]}`)).join('')}</ul></section>`);
 
   body.innerHTML = out.join('') || '<p class="empty">לא מצאנו המלצות לרמה הזו.</p>';

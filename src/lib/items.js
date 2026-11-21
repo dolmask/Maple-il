@@ -296,13 +296,13 @@ const RE = new RegExp(`(\\()?(?<![A-Za-z'’])(${names.join('|')})(?![A-Za-z'’
 const SKIP = /^(a|h[1-6]|code|pre|button|script|style|summary|kbd)$/i;
 
 export function itemIcon(id) {
-  return `<img class="item-ic" src="${API}item/${id}/icon" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
+  return `<img class="item-ic" src="${API}item/${id}/icon" alt="" loading="lazy" decoding="async" onerror="window.mlImgErr?mlImgErr(this):this.remove()">`;
 }
 export function npcIcon(id) {
-  return `<img class="item-ic npc-ic" src="${API}npc/${id}/icon" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
+  return `<img class="item-ic npc-ic" src="${API}npc/${id}/icon" alt="" loading="lazy" decoding="async" onerror="window.mlImgErr?mlImgErr(this):this.remove()">`;
 }
 export function mobIcon(id) {
-  return `<img class="item-ic mob-ic" src="${API}mob/${String(id).split(':')[0]}/render/${String(id).split(':')[1] || 'stand'}" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
+  return `<img class="item-ic mob-ic" src="${API}mob/${String(id).split(':')[0]}/render/${String(id).split(':')[1] || 'stand'}" alt="" loading="lazy" decoding="async" onerror="window.mlImgErr?mlImgErr(this):this.remove()">`;
 }
 
 // מוסיף איור לפני כל שם חפץ או מפלצת בטקסט (לא בתוך קישורים, כותרות וקוד)
