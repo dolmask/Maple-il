@@ -66,6 +66,18 @@
     var chip = $('#meChip'); if (!chip) return;
     var v = null;
     try { v = JSON.parse(localStorage.getItem('meView') || 'null'); } catch (e) {}
+    // אין דמות בכלל: הצ'יפ פותח את חלון ההתחברות (אם הוא קיים באתר)
+    var login = !(v && v.name) && !!$('#loginDialog');
+    chip.classList.toggle('is-login', login);
+    if (login) { chip.querySelector('.me-txt').textContent = 'התחברות'; chip.setAttribute('aria-haspopup', 'dialog'); }
+    else chip.removeAttribute('aria-haspopup');
+    if (!chip.__login) {
+      chip.__login = true;
+      chip.addEventListener('click', function (e) {
+        if (!chip.classList.contains('is-login') || !window.playerApi || e.ctrlKey || e.metaKey || e.shiftKey) return;
+        e.preventDefault(); window.playerApi.open();
+      });
+    }
     if (!v || !v.name) return;
     var txt = chip.querySelector('.me-txt'), av = chip.querySelector('.me-av');
     txt.textContent = v.name + ' · ' + v.lv;
