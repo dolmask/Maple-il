@@ -70,7 +70,7 @@
     var txt = chip.querySelector('.me-txt'), av = chip.querySelector('.me-av');
     txt.textContent = v.name + ' · ' + v.lv;
     chip.setAttribute('aria-label', 'הדמות שלי: ' + v.name + ', רמה ' + v.lv);
-    if (v.img && av) { av.innerHTML = ''; var im = new Image(); im.alt = ''; im.src = v.img; im.onerror = function () { im.remove(); }; av.appendChild(im); chip.classList.add('has-img'); }
+    if (v.img && av) { av.innerHTML = ''; var im = new Image(); im.alt = ''; im.src = v.img; im.onerror = function () { if (window.mlImgErr) window.mlImgErr(im); else im.remove(); }; av.appendChild(im); chip.classList.add('has-img'); }
   };
   window.updateMeChip();
 
