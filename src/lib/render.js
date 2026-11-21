@@ -28,16 +28,16 @@ function fillTokens(ctx, body) {
 const MOB_BASE = 'https://maplestory.io/api/gms/208.2.0/mob/';
 export function mobImg(id, cls = 'mob') {
   if (!id) return '';
-  return `<img class="${cls}" src="${MOB_BASE}${encodeURIComponent(id)}/render/stand" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
+  return `<img class="${cls}" src="${MOB_BASE}${encodeURIComponent(id)}/render/stand" alt="" loading="lazy" decoding="async" onerror="window.mlImgErr?mlImgErr(this):this.remove()">`;
 }
-function charBanner(g) { return /\/character\//.test(g.thumb || '') ? `<img class="banner-char" src="${e(g.thumb)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ''; }
+function charBanner(g) { return /\/character\//.test(g.thumb || '') ? `<img class="banner-char" src="${e(g.thumb)}" alt="" loading="lazy" decoding="async" onerror="window.mlImgErr?mlImgErr(this):this.remove()">` : ''; }
 function thumbMob(g) { return ((g.thumb || '').match(/\/mob\/(\d+)\//) || [])[1] || ''; }
 
 const MAP_BASE = 'https://maplestory.io/api/gms/208.2.0/map/';
 export function townImg(town, cls = 'town') {
   if (!town) return '';
   const t = typeof town === 'object' ? town : { id: town };
-  return `<img class="${cls}" src="${MAP_BASE}${encodeURIComponent(t.id)}/render?resize=0.25" alt="" loading="lazy" decoding="async"${t.pos ? ` style="object-position:${e(t.pos)}"` : ''} onerror="this.remove()">`;
+  return `<img class="${cls}" src="${MAP_BASE}${encodeURIComponent(t.id)}/render?resize=0.25" alt="" loading="lazy" decoding="async"${t.pos ? ` style="object-position:${e(t.pos)}"` : ''} onerror="window.mlImgErr?mlImgErr(this):this.remove()">`;
 }
 function townOf(ctx, g) {
   const tw = (ctx.config.towns || {})[g.cls];
@@ -106,6 +106,8 @@ ${canonical ? `<meta property="og:url" content="${e(canonical)}">` : ''}
 <link rel="icon" href="${url(ctx, 'assets/favicon.svg')}" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://maplestory.io">
+<script>window.mlImgErr=function(i){var n=+(i.getAttribute('data-try')||0),s=i.getAttribute('src')||'';if(n<2&&s.indexOf('https://maplestory.io/')===0){i.setAttribute('data-try',n+1);setTimeout(function(){i.src=n?s+(s.indexOf('?')<0?'?':'&')+'retry='+n:s},1200*(n+1));return}var p=i.parentNode;if(p&&p.classList){p.classList.remove('has-img');p.classList.add('img-off')}i.remove()};</script>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Heebo:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${url(ctx, 'assets/style.css')}${ctx.version ? '?v=' + ctx.version : ''}">
 <script>try{var t=localStorage.getItem('theme')||'light';document.documentElement.dataset.theme=t;var a=JSON.parse(localStorage.getItem('a11y')||'null');if(a===null){a={};if(matchMedia('(prefers-contrast: more)').matches)a.contrast=true}for(var k in a){if(k==='size')document.documentElement.dataset.size=a[k];else if(a[k])document.documentElement.classList.add('a11y-'+k)}}catch(e){}</script>
@@ -209,7 +211,7 @@ export function guideCard(ctx, g, { showCat = false } = {}) {
   const cat = catOf(ctx, g.category);
   const cls = g.cls && CLASS_INFO[g.cls];
   const fallback = ICONS[g.icon] || ICONS[cls?.icon] || ICONS[cat.icon] || ICONS.book;
-  const icon = g.thumb ? `<img src="${e(img(ctx, g.thumb))}" alt="" loading="lazy" decoding="async" onerror="this.parentNode.classList.remove('has-img');this.remove()">${fallback}` : fallback;
+  const icon = g.thumb ? `<img src="${e(img(ctx, g.thumb))}" alt="" loading="lazy" decoding="async" onerror="window.mlImgErr?mlImgErr(this):this.remove()">${fallback}` : fallback;
   return `<li><a class="g-row${g.cls ? ' cls-' + e(g.cls) : ''}" href="${guideUrl(ctx, g.slug)}">
   <span class="g-icon${g.thumb ? ' has-img' : ''}" aria-hidden="true" data-thumb="${e(g.slug)}">${icon}</span>
   <span class="g-body">
@@ -295,12 +297,12 @@ function tile(href, art, title, sub) {
 export function homePage(ctx) {
   const c = ctx.config;
   const byCat = id => ctx.guides.filter(g => g.category === id);
-  const chars = Object.keys(CLASS_INFO).map(k => (c.classImages || {})[k] ? `<img class="hero-char" src="${e(img(ctx, c.classImages[k]))}" alt="" loading="eager" decoding="async" onerror="this.remove()">` : '').join('');
+  const chars = Object.keys(CLASS_INFO).map(k => (c.classImages || {})[k] ? `<img class="hero-char" src="${e(img(ctx, c.classImages[k]))}" alt="" loading="eager" decoding="async" onerror="window.mlImgErr?mlImgErr(this):this.remove()">` : '').join('');
 
   const topics = c.categories.map(cat => {
     const n = byCat(cat.id).length;
     if (!n) return '';
-    return tile(categoryUrl(ctx, cat.id), mobImg(cat.mob, 'mob'), e(cat.short || cat.name), `${n} מדריכים`);
+    return tile(categoryUrl(ctx, cat.id), (cat.mob ? mobImg(cat.mob, 'mob') : '') + (ICONS[cat.icon] || ICONS.book), e(cat.short || cat.name), `${n} מדריכים`);
   }).join('');
 
   const towns = Object.entries(CLASS_INFO).map(([key, info]) => {
@@ -309,7 +311,7 @@ export function homePage(ctx) {
     const pic = (c.classImages || {})[key];
     const town = info.town.replace(/\s*\(.*\)/, '');
     return `<li class="town cls-${key}">
-  <a class="town-ph" href="${g ? guideUrl(ctx, g.slug) : '#'}" tabindex="-1" aria-hidden="true">${townImg((c.towns || {})[key], 'town-map')}${pic ? `<img class="town-char" src="${e(img(ctx, pic))}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ''}</a>
+  <a class="town-ph" href="${g ? guideUrl(ctx, g.slug) : '#'}" tabindex="-1" aria-hidden="true">${townImg((c.towns || {})[key], 'town-map')}${pic ? `<img class="town-char" src="${e(img(ctx, pic))}" alt="" loading="lazy" decoding="async" onerror="window.mlImgErr?mlImgErr(this):this.remove()">` : ''}</a>
   <div class="town-txt">
     <h3>${e(town)}</h3>
     <ul>${g ? `<li><a href="${guideUrl(ctx, g.slug)}">מדריך ${e(info.name)}</a></li>` : ''}${branches.map(b => `<li><a href="${guideUrl(ctx, b.slug)}">${e(b.short || b.title)}</a></li>`).join('')}</ul>
@@ -359,7 +361,7 @@ ${adSlot(ctx, 'inArticle')}`;
 
 function thumbImg(ctx, g) {
   const cat = catOf(ctx, g.category);
-  if (g.thumb) return `<img src="${e(img(ctx, g.thumb))}" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
+  if (g.thumb) return `<img src="${e(img(ctx, g.thumb))}" alt="" loading="lazy" decoding="async" onerror="window.mlImgErr?mlImgErr(this):this.remove()">`;
   return mobImg(cat.mob, 'mob') || ICONS[cat.icon] || ICONS.book;
 }
 function shortDate(iso) {
