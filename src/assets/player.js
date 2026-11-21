@@ -1,7 +1,6 @@
 // התחברות עם שם הדמות: חלון התחברות, רענון ברקע מול ClassicRank, וברכה כשעולים רמה.
 // בלי שרת ובלי סיסמה: הכול נשמר ב-localStorage של הגולש ולא נשלח אלינו.
 import { normalizePlayer, toMe, needsRefresh, effectiveLevel, levelGain, unlocks } from './lib/player.js';
-import { renderMarkdown } from './lib/markdown.js';
 import { addItemIcons } from './lib/items.js';
 import { jobInfo, unpackRows, findPlayer } from './lib/ranking-data.js';
 import { escapeHtml as esc } from './lib/markdown.js';
@@ -75,7 +74,7 @@ function close() {
   (lastFocus && document.contains(lastFocus) ? lastFocus : $('#meChip'))?.focus();
 }
 
-const avatar = p => `<span class="av fam-${jobInfo(p.job).family} av-lg" aria-hidden="true">${p.photo ? `<img src="${esc(p.photo)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}</span>`;
+const avatar = p => `<span class="av fam-${jobInfo(p.job).family} av-lg" aria-hidden="true">${esc((p.display || '?')[0].toUpperCase())}${p.photo ? `<img src="${esc(p.photo)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}</span>`;
 
 function confirmCard(p) {
   const j = jobInfo(p.job);
@@ -131,8 +130,9 @@ const gUrl = slug => `${BASE}guides/${slug}/`;
 
 function unlockHtml(u) {
   if (u.type === 'item') {
-    const html = addItemIcons(renderMarkdown([u.head, u.sep, u.line].join('\n'), { base: BASE }).html);
-    return `<li class="lu-item"><span class="lu-k">${esc(u.label)}</span>${html}</li>`;
+    // שורה אחת: הרמה והפריט (העמודה השנייה בטבלה), עם האיור
+    const cells = u.line.trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim().replace(/\*\*|`/g, ''));
+    return `<li><span class="lu-k">${esc(u.label)}</span><span class="lu-item">${addItemIcons(esc(cells[1] || ''))}</span><span class="lv">Lv ${esc(cells[0])}</span></li>`;
   }
   const k = u.type === 'milestone' ? 'נפתח' : 'מדריך חדש';
   return `<li><span class="lu-k">${k}</span><a href="${gUrl(u.slug)}">${esc(u.label)}</a></li>`;

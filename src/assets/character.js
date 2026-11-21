@@ -86,7 +86,7 @@ function render() {
   // ראש העמוד
   const name = br && lv >= 30 ? br.name : C.name;
   const P = linked();
-  $('#charTitle').textContent = `${P ? P.display : name}, רמה ${lv}`;
+  $('#charTitle').innerHTML = `<bdi>${esc(P ? P.display : name)}</bdi>, רמה ${lv}`;
   const av = $('#charAv');
   const clsPic = (br && lv >= 30 && br.img) || C.img;
   const pic = (P && P.photo) || clsPic;
