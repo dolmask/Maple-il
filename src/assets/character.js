@@ -1,6 +1,7 @@
 // "הדמות שלי": בוחרים מקצוע ורמה, ומקבלים רק את מה שמתאים מתוך המדריכים.
 // הנתונים (character/data.json) נאספים בזמן הבנייה מהטבלאות שבמדריכים עצמם.
 import { renderMarkdown, escapeHtml as esc } from './lib/markdown.js';
+import { pickMe } from './lib/player.js';
 
 const base = window.SITE_BASE || '/';
 const $ = s => document.querySelector(s);
@@ -12,11 +13,12 @@ const fCls = $('#cf-cls'), fLv = $('#cf-lv'), fBranch = $('#cf-branch'), wBranch
 let D = null;
 let me = readMe();
 
-function readMe(ignoreUrl) {
-  let m = {};
-  try { m = JSON.parse(localStorage.getItem('me') || '{}') || {}; } catch (e) {}
+function readMe() {
+  let stored = {};
+  try { stored = JSON.parse(localStorage.getItem('me') || '{}') || {}; } catch (e) {}
   const q = new URLSearchParams(location.search);
-  if (!ignoreUrl && q.get('cls')) m = { cls: q.get('cls'), lv: +q.get('lv') || m.lv || 10, branch: q.get('branch') || '' };
+  const fromUrl = q.get('cls') ? { cls: q.get('cls'), lv: +q.get('lv') || stored.lv || 10, branch: q.get('branch') || '' } : null;
+  const m = pickMe(stored, fromUrl, linked());
   return { cls: m.cls || 'warrior', lv: Math.max(1, Math.min(200, Math.round(+m.lv || 10))), branch: m.branch || '' };
 }
 function saveMe() {
@@ -179,7 +181,7 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-login-open]') && window.playerApi) { window.playerApi.open(); return; }
   if (e.target.closest('#charLink [data-logout]') && window.playerApi) window.playerApi.logout();
 });
-window.addEventListener('player:change', () => { if (!D) return; me = readMe(true); update({}); });
+window.addEventListener('player:change', () => { me = readMe(); if (D) update({}); });
 body.addEventListener('click', e => {
   const b = e.target.closest('[data-branch]');
   if (b) update({ branch: b.dataset.branch });

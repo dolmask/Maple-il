@@ -1,6 +1,6 @@
 // התחברות עם שם הדמות: חלון התחברות, רענון ברקע מול ClassicRank, וברכה כשעולים רמה.
 // בלי שרת ובלי סיסמה: הכול נשמר ב-localStorage של הגולש ולא נשלח אלינו.
-import { normalizePlayer, toMe, needsRefresh, effectiveLevel, levelGain, unlocks } from './lib/player.js';
+import { normalizePlayer, needsRefresh, linkMe, levelGain, unlocks } from './lib/player.js';
 import { addItemIcons } from './lib/items.js';
 import { jobInfo, unpackRows, findPlayer } from './lib/ranking-data.js';
 import { escapeHtml as esc } from './lib/markdown.js';
@@ -21,17 +21,11 @@ function loadCharData() {
 }
 
 // שומר את הדמות ומעדכן גם את "הדמות שלי" (me) ואת הצ'יפ (meView)
-async function store(p, seenLevel) {
+// isNew: התחברות חדשה (מהחלון), לא רענון של אותה דמות
+async function store(p, seenLevel, isNew) {
   write('player', { ...p, seenLevel });
   const D = await loadCharData();
-  const old = read('me') || {};
-  const m = D ? toMe(p, D.classes) : { cls: null, branch: '' };
-  const sameCls = !m.cls || m.cls === old.cls;
-  write('me', {
-    cls: m.cls || old.cls || 'beginner',
-    lv: effectiveLevel(sameCls ? old.lv : 0, p),
-    branch: m.cls ? (m.branch || (sameCls ? old.branch || '' : '')) : old.branch || '',
-  });
+  write('me', linkMe(read('me'), p, D ? D.classes : {}, isNew));
   const view = read('meView') || {};
   write('meView', { name: p.display, lv: Math.max(p.level, (read('me') || {}).lv || 0), img: p.photo || view.img || '' });
   if (window.updateMeChip) window.updateMeChip();
@@ -98,7 +92,7 @@ if (dlg) {
     if (e.target.closest('[data-login-close]')) return close();
     if (e.target.closest('[data-login-again]')) { out.innerHTML = ''; found = null; form.name.select(); form.name.focus(); return; }
     if (e.target.closest('[data-login-yes]') && found) {
-      await store(found, found.level);
+      await store(found, found.level, true);
       close();
       changed();
     }
@@ -161,11 +155,12 @@ if (toast) toast.addEventListener('click', e => { if (e.target.closest('[data-cl
 async function refresh() {
   const cur = read('player');
   if (!cur || !needsRefresh(cur)) return;
+  write('player', { ...cur, lastTry: new Date().toISOString() });
   const fresh = await lookup(cur.name);
   if (!fresh) return; // כישלון: לא משנים כלום, מנסים שוב בטעינה הבאה
   const gain = levelGain(cur.seenLevel, fresh.level);
   const moved = fresh.level !== cur.level || fresh.job !== cur.job;
-  await store(fresh, gain ? gain.to : cur.seenLevel);
+  await store(fresh, gain ? gain.to : cur.seenLevel, false);
   if (moved) changed();
   if (gain && window.showLevelUp) window.showLevelUp(gain);
 }

@@ -33,9 +33,29 @@ export function toMe(player, classes) {
   return { cls, lv: player.level, branch };
 }
 
+// גם ניסיון שנכשל (lastTry) מחכה 30 דקות, כדי לא להעמיס על ClassicRank כשהוא לא זמין
 export function needsRefresh(player, now = Date.now()) {
-  const t = Date.parse(player && player.checked);
-  return !isFinite(t) || now - t > REFRESH_MS;
+  const t = Math.max(Date.parse(player && player.checked) || 0, Date.parse(player && player.lastTry) || 0);
+  return !t || now - t > REFRESH_MS;
+}
+
+// "הדמות שלי" אחרי התחברות (isNew) או רענון של אותה דמות.
+// בהתחברות חדשה הרמה היא של הדמות; ברענון נשארת הרמה הידנית אם היא גבוהה יותר.
+export function linkMe(old, player, classes, isNew) {
+  old = old || {};
+  const m = toMe(player, classes);
+  const sameCls = !m.cls || m.cls === old.cls;
+  return {
+    cls: m.cls || old.cls || 'beginner',
+    lv: isNew ? player.level : effectiveLevel(sameCls ? old.lv : 0, player),
+    branch: m.cls ? (m.branch || (sameCls && !isNew ? old.branch || '' : '')) : old.branch || '',
+  };
+}
+
+// הבחירה בטעינת "הדמות שלי": כשמחוברים, ה-URL (עותק ישן שהעמוד כתב) לא קובע, והרמה לא יורדת מתחת לדמות
+export function pickMe(stored, fromUrl, player) {
+  if (player) return { ...(stored || {}), lv: effectiveLevel((stored || {}).lv, player) };
+  return fromUrl || stored || {};
 }
 
 export function effectiveLevel(manualLv, player) {

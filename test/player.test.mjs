@@ -101,3 +101,35 @@ test('buildCharacterData passes the journey through', () => {
   const journey = [{ lv: 'Lv 1', label: 'x', slug: 'y' }];
   assert.deepEqual(buildCharacterData({ journey }, [], {}).journey, journey);
 });
+
+import { linkMe, pickMe } from '../src/lib/player.js';
+
+test('linkMe: a new link takes the character level, even if lower (I2)', () => {
+  const me = linkMe({ cls: 'thief', lv: 70, branch: 'assassin' }, { name: 'Mule', job: 'Bandit', level: 25 }, classes, true);
+  assert.deepEqual(me, { cls: 'thief', lv: 25, branch: 'bandit' });
+});
+
+test('linkMe: a refresh of the same character keeps a higher manual level', () => {
+  assert.equal(linkMe({ cls: 'thief', lv: 52, branch: 'assassin' }, { name: 'S', job: 'Assassin', level: 50 }, classes, false).lv, 52);
+  assert.equal(linkMe({ cls: 'thief', lv: 45, branch: 'assassin' }, { name: 'S', job: 'Assassin', level: 50 }, classes, false).lv, 50);
+});
+
+test('linkMe: unknown job keeps the stored class', () => {
+  assert.deepEqual(linkMe({ cls: 'magician', lv: 20, branch: '' }, { name: 'X', job: 'Dark Knight', level: 80 }, classes, true), { cls: 'magician', lv: 80, branch: '' });
+  assert.equal(linkMe({}, { name: 'X', job: 'Dark Knight', level: 3 }, classes, true).cls, 'beginner');
+});
+
+test('pickMe: when linked, a stale URL never lowers the level (I1)', () => {
+  const stored = { cls: 'thief', lv: 50, branch: 'assassin' };
+  const url = { cls: 'thief', lv: 47, branch: 'assassin' };
+  assert.equal(pickMe(stored, url, { level: 50 }).lv, 50);
+  assert.equal(pickMe({ cls: 'thief', lv: 47 }, url, { level: 50 }).lv, 50);
+  assert.deepEqual(pickMe(stored, url, null), url); // לא מחוברים: קישור משותף עדיין עובד
+  assert.deepEqual(pickMe(stored, null, null), stored);
+});
+
+test('needsRefresh: a failed try also waits 30 minutes (I3)', () => {
+  const p = { checked: new Date(NOW - 2 * 3600e3).toISOString(), lastTry: new Date(NOW - 5 * 60e3).toISOString() };
+  assert.equal(needsRefresh(p, NOW), false);
+  assert.equal(needsRefresh({ ...p, lastTry: new Date(NOW - 31 * 60e3).toISOString() }, NOW), true);
+});
