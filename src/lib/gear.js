@@ -12,6 +12,8 @@ const WEAPONS = {
   bowman: [145, 146], hunter: [145], crossbowman: [146],
   thief: [147, 133], assassin: [147], bandit: [133],
 };
+// נשק בסיסי לכל סוג, כשבטבלאות אין נשק מהסוג של הענף
+const DEFAULT_WEAPON = { 130: 1302000, 131: 1312000, 132: 1322005, 133: 1332000, 137: 1372005, 138: 1382000, 140: 1402001, 141: 1412001, 142: 1422000, 143: 1432000, 144: 1442000, 145: 1452002, 146: 1462001, 147: 1472000 };
 const ONE_HANDED = [130, 131, 132, 133, 137];
 const TWO_HANDED = [140, 141, 142, 143, 144];
 const ARMOR = [100, 104, 105, 106, 107, 108, 109];
@@ -71,6 +73,8 @@ export function gearIds(D, me, ITEMS) {
       if (t === 104 || t === 106) slots.delete('105');
     }
   }
+  // לא מציגים נשק שלא מתאים לענף: במקומו נשק בסיסי מהסוג הנכון
+  if (wTypes.length && !(slots.has('w') && wTypes.includes(type(slots.get('w'))))) slots.set('w', DEFAULT_WEAPON[wTypes[0]]);
   const w = slots.get('w');
   if (slots.has('109') && !(w && ONE_HANDED.includes(type(w)))) slots.delete('109');
   return [...slots.values()];

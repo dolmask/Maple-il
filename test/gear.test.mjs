@@ -91,3 +91,16 @@ test('a row with a men / women choice takes the first body item and skips women-
   assert.deepEqual(slot(ids2, 104), [1040002]);
   assert.deepEqual(slot(ids2, 106), [1060002]);
 });
+
+test('never a weapon of the wrong type: a default of the branch type instead', () => {
+  const sp = gearIds(D, { cls: 'warrior', lv: 40, branch: 'spearman' }, ITEMS).filter(i => i >= 1300000 && i < 1500000);
+  assert.deepEqual(sp, [1432000]); // חנית בסיסית, לא חרב
+  const as = gearIds(D, { cls: 'thief', lv: 12, branch: 'assassin' }, ITEMS).filter(i => i >= 1300000 && i < 1500000);
+  assert.deepEqual(as, [1472000]); // טופר בסיסי, לא הפגיון של התלבושת
+  const ba = gearIds(D, { cls: 'thief', lv: 12, branch: 'bandit' }, ITEMS).filter(i => i >= 1300000 && i < 1500000);
+  assert.deepEqual(ba, [1332000]); // הפגיון של התלבושת מתאים לשודד
+});
+
+test('spear pose is two-handed', () => {
+  assert.match(gearUrl(gearIds(D, { cls: 'warrior', lv: 40, branch: 'spearman' }, ITEMS)), /stand2/);
+});
