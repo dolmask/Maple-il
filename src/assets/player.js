@@ -1,6 +1,8 @@
 // התחברות עם שם הדמות: חלון התחברות, רענון ברקע מול ClassicRank, וברכה כשעולים רמה.
 // בלי שרת ובלי סיסמה: הכול נשמר ב-localStorage של הגולש ולא נשלח אלינו.
-import { normalizePlayer, toMe, needsRefresh, effectiveLevel, levelGain } from './lib/player.js';
+import { normalizePlayer, toMe, needsRefresh, effectiveLevel, levelGain, unlocks } from './lib/player.js';
+import { renderMarkdown } from './lib/markdown.js';
+import { addItemIcons } from './lib/items.js';
 import { jobInfo, unpackRows, findPlayer } from './lib/ranking-data.js';
 import { escapeHtml as esc } from './lib/markdown.js';
 
@@ -122,6 +124,38 @@ function logout() {
 
 window.playerApi = { get: () => read('player'), open, logout, lookup };
 if (window.updateMeChip) window.updateMeChip();
+
+// ---------- ברכת עליית רמה ----------
+const toast = $('#playerToast');
+const gUrl = slug => `${BASE}guides/${slug}/`;
+
+function unlockHtml(u) {
+  if (u.type === 'item') {
+    const html = addItemIcons(renderMarkdown([u.head, u.sep, u.line].join('\n'), { base: BASE }).html);
+    return `<li class="lu-item"><span class="lu-k">${esc(u.label)}</span>${html}</li>`;
+  }
+  const k = u.type === 'milestone' ? 'נפתח' : 'מדריך חדש';
+  return `<li><span class="lu-k">${k}</span><a href="${gUrl(u.slug)}">${esc(u.label)}</a></li>`;
+}
+
+window.showLevelUp = async function ({ from, to }) {
+  if (!toast) return;
+  const D = await loadCharData();
+  const me = read('me') || {};
+  const list = D ? unlocks(D, { cls: me.cls, branch: me.branch || '' }, from, to) : [];
+  const n = to - from;
+  toast.innerHTML = `<strong>LEVEL UP!</strong><span class="lu-msg">${n > 1 ? `עלית ${n} רמות, לרמה ${to}!` : `עלית לרמה ${to}!`}</span>
+${list.length ? `<ul class="lu-list">${list.map(unlockHtml).join('')}</ul>` : ''}
+<a class="lu-me" href="${BASE}character/">לדמות שלי</a><button type="button" data-close-lu aria-label="סגירה">✕</button>`;
+  // בעמוד מדריך: אם ברכת סיום המדריך פתוחה, מחכים שתיסגר
+  const guideLu = $('#levelUp');
+  const show = () => { toast.hidden = false; };
+  if (guideLu && !guideLu.hidden) {
+    const mo = new MutationObserver(() => { if (guideLu.hidden) { mo.disconnect(); show(); } });
+    mo.observe(guideLu, { attributes: true, attributeFilter: ['hidden'] });
+  } else show();
+};
+if (toast) toast.addEventListener('click', e => { if (e.target.closest('[data-close-lu]')) toast.hidden = true; });
 
 // ---------- רענון ברקע ----------
 async function refresh() {
