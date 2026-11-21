@@ -1,6 +1,8 @@
 // נתוני "הדמות שלי": נאספים מתוך המדריכים עצמם בזמן הבנייה, כך שכל עדכון במדריך מתעדכן גם כאן.
 // כל טבלה במדריך שהעמודה הראשונה שלה היא רמה או טווח רמות הופכת לנתון שאפשר לסנן לפי הרמה של הדמות.
 
+import { outfitFromUrl } from './gear.js';
+
 // "11–14" → [11,14], "15" → [15,15], "12+" → [12,200], "Lv 21–30" → [21,30]
 export function parseRange(s) {
   const txt = String(s ?? '').replace(/\*|`/g, '');
@@ -59,7 +61,8 @@ export function extractTables(body) {
 
 const AVATAR = 'https://maplestory.io/api/character/';
 const part = id => encodeURIComponent(JSON.stringify({ itemId: id, version: '208.2.0', region: 'GMS' }));
-export const BEGINNER_IMG = AVATAR + [2000, 12000, 20000, 30000, 1040002, 1060002, 1072001].map(part).join('%2C') + '/stand1/0?showears=false&resize=2';
+const BEGINNER_OUTFIT = [2000, 12000, 20000, 30000, 1040002, 1060002, 1072001];
+export const BEGINNER_IMG = AVATAR + BEGINNER_OUTFIT.map(part).join('%2C') + '/stand1/0?showears=false&resize=2';
 
 // מה נשלח לדפדפן בעמוד "הדמות שלי"
 export function buildCharacterData(config, guides, CLASS_INFO) {
@@ -68,13 +71,14 @@ export function buildCharacterData(config, guides, CLASS_INFO) {
     range: parseRange(g.level || '') || null, thumb: g.thumb || '',
   });
   const classes = {
-    beginner: { name: 'מתחיל', img: BEGINNER_IMG, guide: 'beginners-guide', first: 10, town: { id: 104000000, pos: '50% 60%' } },
+    beginner: { name: 'מתחיל', img: BEGINNER_IMG, outfit: BEGINNER_OUTFIT, guide: 'beginners-guide', first: 10, town: { id: 104000000, pos: '50% 60%' } },
   };
   for (const [key, info] of Object.entries(CLASS_INFO)) {
     const g = guides.find(x => x.cls === key && x.category === 'jobs');
     classes[key] = {
       name: info.name, en: info.en, stat: info.stat,
       img: (config.classImages || {})[key] || '',
+      outfit: outfitFromUrl((config.classImages || {})[key]),
       guide: g ? g.slug : '',
       first: key === 'magician' ? 8 : 10,
       town: (config.towns || {})[key] || null,

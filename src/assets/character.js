@@ -2,6 +2,8 @@
 // הנתונים (character/data.json) נאספים בזמן הבנייה מהטבלאות שבמדריכים עצמם.
 import { renderMarkdown, escapeHtml as esc } from './lib/markdown.js';
 import { pickMe } from './lib/player.js';
+import { gearIds, gearUrl } from './lib/gear.js';
+import { ITEMS } from './lib/items.js';
 
 const base = window.SITE_BASE || '/';
 const $ = s => document.querySelector(s);
@@ -90,9 +92,12 @@ function render() {
   const P = linked();
   $('#charTitle').innerHTML = `<bdi>${esc(P ? P.display : name)}</bdi>, רמה ${lv}`;
   const av = $('#charAv');
+  // התמונה: הדמות המחוברת, אחרת דמות שלובשת את הציוד שמתאים לרמה (ואם היא לא נטענת, איור המקצוע)
   const clsPic = (br && lv >= 30 && br.img) || C.img;
-  const pic = (P && P.photo) || clsPic;
-  av.onerror = clsPic && pic !== clsPic ? () => { av.onerror = null; av.src = clsPic; } : null;
+  const gearPic = C.outfit && C.outfit.length ? gearUrl(gearIds(D, me, ITEMS)) : '';
+  const pic = (P && P.photo) || gearPic || clsPic;
+  const fallbacks = [gearPic, clsPic].filter(u => u && u !== pic);
+  av.onerror = fallbacks.length ? () => { const next = fallbacks.shift(); if (next) av.src = next; else av.onerror = null; } : null;
   if (pic) { av.src = pic; av.hidden = false; } else av.hidden = true;
   try { localStorage.setItem('meView', JSON.stringify({ name: P ? P.display : name, lv, img: pic || '' })); } catch (e) {}
   const cl = $('#charLink');
