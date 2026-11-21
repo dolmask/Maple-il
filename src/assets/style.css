@@ -833,7 +833,7 @@ h1, h2, h3, h4 { font-weight: 700; }
 .crumbs { font-weight: 500; }
 
 /* חלונות: כרטיסים, אריחים, רשימות */
-.card, .tile, .town, .g-row, .pg, .window, .search-box, .a11y-panel, .picker, .table-wrap, .shot-frame, .banner, .home-hero, .me-cta, .toc-mobile { border: 3px solid var(--edge); box-shadow: var(--shadow); }
+.card, .window, .search-box, .a11y-panel, .picker, .table-wrap, .shot-frame, .banner, .home-hero, .toc-mobile { border: 3px solid var(--edge); box-shadow: var(--shadow); }
 .card, .window, .home-hero, .search-box, .a11y-panel { box-shadow: var(--shadow-lg); }
 .picker-sm { border: 0; box-shadow: none; }
 .card-head h2, .window-bar h2 { font-family: var(--font-display); }
@@ -841,10 +841,29 @@ h1, h2, h3, h4 { font-weight: 700; }
 .window-bar h2, .window-bar small, .panel-bar span { color: var(--bar-ink); }
 .a11y-x { color: var(--bar-ink); }
 .a11y-x:hover { background: rgba(0,0,0,.25); color: #fff; }
-.tile:hover, .town:hover, .g-row:hover, .pg:hover { border-color: var(--edge); background: var(--paper); }
+.tile, .town, .g-row, .pg, .me-cta { border: 0; box-shadow: none; }
+
+/* פריטי רשימה בלי מסגרת: רק המשבצת והטקסט, רקע עדין במעבר עכבר */
+.tiles { gap: 6px 18px; }
+.tile { padding: 8px; background: transparent; border-radius: 12px; }
+.tile:hover { background: var(--paper-2); }
+.towns { gap: 22px; }
+.town { overflow: visible; background: transparent; border-radius: 0; }
+.town-ph { border: 2px solid var(--edge); border-radius: 12px; box-shadow: none; }
+.town-txt { padding: 10px 2px 0; }
+.town-txt h3 { display: flex; align-items: center; gap: 8px; }
+.town-txt h3::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--c, var(--accent)); border: 2px solid var(--edge); }
+.g-list { gap: 0; }
+.g-list > li + li { border-top: 2px dashed var(--line); }
+.g-row { padding: 10px 8px; background: transparent; border-radius: 10px; }
+.g-row:hover { background: var(--paper-2); }
+.pg { background: var(--paper-2); border-radius: 12px; }
+.pg:hover { background: var(--tint); }
+.me-cta { border-radius: 12px; }
 @media (prefers-reduced-motion: no-preference) {
-  .tile:hover, .town:hover { transform: translateY(-3px); box-shadow: 0 7px 0 var(--edge); }
-  .g-row:hover, .pg:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--edge); }
+  .tile:hover, .town:hover, .g-row:hover, .pg:hover { transform: none; box-shadow: none; }
+  .tile-art, .g-icon, .town-ph { transition: transform .18s ease; }
+  .tile:hover .tile-art, .g-row:hover .g-icon, .town:hover .town-ph { transform: translateY(-3px); }
 }
 .tile-txt strong, .g-title, .row-t, .town-txt h3 { font-family: var(--font-display); font-weight: 600; }
 /* משבצות תיק */
@@ -967,6 +986,12 @@ td { border-color: var(--line); }
   .hero-txt { padding: 16px; }
   .banner { height: 160px; }
   .prose h2 { font-size: 1.18rem; }
+}
+@media (max-width: 640px) {
+  .tiles { gap: 2px 10px; }
+  .tile { flex-direction: row; align-items: center; gap: 10px; padding: 6px; }
+  .tile-art { width: 48px; height: 48px; }
+  .tile-art img { max-width: 40px; max-height: 40px; }
 }
 
 /* ---------- ניגודיות גבוהה (WCAG AAA: 7:1 ומעלה) ----------
