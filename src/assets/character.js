@@ -84,7 +84,12 @@ function render() {
 
   // טופס
   fCls.value = me.cls; fLv.value = lv;
-  wBranch.hidden = !(branches.length && lv >= 30);
+  // הענף אפשר לבחור כבר לפני Lv 30, כדי שהדמות תחזיק את הנשק הנכון (טופר או פגיון, חנית או חרב...)
+  const P0 = linked();
+  wBranch.hidden = !branches.length;
+  const bl = wBranch.querySelector('label');
+  if (bl) bl.textContent = lv >= 30 ? 'ענף' : 'ענף (מתוכנן)';
+  fCls.disabled = fBranch.disabled = !!P0;
   fBranch.innerHTML = `<option value="">עוד לא בחרתי</option>` + branches.map(b => `<option value="${b.slug}"${b.slug === me.branch ? ' selected' : ''}>${esc(b.name)}</option>`).join('');
 
   // ראש העמוד
@@ -103,7 +108,7 @@ function render() {
   const cl = $('#charLink');
   if (cl) {
     cl.hidden = !P;
-    cl.innerHTML = P ? `מחוברים כ-<bdi>${esc(P.display)}</bdi>${P.checked ? ` · נבדק ${esc(ago(P.checked))}` : ''} · <a href="${base}ranking/player/?name=${encodeURIComponent(P.name)}">לעמוד השחקן</a> · <button type="button" class="linkish" data-logout>התנתקות</button>` : '';
+    cl.innerHTML = P ? `מחוברים כ-<bdi>${esc(P.display)}</bdi>${P.checked ? ` · נבדק ${esc(ago(P.checked))}` : ''} · המקצוע והענף לפי הדמות · <a href="${base}ranking/player/?name=${encodeURIComponent(P.name)}">לעמוד השחקן</a> · <button type="button" class="linkish" data-logout>התנתקות</button>` : '';
   }
   if (window.updateMeChip) window.updateMeChip();
   const town = C.town ? (typeof C.town === 'object' ? C.town : { id: C.town }) : null;
@@ -138,10 +143,10 @@ ${link && guide(link) ? `<a class="next-link" href="${gUrl(link)}">${esc(guide(l
   }
 
   // בחירת ענף
-  if (me.cls !== 'beginner' && branches.length && (lv >= 25 && !br)) {
+  if (me.cls !== 'beginner' && branches.length && (lv >= 25 && !br) && !P) {
     out.unshift(`<section class="card ch-card"><div class="card-head"><h2>${lv >= 30 ? 'באיזה ענף בחרתם?' : `הג'וב השני, בעוד ${30 - lv} רמות`}</h2>${guide('second-job-advancement') ? `<a href="${gUrl('second-job-advancement')}">איך עוברים את המבחן</a>` : ''}</div>
-<ul class="branches">${branches.map(b => `<li><button type="button" class="branch" data-branch="${b.slug}"${lv < 30 ? ' disabled' : ''}>${b.img ? `<img src="${esc(b.img)}" alt="" loading="lazy" decoding="async" onerror="window.mlImgErr?mlImgErr(this):this.remove()">` : ''}<span>${esc(b.name)}</span></button><a href="${gUrl(b.slug)}">המדריך</a></li>`).join('')}</ul>
-${lv >= 30 ? '<p class="card-sub">בחרו ענף כדי לראות ציוד, AP וסקילים שמתאימים לו.</p>' : ''}</section>`);
+<ul class="branches">${branches.map(b => `<li><button type="button" class="branch" data-branch="${b.slug}"${P ? ' disabled' : ''}>${b.img ? `<img src="${esc(b.img)}" alt="" loading="lazy" decoding="async" onerror="window.mlImgErr?mlImgErr(this):this.remove()">` : ''}<span>${esc(b.name)}</span></button><a href="${gUrl(b.slug)}">המדריך</a></li>`).join('')}</ul>
+<p class="card-sub">${lv >= 30 ? 'בחרו ענף כדי לראות ציוד, AP וסקילים שמתאימים לו.' : 'כבר יודעים לאן הולכים? בחרו ענף והדמות תחזיק את הנשק שלו.'}</p></section>`);
   }
   if (me.cls === 'beginner') {
     out.unshift(`<section class="card ch-card"><div class="card-head"><h2>עוד לא בחרתם מקצוע</h2><a href="${gUrl('choosing-a-class')}">איזה מקצוע לבחור?</a></div><p class="card-sub">עד Lv 10 כל המתחילים זהים. מומלץ להתחיל מהמדריך למתחילים ולהגיע לאי ויקטוריה.</p></section>`);
