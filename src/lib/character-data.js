@@ -87,5 +87,5 @@ export function buildCharacterData(config, guides, CLASS_INFO) {
     const t = extractTables(g.body).filter(x => x.kind || g.slug === 'training-spots');
     if (t.length) tables[g.slug] = t;
   }
-  return { classes, guides: guides.map(pick), tables };
+  return { classes, guides: guides.map(pick), tables, journey: config.journey || [] };
 }
